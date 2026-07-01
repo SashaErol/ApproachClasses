@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build the Timeline — 250 Years of Independence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1828;
+    --redline:#9E251A;
+    --navy:#0F2A47;
+    --sky:#4289BD;
+    --fog:#E8E8E8;
+    --paper:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Work Sans', sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  header{
+    background:var(--navy);
+    color:var(--paper);
+    padding:22px 28px 20px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--sky);
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:0 0 8px;
+    line-height:1.1;
+  }
+  header p{
+    margin:0;
+    font-size:15px;
+    color:#cfd8e3;
+    max-width:56ch;
+  }
+  main{
+    max-width:980px;
+    margin:0 auto;
+    padding:28px 20px 60px;
+  }
+  .bank-label{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:18px;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  #bank{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    min-height:110px;
+    padding:14px;
+    background:var(--fog);
+    border-radius:10px;
+    margin-bottom:44px;
+  }
+  .card{
+    background:var(--paper);
+    border:2px solid var(--navy);
+    border-radius:8px;
+    padding:12px 14px;
+    width:200px;
+    cursor:grab;
+    touch-action:none;
+    user-select:none;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    box-shadow:0 2px 0 rgba(11,24,40,.08);
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .card:active{cursor:grabbing;}
+  .card.dragging{
+    position:fixed;
+    z-index:50;
+    box-shadow:0 10px 24px rgba(11,24,40,.35);
+    transform:scale(1.03);
+    pointer-events:none;
+  }
+  .card-text{
+    font-size:14px;
+    line-height:1.35;
+    font-weight:500;
+  }
+  .speak-btn{
+    align-self:flex-start;
+    background:none;
+    border:1px solid var(--sky);
+    color:var(--sky);
+    border-radius:20px;
+    font-size:12px;
+    padding:3px 10px;
+    cursor:pointer;
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+  }
+  .speak-btn:hover{background:var(--sky); color:var(--paper);}
+
+  .timeline-label{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:18px;
+    margin:0 0 18px;
+  }
+  #timeline-wrap{
+    position:relative;
+    padding-top:26px;
+  }
+  #timeline-track{
+    position:relative;
+    display:flex;
+    gap:14px;
+    padding-bottom:6px;
+  }
+  #timeline-track::before{
+    content:"";
+    position:absolute;
+    top:-14px;
+    left:0;
+    right:0;
+    height:6px;
+    background:repeating-linear-gradient(
+      90deg,
+      var(--redline) 0px, var(--redline) 18px,
+      #b23f2f 18px, #b23f2f 20px
+    );
+    border-radius:4px;
+  }
+  .slot{
+    flex:1 1 0;
+    min-width:140px;
+    min-height:120px;
+    background:var(--paper);
+    border:2px dashed #b8c2cc;
+    border-radius:8px;
+    position:relative;
+    padding:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .slot::before{
+    content:"";
+    position:absolute;
+    top:-24px;
+    left:50%;
+    transform:translateX(-50%);
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--redline);
+    border:3px solid var(--paper);
+    box-shadow:0 0 0 1px var(--redline);
+  }
+  .slot .placeholder{
+    color:#9aa5b1;
+    font-size:13px;
+    font-weight:500;
+  }
+  .slot.hover{
+    border-color:var(--sky);
+    background:#eef5fa;
+  }
+  .slot.filled{
+    border-style:solid;
+    border-color:var(--navy);
+  }
+  .slot .year-tag{
+    position:absolute;
+    bottom:-28px;
+    left:50%;
+    transform:translateX(-50%);
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    font-weight:700;
+    color:var(--navy);
+    background:var(--fog);
+    padding:2px 10px;
+    border-radius:12px;
+    white-space:nowrap;
+  }
+  .slot.correct{border-color:var(--sky); background:#eaf3f9;}
+  .slot.correct .year-tag{color:var(--paper); background:var(--sky);}
+  .slot.incorrect{border-color:var(--redline); background:#fbecea;}
+  .slot.incorrect .year-tag{color:var(--paper); background:var(--redline);}
+
+  .controls{
+    margin-top:52px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  button.primary{
+    background:var(--redline);
+    color:var(--paper);
+    border:none;
+    border-radius:8px;
+    padding:12px 22px;
+    font-size:15px;
+    font-weight:600;
+    font-family:'Work Sans', sans-serif;
+    cursor:pointer;
+  }
+  button.primary:hover{background:#82201a;}
+  button.ghost{
+    background:none;
+    border:2px solid var(--navy);
+    color:var(--navy);
+    border-radius:8px;
+    padding:10px 20px;
+    font-size:15px;
+    font-weight:600;
+    font-family:'Work Sans', sans-serif;
+    cursor:pointer;
+  }
+  button.ghost:hover{background:var(--navy); color:var(--paper);}
+  #feedback{
+    font-weight:600;
+    font-size:15px;
+  }
+  #feedback.good{color:var(--sky);}
+  #feedback.bad{color:var(--redline);}
+
+  @media (max-width:700px){
+    #timeline-track{flex-direction:column;}
+    #timeline-track::before{
+      top:0; left:-14px; right:auto; bottom:0;
+      width:6px; height:auto;
+      background:repeating-linear-gradient(
+        180deg,
+        var(--redline) 0px, var(--redline) 18px,
+        #b23f2f 18px, #b23f2f 20px
+      );
+    }
+    .slot::before{
+      top:50%; left:-26px; transform:translateY(-50%);
+    }
+    .slot .year-tag{
+      bottom:auto; top:50%; left:auto; right:-52px; transform:translateY(-50%);
+    }
+    .card{width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Approach International Student Center</div>
+  <h1>Build the Timeline: 250 Years of Independence</h1>
+  <p>Drag each event card down onto the year you think it belongs to. Tap 🔊 to hear how it sounds in American English.</p>
+</header>
+
+<main>
+  <p class="bank-label">Events (shuffled)</p>
+  <div id="bank"></div>
+
+  <p class="timeline-label">Timeline — match each event to its year</p>
+  <div id="timeline-wrap">
+    <div id="timeline-track"></div>
+  </div>
+
+  <div class="controls">
+    <button class="primary" id="checkBtn">Check My Timeline</button>
+    <button class="ghost" id="resetBtn">Try Again</button>
+    <span id="feedback"></span>
+  </div>
+</main>
+
+<script>
+const events = [
+  { id:1, order:1, year:"1620", text:"The Pilgrims arrive on the Mayflower." },
+  { id:2, order:2, year:"1773", text:"The Boston Tea Party happens." },
+  { id:3, order:3, year:"1776", text:"The Declaration of Independence is signed." },
+  { id:4, order:4, year:"1783", text:"The Revolutionary War ends." },
+  { id:5, order:5, year:"1789", text:"George Washington becomes the first President." },
+  { id:6, order:6, year:"2026", text:"The USA celebrates 250 years of independence." },
+];
+
+const bank = document.getElementById('bank');
+const track = document.getElementById('timeline-track');
+const feedback = document.getElementById('feedback');
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.92;
+  const voices = speechSynthesis.getVoices();
+  const usVoice = voices.find(v => v.lang === 'en-US');
+  if(usVoice) u.voice = usVoice;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+function makeCard(ev){
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.order = ev.order;
+  card.dataset.year = ev.year;
+  card.innerHTML = `
+    <div class="card-text">${ev.text}</div>
+    <button class="speak-btn" type="button">🔊 Listen</button>
+  `;
+  card.querySelector('.speak-btn').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    speak(ev.text);
+  });
+  attachDrag(card);
+  return card;
+}
+
+function buildBoard(){
+  bank.innerHTML = '';
+  track.innerHTML = '';
+  feedback.textContent = '';
+  feedback.className = '';
+
+  shuffle(events).forEach(ev => bank.appendChild(makeCard(ev)));
+
+  const byYear = [...events].sort((a,b)=>a.order-b.order);
+  byYear.forEach((ev, idx) => {
+    const i = idx + 1;
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.dataset.slot = i;
+    slot.innerHTML = `<span class="placeholder">Drop here</span><span class="year-tag">${ev.year}</span>`;
+    track.appendChild(slot);
+  });
+}
+
+// ---- Pointer-based drag & drop (works with mouse + touch) ----
+let dragEl = null, offsetX = 0, offsetY = 0, originParent = null, originNext = null;
+
+function attachDrag(card){
+  card.addEventListener('pointerdown', onPointerDown);
+}
+
+function onPointerDown(e){
+  dragEl = e.currentTarget;
+  const rect = dragEl.getBoundingClientRect();
+  offsetX = e.clientX - rect.left;
+  offsetY = e.clientY - rect.top;
+  originParent = dragEl.parentElement;
+  originNext = dragEl.nextElementSibling;
+
+  dragEl.setPointerCapture(e.pointerId);
+  dragEl.classList.add('dragging');
+  dragEl.style.width = rect.width + 'px';
+  document.body.appendChild(dragEl);
+  moveCardTo(e.clientX, e.clientY);
+
+  document.addEventListener('pointermove', onPointerMove);
+  document.addEventListener('pointerup', onPointerUp);
+}
+
+function moveCardTo(x,y){
+  dragEl.style.left = (x - offsetX) + 'px';
+  dragEl.style.top = (y - offsetY) + 'px';
+}
+
+function onPointerMove(e){
+  if(!dragEl) return;
+  moveCardTo(e.clientX, e.clientY);
+  dragEl.style.visibility = 'hidden';
+  const under = document.elementFromPoint(e.clientX, e.clientY);
+  dragEl.style.visibility = 'visible';
+
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('hover'));
+  if(under){
+    const slot = under.closest('.slot');
+    if(slot) slot.classList.add('hover');
+  }
+}
+
+function onPointerUp(e){
+  if(!dragEl) return;
+  document.removeEventListener('pointermove', onPointerMove);
+  document.removeEventListener('pointerup', onPointerUp);
+
+  dragEl.style.visibility = 'hidden';
+  const under = document.elementFromPoint(e.clientX, e.clientY);
+  dragEl.style.visibility = 'visible';
+
+  const targetSlot = under ? under.closest('.slot') : null;
+  const targetBank = under ? under.closest('#bank') : null;
+
+  dragEl.classList.remove('dragging');
+  dragEl.style.position = '';
+  dragEl.style.left = '';
+  dragEl.style.top = '';
+  dragEl.style.width = '';
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('hover'));
+
+  if(targetSlot){
+    const existing = targetSlot.querySelector('.card');
+    targetSlot.querySelector('.placeholder')?.remove();
+    if(existing && existing !== dragEl){
+      // swap: send existing card back to bank
+      existing.remove();
+      bank.appendChild(existing);
+    }
+    targetSlot.appendChild(dragEl);
+    targetSlot.classList.add('filled');
+    targetSlot.classList.remove('correct','incorrect','checked');
+  } else if(targetBank){
+    bank.appendChild(dragEl);
+  } else {
+    // dropped outside — return to origin
+    if(originNext) originParent.insertBefore(dragEl, originNext);
+    else originParent.appendChild(dragEl);
+  }
+
+  // restore placeholder to any now-empty slot
+  document.querySelectorAll('.slot').forEach(s=>{
+    if(!s.querySelector('.card')){
+      s.classList.remove('filled','correct','incorrect','checked');
+      if(!s.querySelector('.placeholder')){
+        const ph = document.createElement('span');
+        ph.className='placeholder';
+        ph.textContent='Drop here';
+        s.prepend(ph);
+      }
+    }
+  });
+
+  dragEl = null;
+}
+
+document.getElementById('checkBtn').addEventListener('click', ()=>{
+  const slots = document.querySelectorAll('.slot');
+  let correctCount = 0;
+  let filledCount = 0;
+
+  slots.forEach(slot=>{
+    const card = slot.querySelector('.card');
+    slot.classList.add('checked');
+    slot.classList.remove('correct','incorrect');
+    if(card){
+      filledCount++;
+      const isCorrect = Number(card.dataset.order) === Number(slot.dataset.slot);
+      slot.classList.add(isCorrect ? 'correct' : 'incorrect');
+      if(isCorrect) correctCount++;
+    }
+  });
+
+  if(filledCount < slots.length){
+    feedback.textContent = `Fill all 6 slots first (${filledCount}/6 placed).`;
+    feedback.className = 'bad';
+  } else if(correctCount === slots.length){
+    feedback.textContent = '🎉 Perfect! That\'s the correct order.';
+    feedback.className = 'good';
+  } else {
+    feedback.textContent = `${correctCount}/6 correct — check the red slots and try again.`;
+    feedback.className = 'bad';
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', buildBoard);
+
+// load voices (Chrome needs this event to populate voice list)
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+
+buildBoard();
+</script>
+
+</body>
+</html>
