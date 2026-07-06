@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Listening Gap-Fill: At the Coffee Shop</title>
+<style>
+  :root {
+    --orange: #e2632a;
+    --orange-light: #fdece1;
+    --green: #2f9e58;
+    --red: #d64545;
+    --ink: #2b2b2b;
+    --border: #e8d9cc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #faf6f1;
+    color: var(--ink);
+    margin: 0;
+    padding: 24px 16px 60px;
+  }
+  header {
+    max-width: 760px;
+    margin: 0 auto 20px;
+    text-align: center;
+  }
+  header h1 {
+    color: var(--orange);
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+  }
+  header p {
+    margin: 4px 0;
+    font-size: 0.93rem;
+    color: #555;
+    line-height: 1.5;
+  }
+  .player-box {
+    max-width: 760px;
+    margin: 0 auto 22px;
+    background: white;
+    border: 2px solid var(--orange);
+    border-radius: 14px;
+    padding: 18px 22px;
+    text-align: center;
+  }
+  .player-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .play-btn {
+    padding: 10px 20px;
+    border-radius: 24px;
+    border: none;
+    background: var(--orange);
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .play-btn:hover { background: #c8501f; }
+  .play-btn.secondary {
+    background: white;
+    color: var(--orange);
+    border: 2px solid var(--orange);
+  }
+  .play-btn.secondary:hover { background: var(--orange-light); }
+  .speed-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    color: #666;
+  }
+  .speed-btn {
+    padding: 5px 12px;
+    border-radius: 14px;
+    border: 2px solid #ddd;
+    background: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+  }
+  .speed-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .speed-btn.active { border-color: var(--orange); background: var(--orange-light); color: var(--orange); }
+  .now-playing {
+    font-size: 0.85rem;
+    color: #888;
+    font-style: italic;
+    min-height: 18px;
+  }
+  .line.speaking {
+    background: var(--orange-light);
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
+  .dialogue-box {
+    max-width: 760px;
+    margin: 0 auto 20px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .line {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    align-items: baseline;
+    flex-wrap: wrap;
+    line-height: 1.7;
+  }
+  .speaker {
+    font-weight: 700;
+    color: var(--orange);
+    min-width: 60px;
+  }
+  .line-text {
+    font-size: 1.02rem;
+  }
+  .blank-input {
+    border: none;
+    border-bottom: 2px solid var(--orange);
+    background: var(--orange-light);
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 2px 6px;
+    text-align: center;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .blank-input.tag-blank {
+    border-bottom: 2px solid #b98be0;
+    background: #f5edfc;
+  }
+  .blank-input:focus { outline: none; border-bottom-color: #b8481a; }
+  .blank-input.correct { background: #e4f6ea; border-bottom-color: var(--green); }
+  .blank-input.incorrect { background: #fbe7e7; border-bottom-color: var(--red); }
+
+  .btn-row {
+    max-width: 760px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .action-btn {
+    padding: 10px 20px;
+    border-radius: 9px;
+    border: 2px solid var(--orange);
+    background: white;
+    color: var(--orange);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .action-btn:hover { background: var(--orange); color: white; }
+  .action-btn.secondary {
+    border-color: #999;
+    color: #666;
+  }
+  .action-btn.secondary:hover { background: #999; color: white; }
+
+  .note {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888;
+    font-style: italic;
+  }
+
+  .score-line {
+    max-width: 760px;
+    margin: 0 auto 16px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--orange);
+    min-height: 24px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>☕ Listening: At the Coffee Shop</h1>
+  <p>Two strangers meet in a crowded café. Listen to the audio and fill in the blanks. You can play it as many times as you need.</p>
+</header>
+
+<div class="player-box" id="playerBox">
+  <div class="player-controls">
+    <button class="play-btn" id="playBtn">▶ Play Dialogue</button>
+    <button class="play-btn secondary" id="pauseBtn">⏸ Pause</button>
+    <button class="play-btn secondary" id="stopBtn">⏹ Stop</button>
+  </div>
+  <div class="speed-controls">
+    <span>Speed:</span>
+    <button class="speed-btn" data-rate="0.75">Slow</button>
+    <button class="speed-btn active" data-rate="0.95">Normal</button>
+    <button class="speed-btn" data-rate="1.1">Fast</button>
+  </div>
+  <div class="now-playing" id="nowPlaying">Press Play to start listening</div>
+</div>
+
+<div class="dialogue-box" id="dialogueBox">
+  <div class="line" id="line-0">
+    <span class="speaker">Alex:</span>
+    <span class="line-text">
+      <input class="blank-input" data-answer="Excuse me" size="10" placeholder="_______"> , is this seat taken? It's so crowded in here today.
+    </span>
+  </div>
+
+  <div class="line" id="line-1">
+    <span class="speaker">Sam:</span>
+    <span class="line-text">
+      No, not at all — please, sit down.
+    </span>
+  </div>
+
+  <div class="line" id="line-2">
+    <span class="speaker">Alex:</span>
+    <span class="line-text">
+      <input class="blank-input" data-answer="Thanks so much" size="12" placeholder="_______"> ! Wow, it's really noisy in here, <input class="blank-input tag-blank" data-answer="isn't it" size="8" placeholder="___,___?"> ?
+    </span>
+  </div>
+
+  <div class="line" id="line-3">
+    <span class="speaker">Sam:</span>
+    <span class="line-text">
+      Ha, exactly. It's always like this after work. I can barely hear myself think!
+    </span>
+  </div>
+
+  <div class="line" id="line-4">
+    <span class="speaker">Alex:</span>
+    <span class="line-text">
+      I know what you mean. So, what are you having?
+    </span>
+  </div>
+
+  <div class="line" id="line-5">
+    <span class="speaker">Sam:</span>
+    <span class="line-text">
+      Just an iced lemonade. It's really refreshing on a hot day like this.
+    </span>
+  </div>
+
+  <div class="line" id="line-6">
+    <span class="speaker">Alex:</span>
+    <span class="line-text">
+      That sounds really good actually. Oh, by the way, I'm Alex.
+    </span>
+  </div>
+
+  <div class="line" id="line-7">
+    <span class="speaker">Sam:</span>
+    <span class="line-text">
+      I'm Sam. <input class="blank-input" data-answer="Nice to meet you" size="14" placeholder="_______"> !
+    </span>
+  </div>
+</div>
+
+<div class="score-line" id="scoreLine"></div>
+
+<div class="btn-row">
+  <button class="action-btn" id="checkBtn">Check Answers</button>
+  <button class="action-btn secondary" id="resetBtn">Reset</button>
+</div>
+
+<p class="note">Vocabulary focus: crowded, noisy, refreshing · Greeting phrases + one question tag.</p>
+
+<script>
+const script = [
+  { speaker: "Alex", text: "Excuse me, is this seat taken? It's so crowded in here today." },
+  { speaker: "Sam", text: "No, not at all. Please, sit down." },
+  { speaker: "Alex", text: "Thanks so much! Wow, it's really noisy in here, isn't it?" },
+  { speaker: "Sam", text: "Ha, exactly. It's always like this after work. I can barely hear myself think!" },
+  { speaker: "Alex", text: "I know what you mean. So, what are you having?" },
+  { speaker: "Sam", text: "Just an iced lemonade. It's really refreshing on a hot day like this." },
+  { speaker: "Alex", text: "That sounds really good actually. Oh, by the way, I'm Alex." },
+  { speaker: "Sam", text: "I'm Sam. Nice to meet you!" }
+];
+
+let voices = [];
+let currentRate = 0.95;
+let currentLineIndex = 0;
+let isPlaying = false;
+
+function loadVoices() {
+  voices = window.speechSynthesis.getVoices();
+}
+loadVoices();
+if (window.speechSynthesis.onvoiceschanged !== undefined) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function pickVoice(speaker) {
+  const englishVoices = voices.filter(v => v.lang && v.lang.startsWith('en'));
+  if (englishVoices.length === 0) return null;
+
+  // Prefer higher-quality / "natural" / "enhanced" / "neural" voices that
+  // browsers expose — these sound far less robotic than the default system voice.
+  const premiumHints = [
+    'natural', 'neural', 'enhanced', 'premium',
+    'google us english', 'google uk english',
+    'online (natural)', 'aria', 'guy', 'jenny',
+    'samantha', 'alex', 'daniel', 'karen', 'moira', 'tessa', 'ava', 'nicky'
+  ];
+
+  const scored = englishVoices.map(v => {
+    const name = v.name.toLowerCase();
+    const score = premiumHints.some(h => name.includes(h)) ? 1 : 0;
+    return { voice: v, score };
+  });
+
+  const premium = scored.filter(s => s.score === 1).map(s => s.voice);
+  const pool = premium.length > 0 ? premium : englishVoices;
+
+  const maleHints = ['male', 'david', 'daniel', 'alex', 'fred', 'aaron', 'guy'];
+  const femaleHints = ['female', 'samantha', 'victoria', 'zira', 'susan', 'karen', 'moira', 'aria', 'jenny'];
+
+  if (speaker === "Alex") {
+    const m = pool.find(v => maleHints.some(h => v.name.toLowerCase().includes(h)));
+    return m || pool[0];
+  } else {
+    const f = pool.find(v => femaleHints.some(h => v.name.toLowerCase().includes(h)));
+    return f || pool[pool.length - 1];
+  }
+}
+
+function clearHighlight() {
+  document.querySelectorAll('.line').forEach(el => el.classList.remove('speaking'));
+}
+
+function speakLine(index) {
+  if (index >= script.length) {
+    isPlaying = false;
+    clearHighlight();
+    document.getElementById('nowPlaying').textContent = "Finished! Press Play to listen again.";
+    return;
+  }
+  currentLineIndex = index;
+  const item = script[index];
+  clearHighlight();
+  const lineEl = document.getElementById('line-' + index);
+  if (lineEl) lineEl.classList.add('speaking');
+
+  const utterance = new SpeechSynthesisUtterance(item.text);
+  utterance.rate = currentRate;
+  utterance.pitch = item.speaker === "Alex" ? 1.0 : 1.02;
+  const voice = pickVoice(item.speaker);
+  if (voice) utterance.voice = voice;
+
+  document.getElementById('nowPlaying').textContent = `Speaking: ${item.speaker} (line ${index + 1} of ${script.length})`;
+
+  utterance.onend = () => {
+    if (isPlaying) {
+      speakLine(index + 1);
+    }
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+document.getElementById('playBtn').addEventListener('click', () => {
+  window.speechSynthesis.cancel();
+  isPlaying = true;
+  speakLine(currentLineIndex >= script.length ? 0 : currentLineIndex);
+});
+
+document.getElementById('pauseBtn').addEventListener('click', () => {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+    document.getElementById('nowPlaying').textContent = "Paused";
+  }
+});
+
+document.getElementById('stopBtn').addEventListener('click', () => {
+  window.speechSynthesis.cancel();
+  isPlaying = false;
+  currentLineIndex = 0;
+  clearHighlight();
+  document.getElementById('nowPlaying').textContent = "Stopped. Press Play to start from the beginning.";
+});
+
+document.querySelectorAll('.speed-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentRate = parseFloat(btn.dataset.rate);
+  });
+});
+
+const checkBtn = document.getElementById('checkBtn');
+const resetBtn = document.getElementById('resetBtn');
+const scoreLine = document.getElementById('scoreLine');
+
+function normalize(str) {
+  return str.trim().toLowerCase().replace(/[.,!?']/g, '');
+}
+
+checkBtn.addEventListener('click', () => {
+  const inputs = document.querySelectorAll('.blank-input');
+  let correctCount = 0;
+  inputs.forEach(input => {
+    const answer = input.dataset.answer;
+    const userVal = input.value;
+    if (normalize(userVal) === normalize(answer)) {
+      input.classList.remove('incorrect');
+      input.classList.add('correct');
+      correctCount++;
+    } else {
+      input.classList.remove('correct');
+      input.classList.add('incorrect');
+    }
+  });
+  scoreLine.textContent = `Score: ${correctCount} / ${inputs.length}`;
+});
+
+resetBtn.addEventListener('click', () => {
+  const inputs = document.querySelectorAll('.blank-input');
+  inputs.forEach(input => {
+    input.value = '';
+    input.classList.remove('correct', 'incorrect');
+  });
+  scoreLine.textContent = '';
+  window.speechSynthesis.cancel();
+  isPlaying = false;
+  currentLineIndex = 0;
+  clearHighlight();
+  document.getElementById('nowPlaying').textContent = "Press Play to start listening";
+});
+</script>
+
+</body>
+</html>

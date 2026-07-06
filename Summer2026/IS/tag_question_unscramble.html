@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Unscramble the Tag Questions</title>
+<style>
+  :root {
+    --orange: #e2632a;
+    --orange-light: #fdece1;
+    --green: #2f9e58;
+    --red: #d64545;
+    --ink: #2b2b2b;
+    --border: #e8d9cc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #faf6f1;
+    color: var(--ink);
+    margin: 0;
+    padding: 24px 16px 60px;
+  }
+  header {
+    max-width: 800px;
+    margin: 0 auto 24px;
+    text-align: center;
+  }
+  header h1 {
+    color: var(--orange);
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+  }
+  header p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  .grid {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .card.correct { border-color: var(--green); box-shadow: 0 0 0 3px rgba(47,158,88,0.12); }
+  .card.incorrect { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,69,69,0.12); }
+
+  .num {
+    display: inline-block;
+    background: var(--orange-light);
+    color: var(--orange);
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .answer-area {
+    min-height: 46px;
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    background: #fcfaf7;
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+  }
+  .answer-area.empty::before {
+    content: "Click the chunks below in the correct order \2193";
+    color: #aaa;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+  .chunk-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .chunk-btn {
+    background: white;
+    border: 2px solid var(--orange);
+    color: var(--orange);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chunk-btn:hover { background: var(--orange-light); }
+  .chunk-btn.used { opacity: 0; pointer-events: none; }
+
+  .answer-chunk {
+    background: var(--orange);
+    color: white;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .answer-chunk:hover { background: #c8501f; }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .action-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    background: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #555;
+  }
+  .action-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .action-btn.check { border-color: var(--orange); color: var(--orange); }
+
+  .feedback {
+    margin-top: 10px;
+    font-size: 0.88rem;
+    min-height: 18px;
+  }
+  .feedback.correct-text { color: var(--green); font-weight: 600; }
+  .feedback.incorrect-text { color: var(--red); font-weight: 600; }
+
+  .scoreboard {
+    max-width: 800px;
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+  .score-box {
+    background: white;
+    border: 2px solid var(--orange);
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-weight: 600;
+    color: var(--orange);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Unscramble the Tag Questions</h1>
+  <p>Put the word chunks in the correct order to make a tag question. Click a chunk to add it — click it again in the answer box to remove it.</p>
+</header>
+
+<div class="scoreboard">
+  <div class="score-box">Score: <span id="score">0</span> / 6</div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const items = [
+  { chunks: ["You are", "a student,", "aren't you?"] },
+  { chunks: ["She isn't", "tired,", "is she?"] },
+  { chunks: ["He was", "here yesterday,", "wasn't he?"] },
+  { chunks: ["They didn't", "call you,", "did they?"] },
+  { chunks: ["You can", "drive a car,", "can't you?"] },
+  { chunks: ["We won't", "be late,", "will we?"] }
+];
+
+let score = 0;
+let checkedCorrect = new Array(items.length).fill(false);
+
+function shuffle(array) {
+  const arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buildCard(item, index) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + index;
+
+  const correctOrder = item.chunks;
+  const scrambled = shuffle(item.chunks);
+  let currentAnswer = [];
+
+  card.innerHTML = `
+    <span class="num">${index + 1}</span>
+    <div class="answer-area empty" id="answer-${index}"></div>
+    <div class="chunk-pool" id="pool-${index}"></div>
+    <div class="btn-row">
+      <button class="action-btn check" id="checkbtn-${index}">Check</button>
+      <button class="action-btn" id="clearbtn-${index}">Clear</button>
+    </div>
+    <div class="feedback" id="feedback-${index}"></div>
+  `;
+
+  const answerArea = card.querySelector(`#answer-${index}`);
+  const pool = card.querySelector(`#pool-${index}`);
+  const checkBtn = card.querySelector(`#checkbtn-${index}`);
+  const clearBtn = card.querySelector(`#clearbtn-${index}`);
+  const feedback = card.querySelector(`#feedback-${index}`);
+
+  function renderPool() {
+    pool.innerHTML = '';
+    scrambled.forEach((chunk, ci) => {
+      const btn = document.createElement('button');
+      btn.className = 'chunk-btn';
+      btn.textContent = chunk;
+      btn.dataset.chunk = chunk;
+      if (currentAnswer.includes(ci)) {
+        btn.classList.add('used');
+      }
+      btn.onclick = () => addChunk(ci);
+      pool.appendChild(btn);
+    });
+  }
+
+  function renderAnswer() {
+    answerArea.innerHTML = '';
+    if (currentAnswer.length === 0) {
+      answerArea.classList.add('empty');
+      return;
+    }
+    answerArea.classList.remove('empty');
+    currentAnswer.forEach((ci, pos) => {
+      const span = document.createElement('span');
+      span.className = 'answer-chunk';
+      span.textContent = scrambled[ci];
+      span.onclick = () => removeChunk(pos);
+      answerArea.appendChild(span);
+    });
+  }
+
+  function addChunk(ci) {
+    if (checkedCorrect[index]) return;
+    if (currentAnswer.includes(ci)) return;
+    if (currentAnswer.length >= correctOrder.length) return;
+    currentAnswer.push(ci);
+    renderPool();
+    renderAnswer();
+    feedback.textContent = '';
+    feedback.className = 'feedback';
+  }
+
+  function removeChunk(pos) {
+    if (checkedCorrect[index]) return;
+    currentAnswer.splice(pos, 1);
+    renderPool();
+    renderAnswer();
+  }
+
+  checkBtn.onclick = () => {
+    if (checkedCorrect[index]) return;
+    if (currentAnswer.length !== correctOrder.length) {
+      feedback.textContent = "Use all the chunks first.";
+      feedback.className = 'feedback incorrect-text';
+      return;
+    }
+    const userSentence = currentAnswer.map(ci => scrambled[ci]).join(' ');
+    const correctSentence = correctOrder.join(' ');
+    if (userSentence === correctSentence) {
+      card.classList.add('correct');
+      feedback.textContent = "\u2713 Correct! " + correctSentence;
+      feedback.className = 'feedback correct-text';
+      checkedCorrect[index] = true;
+      score++;
+      document.getElementById('score').textContent = score;
+    } else {
+      card.classList.add('incorrect');
+      feedback.textContent = "\u2717 Not quite. Try again!";
+      feedback.className = 'feedback incorrect-text';
+      setTimeout(() => card.classList.remove('incorrect'), 900);
+    }
+  };
+
+  clearBtn.onclick = () => {
+    if (checkedCorrect[index]) return;
+    currentAnswer = [];
+    renderPool();
+    renderAnswer();
+    feedback.textContent = '';
+    feedback.className = 'feedback';
+  };
+
+  renderPool();
+  renderAnswer();
+
+  return card;
+}
+
+function init() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  items.forEach((item, i) => {
+    grid.appendChild(buildCard(item, i));
+  });
+}
+
+init();
+</script>
+
+</body>
+</html>
