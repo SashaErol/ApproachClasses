@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Sort the Sentences — Topic Sentence Practice</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+    --good:#2F7D5C;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:24px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{width:100%; max-width:520px;}
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif;
+    font-style:italic;
+    font-size:13px;
+    color:var(--lightblue);
+    text-align:center;
+    letter-spacing:0.04em;
+    margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif;
+    font-weight:700;
+    font-size:clamp(24px,6.5vw,30px);
+    text-align:center;
+    margin:0 0 18px;
+  }
+
+  .progress-row{
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--darkblue);
+    margin-bottom:8px;
+  }
+  .dots{display:flex; gap:6px; flex-wrap:wrap; max-width:220px; justify-content:flex-end;}
+  .dot{width:9px; height:9px; border-radius:50%; background:var(--gray); border:1.5px solid var(--gray); flex:none;}
+  .dot.done-correct{background:var(--good); border-color:var(--good);}
+  .dot.done-wrong{background:var(--red); border-color:var(--red);}
+  .dot.active{border-color:var(--darkblue);}
+
+  .vocab-strip{
+    background:var(--gray);
+    border-radius:10px;
+    padding:8px 12px;
+    font-size:12.5px;
+    color:var(--darkblue);
+    margin-bottom:20px;
+    text-align:center;
+  }
+  .vocab-strip b{color:var(--lightblue);}
+
+  .card{
+    background:var(--white);
+    border:1.5px solid var(--darkblue);
+    border-radius:16px;
+    padding:34px 24px;
+    min-height:120px;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    font-family:'Cambria',Georgia,serif;
+    font-style:italic;
+    font-size:21px;
+    line-height:1.4;
+    margin-bottom:20px;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .card b{ color:var(--lightblue); font-style:normal; }
+  .card.correct{ border-color:var(--good); background:rgba(47,125,92,0.06); }
+  .card.incorrect{ border-color:var(--red); background:rgba(159,36,28,0.05); }
+
+  .choices{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .choice-btn{
+    border:2px solid var(--darkblue);
+    background:var(--white);
+    border-radius:12px;
+    padding:14px 4px;
+    font-family:'Calibri','Segoe UI',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--darkblue);
+    cursor:pointer;
+    min-height:52px;
+  }
+  .choice-btn[data-choice="good"]{ border-color:var(--lightblue); color:var(--lightblue); }
+  .choice-btn[data-choice="broad"]{ border-color:var(--red); color:var(--red); }
+  .choice-btn[data-choice="narrow"]{ border-color:var(--darkblue); color:var(--darkblue); }
+
+  .choice-btn:disabled{ opacity:0.45; cursor:default; }
+  .choice-btn.picked-right{ background:var(--good); border-color:var(--good); color:var(--white); opacity:1; }
+  .choice-btn.picked-wrong{ background:var(--red); border-color:var(--red); color:var(--white); opacity:1; }
+  .choice-btn.reveal-correct{ background:var(--good); border-color:var(--good); color:var(--white); opacity:1; }
+
+  .choice-btn:focus-visible{ outline:3px solid var(--lightblue); outline-offset:2px; }
+
+  .feedback{
+    font-size:14px;
+    line-height:1.4;
+    text-align:center;
+    color:var(--muted);
+    min-height:38px;
+    margin-bottom:10px;
+  }
+  .feedback.show b{ color:var(--darkblue); }
+
+  .next-btn{
+    display:block;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:var(--darkblue);
+    color:var(--white);
+    font-family:'Calibri','Segoe UI',sans-serif;
+    font-weight:600;
+    font-size:16px;
+    cursor:pointer;
+    visibility:hidden;
+  }
+  .next-btn.show{ visibility:visible; }
+  .next-btn:focus-visible{ outline:3px solid var(--lightblue); outline-offset:2px; }
+
+  .end{ display:none; text-align:center; padding-top:30px; }
+  .end.show{ display:block; }
+  .end h2{ font-family:'Cambria',Georgia,serif; font-size:26px; margin:0 0 8px; }
+  .end p{ font-size:15px; color:var(--muted); margin:0 0 4px; }
+  .restart-btn{
+    margin-top:18px; padding:13px 26px; border:none; border-radius:12px;
+    background:var(--lightblue); color:var(--white); font-weight:600; font-size:15px; cursor:pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Week 1 · Topic Sentence</div>
+  <h1>Sort the Sentences</h1>
+
+  <div class="progress-row">
+    <span id="roundLabel">Sentence 1 of 12 · Easy</span>
+    <span class="dots" id="dots"></span>
+  </div>
+  <div class="vocab-strip" id="vocabStrip"></div>
+
+  <div id="game">
+    <div class="card" id="card"></div>
+    <div class="choices" id="choices">
+      <button class="choice-btn" data-choice="broad">TOO BROAD</button>
+      <button class="choice-btn" data-choice="good">GOOD</button>
+      <button class="choice-btn" data-choice="narrow">TOO NARROW</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">Next sentence →</button>
+  </div>
+
+  <div class="end" id="end">
+    <h2 id="endTitle"></h2>
+    <p id="endText"></p>
+    <p id="endText2"></p>
+    <button class="restart-btn" id="restartBtn">Sort again</button>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  // ---- Easy ----
+  { text: 'Desserts are <b>delicious</b>.', answer: 'broad', note: 'Too broad — "desserts" is a huge category.', tier: 'Easy', vocab: ['delicious'] },
+  { text: '<b>Homemade</b> bread tastes <b>special</b>.', answer: 'good', note: 'Good — a clear topic plus a real feeling.', tier: 'Easy', vocab: ['homemade','special'] },
+  { text: 'The bread I ate at 6am on Tuesday was slightly <b>crispy</b>.', answer: 'narrow', note: 'Too narrow — one tiny moment, not a topic to write about.', tier: 'Easy', vocab: ['crispy'] },
+
+  // ---- Medium ----
+  { text: 'Moroccan mint tea is <b>refreshing</b>.', answer: 'good', note: 'Good — specific topic, clear controlling idea.', tier: 'Medium', vocab: ['refreshing'] },
+  { text: 'Drinks can be <b>refreshing</b>.', answer: 'broad', note: 'Too broad — "drinks" covers almost everything.', tier: 'Medium', vocab: ['refreshing'] },
+  { text: 'The tea my neighbor gave me last Friday at 4:15pm was a little <b>bland</b>.', answer: 'narrow', note: 'Too narrow — too many tiny, specific details.', tier: 'Medium', vocab: ['bland'] },
+
+  // ---- Hard ----
+  { text: "My abuela's rice pudding is <b>nostalgic</b>.", answer: 'good', note: 'Good — personal, specific, with a real feeling.', tier: 'Hard', vocab: ['nostalgic'] },
+  { text: 'Traditional recipes are <b>comforting</b> to people everywhere.', answer: 'broad', note: 'Too broad — "people everywhere" is not a real focus.', tier: 'Hard', vocab: ['comforting'] },
+  { text: 'My abuela added exactly two spoons of cinnamon to the pudding last Sunday at noon.', answer: 'narrow', note: 'Too narrow — just a fact, no feeling or opinion at all.', tier: 'Hard', vocab: [] },
+
+  // ---- Hardest ----
+  { text: 'Sunday lunch with my family feels <b>heartwarming</b>.', answer: 'good', note: 'Good — one real occasion, with a genuine feeling.', tier: 'Hardest', vocab: ['heartwarming'] },
+  { text: 'Family meals are <b>heartwarming</b>.', answer: 'broad', note: 'Too broad — "family meals" in general, not one real moment.', tier: 'Hardest', vocab: ['heartwarming'] },
+  { text: 'My uncle passed me the <b>savory</b> rice bowl twice during lunch yesterday.', answer: 'narrow', note: 'Too narrow — a tiny detail with no feeling or opinion.', tier: 'Hardest', vocab: ['savory'] },
+];
+
+let current = 0;
+let correctTotal = 0;
+let answered = false;
+const results = []; // 'correct' | 'wrong' per card
+
+const cardEl = document.getElementById('card');
+const roundLabel = document.getElementById('roundLabel');
+const dotsEl = document.getElementById('dots');
+const vocabStrip = document.getElementById('vocabStrip');
+const choicesEl = document.getElementById('choices');
+const feedbackEl = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const gameEl = document.getElementById('game');
+const endEl = document.getElementById('end');
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  CARDS.forEach((_, i) => {
+    const d = document.createElement('span');
+    let cls = 'dot';
+    if (results[i] === 'correct') cls += ' done-correct';
+    else if (results[i] === 'wrong') cls += ' done-wrong';
+    if (i === current) cls += ' active';
+    d.className = cls;
+    dotsEl.appendChild(d);
+  });
+}
+
+function renderCard(){
+  const item = CARDS[current];
+  answered = false;
+  roundLabel.textContent = `Sentence ${current + 1} of ${CARDS.length} · ${item.tier}`;
+  buildDots();
+
+  vocabStrip.style.visibility = item.vocab.length ? 'visible' : 'hidden';
+  vocabStrip.innerHTML = item.vocab.length
+    ? `This sentence's word: ` + item.vocab.map(w => `<b>${w}</b>`).join(', ')
+    : '';
+
+  cardEl.className = 'card';
+  cardEl.innerHTML = `“${item.text}”`;
+  feedbackEl.className = 'feedback';
+  feedbackEl.textContent = '';
+  nextBtn.className = 'next-btn';
+
+  choicesEl.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.disabled = false;
+    btn.classList.remove('picked-right', 'picked-wrong', 'reveal-correct');
+  });
+}
+
+function handleChoice(choice){
+  if (answered) return;
+  answered = true;
+  const item = CARDS[current];
+  const correct = choice === item.answer;
+  results[current] = correct ? 'correct' : 'wrong';
+  if (correct) correctTotal++;
+
+  cardEl.classList.add(correct ? 'correct' : 'incorrect');
+
+  choicesEl.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.disabled = true;
+    if (btn.dataset.choice === item.answer){
+      btn.classList.add(correct ? 'picked-right' : 'reveal-correct');
+    } else if (btn.dataset.choice === choice && !correct){
+      btn.classList.add('picked-wrong');
+    }
+  });
+
+  feedbackEl.classList.add('show');
+  feedbackEl.innerHTML = correct
+    ? `<b>Yes —</b> ${item.note}`
+    : `<b>Not quite —</b> ${item.note}`;
+
+  nextBtn.classList.add('show');
+  nextBtn.textContent = current < CARDS.length - 1 ? 'Next sentence →' : 'See results';
+  buildDots();
+}
+
+choicesEl.querySelectorAll('.choice-btn').forEach(btn => {
+  btn.addEventListener('click', () => handleChoice(btn.dataset.choice));
+});
+
+nextBtn.addEventListener('click', () => {
+  current++;
+  if (current < CARDS.length){
+    renderCard();
+  } else {
+    showEnd();
+  }
+});
+
+function showEnd(){
+  gameEl.style.display = 'none';
+  document.querySelector('.vocab-strip').style.display = 'none';
+  document.querySelector('.progress-row').style.display = 'none';
+  endEl.classList.add('show');
+  const pct = correctTotal / CARDS.length;
+  const title = document.getElementById('endTitle');
+  const text = document.getElementById('endText');
+  const text2 = document.getElementById('endText2');
+  text.textContent = `${correctTotal} / ${CARDS.length} correct.`;
+  if (pct >= 0.85){ title.textContent = 'Just Right.'; text2.textContent = 'You can spot the size of an idea with confidence.'; }
+  else if (pct >= 0.5){ title.textContent = 'Getting There.'; text2.textContent = 'Review the ones you missed with a partner.'; }
+  else { title.textContent = 'Keep Practicing.'; text2.textContent = "Let's go over broad, narrow, and just right together."; }
+}
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+  current = 0; correctTotal = 0; results.length = 0;
+  gameEl.style.display = 'block';
+  document.querySelector('.vocab-strip').style.display = 'block';
+  document.querySelector('.progress-row').style.display = 'flex';
+  endEl.classList.remove('show');
+  renderCard();
+});
+
+renderCard();
+</script>
+</body>
+</html>
