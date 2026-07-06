@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Formal or Informal? — Greeting Sort</title>
+<style>
+  :root {
+    --orange: #e2632a;
+    --orange-light: #fdece1;
+    --green: #2f9e58;
+    --red: #d64545;
+    --ink: #2b2b2b;
+    --border: #e8d9cc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #faf6f1;
+    color: var(--ink);
+    margin: 0;
+    padding: 24px 16px 60px;
+  }
+  header {
+    max-width: 900px;
+    margin: 0 auto 20px;
+    text-align: center;
+  }
+  header h1 {
+    color: var(--orange);
+    font-size: 1.7rem;
+    margin-bottom: 4px;
+  }
+  header p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  .scoreboard {
+    max-width: 900px;
+    margin: 0 auto 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .score-box {
+    background: white;
+    border: 2px solid var(--orange);
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-weight: 600;
+    color: var(--orange);
+  }
+  .reset-btn {
+    background: white;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #555;
+  }
+  .reset-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+  .grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 18px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .card.correct { border-color: var(--green); box-shadow: 0 0 0 3px rgba(47,158,88,0.12); }
+  .card.incorrect { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,69,69,0.12); }
+
+  .num {
+    display: inline-block;
+    background: var(--orange-light);
+    color: var(--orange);
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .scenario {
+    font-size: 0.85rem;
+    color: #777;
+    font-style: italic;
+    margin-bottom: 8px;
+    line-height: 1.35;
+  }
+  .greeting {
+    font-size: 1.08rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    min-height: 48px;
+  }
+  .btn-row {
+    display: flex;
+    gap: 10px;
+  }
+  .choice-btn {
+    flex: 1;
+    padding: 10px 6px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    background: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.15s;
+  }
+  .choice-btn:hover:not(:disabled) {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+  .choice-btn:disabled { cursor: default; }
+
+  .choice-btn.chosen-correct {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .choice-btn.chosen-incorrect {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+  .choice-btn.reveal-correct {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .feedback {
+    margin-top: 10px;
+    font-size: 0.82rem;
+    min-height: 18px;
+    color: #666;
+  }
+  .feedback.correct-text { color: var(--green); font-weight: 600; }
+  .feedback.incorrect-text { color: var(--red); font-weight: 600; }
+
+  .done-banner {
+    max-width: 900px;
+    margin: 28px auto 0;
+    text-align: center;
+    background: var(--orange-light);
+    border: 2px dashed var(--orange);
+    border-radius: 12px;
+    padding: 16px;
+    font-weight: 600;
+    color: var(--orange);
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Formal or Informal?</h1>
+  <p>Read each greeting. Think about <strong>who</strong> is speaking and <strong>where</strong>. Then choose FORMAL or INFORMAL.</p>
+</header>
+
+<div class="scoreboard">
+  <div class="score-box">Score: <span id="score">0</span> / 12</div>
+  <button class="reset-btn" onclick="resetAll()">Reset</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="done-banner" id="doneBanner">Nice work! You finished the activity. Talk with a partner: which greetings surprised you?</div>
+
+<script>
+const items = [
+  {
+    scenario: "You are checking in at the front desk of a dental office in Marlborough.",
+    greeting: "Good morning, and welcome to Marlborough Family Dental. How can I help you today?",
+    answer: "FORMAL"
+  },
+  {
+    scenario: "You run into an old friend by chance at Trader Joe's.",
+    greeting: "Oh my gosh, hi! Long time no see!",
+    answer: "INFORMAL"
+  },
+  {
+    scenario: "You are arriving for a scheduled job interview.",
+    greeting: "Good afternoon, Mr. Whitfield. Thank you for taking the time to meet with me.",
+    answer: "FORMAL"
+  },
+  {
+    scenario: "Your neighbor is outside doing yard work as you walk by.",
+    greeting: "Morning! Nice day out there, huh?",
+    answer: "INFORMAL"
+  },
+  {
+    scenario: "A parent is speaking at the start of a school PTA meeting.",
+    greeting: "Good evening, everyone. Thank you all for coming to tonight's meeting.",
+    answer: "FORMAL"
+  },
+  {
+    scenario: "You see a close coworker in the break room on a Friday afternoon.",
+    greeting: "Hey, what's up? Ready for the weekend?",
+    answer: "INFORMAL"
+  },
+  {
+    scenario: "You knock on your professor's office door during office hours.",
+    greeting: "Hello, Professor Kim. I have a quick question about the assignment, if you have a moment.",
+    answer: "FORMAL"
+  },
+  {
+    scenario: "You are stretching next to a friend at the gym before class starts.",
+    greeting: "Hey girl! How've you been? Haven't seen you in ages.",
+    answer: "INFORMAL"
+  },
+  {
+    scenario: "You are meeting a business client in person for the first time.",
+    greeting: "Good afternoon. It's a real pleasure to finally meet you in person.",
+    answer: "FORMAL"
+  },
+  {
+    scenario: "Your roommate walks into the kitchen while you're making coffee.",
+    greeting: "Hey, morning! Did you sleep okay?",
+    answer: "INFORMAL"
+  },
+  {
+    scenario: "You are greeting your landlord, who you don't know well, about a repair.",
+    greeting: "Good afternoon, Ms. Duarte. Thank you for coming by on such short notice.",
+    answer: "FORMAL"
+  },
+  {
+    scenario: "A classmate sits down next to you right before class starts.",
+    greeting: "Hiya! Did you finish the homework? That was rough.",
+    answer: "INFORMAL"
+  }
+];
+
+let score = 0;
+let answeredCount = 0;
+let displayItems = [];
+
+function shuffle(array) {
+  const arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function renderCards() {
+  displayItems = shuffle(items);
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  displayItems.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'card-' + i;
+
+    card.innerHTML = `
+      <div>
+        <span class="num">${i + 1}</span>
+        <div class="scenario">${item.scenario}</div>
+        <div class="greeting">&ldquo;${item.greeting}&rdquo;</div>
+      </div>
+      <div>
+        <div class="btn-row">
+          <button class="choice-btn" onclick="choose(${i}, 'FORMAL')">FORMAL</button>
+          <button class="choice-btn" onclick="choose(${i}, 'INFORMAL')">INFORMAL</button>
+        </div>
+        <div class="feedback" id="feedback-${i}"></div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function choose(i, guess) {
+  const card = document.getElementById('card-' + i);
+  const buttons = card.querySelectorAll('.choice-btn');
+  const feedback = document.getElementById('feedback-' + i);
+  const correctAnswer = displayItems[i].answer;
+
+  if (card.classList.contains('correct') || card.classList.contains('incorrect')) {
+    return; // already answered
+  }
+
+  buttons.forEach(b => b.disabled = true);
+
+  if (guess === correctAnswer) {
+    card.classList.add('correct');
+    feedback.textContent = "✓ Correct!";
+    feedback.className = 'feedback correct-text';
+    score++;
+  } else {
+    card.classList.add('incorrect');
+    feedback.textContent = `✗ Not quite — this one is ${correctAnswer}.`;
+    feedback.className = 'feedback incorrect-text';
+  }
+
+  buttons.forEach(b => {
+    if (b.textContent === guess) {
+      b.classList.add(guess === correctAnswer ? 'chosen-correct' : 'chosen-incorrect');
+    }
+    if (b.textContent === correctAnswer && guess !== correctAnswer) {
+      b.classList.add('reveal-correct');
+    }
+  });
+
+  answeredCount++;
+  document.getElementById('score').textContent = score;
+
+  if (answeredCount === displayItems.length) {
+    document.getElementById('doneBanner').style.display = 'block';
+  }
+}
+
+function resetAll() {
+  score = 0;
+  answeredCount = 0;
+  document.getElementById('score').textContent = 0;
+  document.getElementById('doneBanner').style.display = 'none';
+  renderCards();
+}
+
+renderCards();
+</script>
+
+</body>
+</html>
