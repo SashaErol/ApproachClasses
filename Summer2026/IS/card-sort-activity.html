@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity 2A — Card Sort</title>
+<style>
+  :root{
+    --navy: #16233f;
+    --navy-2: #1f3157;
+    --green: #2f7a4f;
+    --green-light: #eaf4ee;
+    --red: #a83232;
+    --red-light: #fbeceb;
+    --panel-bg: #eef0fb;
+    --border: #d7dae8;
+    --muted: #6b7280;
+    --white: #ffffff;
+    --gold: #c9a24b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #ffffff;
+    color: var(--navy);
+    padding: 28px 16px 60px;
+  }
+  .wrap{ max-width: 980px; margin: 0 auto; }
+
+  .header{
+    background: var(--panel-bg);
+    border-left: 5px solid var(--green);
+    border-radius: 6px;
+    padding: 16px 22px;
+    margin-bottom: 24px;
+  }
+  .header h1{
+    margin: 0 0 8px;
+    font-size: clamp(20px, 3vw, 26px);
+    color: var(--green);
+  }
+  .header p{
+    margin: 0;
+    color: var(--navy-2);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .pool-label{
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+  .pool{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px;
+    background: #fafafe;
+    border: 1.5px dashed var(--border);
+    border-radius: 10px;
+    min-height: 64px;
+    margin-bottom: 26px;
+  }
+
+  .card{
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14.5px;
+    line-height: 1.4;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(22,35,63,0.06);
+    user-select: none;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    max-width: 260px;
+  }
+  .card:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(22,35,63,0.12);
+  }
+  .card .letter{
+    display:inline-block;
+    font-weight: 800;
+    color: var(--gold);
+    margin-right: 6px;
+  }
+  .card.selected{
+    outline: 2px solid var(--navy);
+    outline-offset: 1px;
+  }
+
+  .columns{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow:hidden;
+    box-shadow: 0 1px 3px rgba(22,35,63,0.08);
+  }
+  .col-head{
+    padding: 14px 18px;
+    color: var(--white);
+    font-weight: 800;
+    font-size: 17px;
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+  .col-head.normal{ background: var(--green); }
+  .col-head.not-normal{ background: var(--red); }
+
+  .col-body{
+    padding: 16px;
+    min-height: 220px;
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    align-content: flex-start;
+  }
+  .col-body.normal{ background: var(--green-light); border-right: 1px solid var(--border); }
+  .col-body.not-normal{ background: var(--red-light); }
+
+  .col-body .empty-msg{
+    color: var(--muted);
+    font-size: 13.5px;
+    font-style: italic;
+  }
+
+  .discuss{
+    margin-top: 30px;
+  }
+  .discuss h2{
+    font-size: 17px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .discuss .line{
+    border-bottom: 1.5px solid var(--border);
+    height: 34px;
+    margin-top: 14px;
+  }
+
+  .controls{
+    margin-top: 18px;
+    display:flex;
+    gap: 12px;
+  }
+  button{
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1.5px solid var(--navy);
+    background: var(--white);
+    color: var(--navy);
+    cursor: pointer;
+  }
+  button:hover{ background: var(--panel-bg); }
+
+  .instructions{
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 640px){
+    .columns{ grid-template-columns: 1fr; }
+    .col-body.normal{ border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <h1>🎓 Activity 2A — Card Sort</h1>
+    <p>Read each card. Talk with your group. Put each card into the correct column. There are no wrong answers — you will discuss your ideas after.</p>
+  </div>
+
+  <p class="instructions">Tap a card to select it. Then tap a column to move it there. Tap a card in a column to send it back to the top.</p>
+
+  <p class="pool-label">Cards</p>
+  <div class="pool" id="pool"></div>
+
+  <div class="columns">
+    <div>
+      <div class="col-head normal">✅ NORMAL in the U.S.</div>
+      <div class="col-body normal" id="colNormal">
+        <span class="empty-msg">Tap a card, then tap here.</span>
+      </div>
+    </div>
+    <div>
+      <div class="col-head not-normal">❌ NOT NORMAL in the U.S.</div>
+      <div class="col-body not-normal" id="colNotNormal">
+        <span class="empty-msg">Tap a card, then tap here.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn">Reset</button>
+  </div>
+
+  <div class="discuss">
+    <h2>Compare with another group. Did you disagree on any card? Which one? Why?</h2>
+    <div class="line"></div>
+    <div class="line"></div>
+  </div>
+
+</div>
+
+<script>
+  const cards = [
+    { letter: "A", text: "You give a 20% tip at a restaurant." },
+    { letter: "B", text: "The waiter asks \"How are you?\" before you order." },
+    { letter: "C", text: "Everyone pays for their own food (separate checks)." },
+    { letter: "D", text: "You send your food back if it is not cooked right." },
+    { letter: "E", text: "People talk loudly. Other tables can hear you." },
+    { letter: "F", text: "You say \"hey\" or wave your hand to call the waiter." },
+    { letter: "G", text: "You tell the manager if the service is bad." },
+    { letter: "H", text: "You talk with the cashier about the weather or your weekend." },
+    { letter: "I", text: "You leave cash for the tip, even if you pay by card." },
+    { letter: "J", text: "You ask for a box to take home your extra food." }
+  ];
+
+  const pool = document.getElementById("pool");
+  const colNormal = document.getElementById("colNormal");
+  const colNotNormal = document.getElementById("colNotNormal");
+
+  let selectedCard = null;
+
+  function makeCard(c){
+    const div = document.createElement("div");
+    div.className = "card";
+    div.dataset.letter = c.letter;
+    div.innerHTML = `<span class="letter">${c.letter}.</span>${c.text}`;
+    div.addEventListener("click", () => handleCardClick(div));
+    return div;
+  }
+
+  function handleCardClick(cardEl){
+    if(cardEl.parentElement !== pool){
+      // card is in a column -> send back to pool
+      clearEmptyMsg(cardEl.parentElement);
+      pool.appendChild(cardEl);
+      addEmptyMsgIfNeeded(colNormal, "Tap a card, then tap here.");
+      addEmptyMsgIfNeeded(colNotNormal, "Tap a card, then tap here.");
+      if(selectedCard === cardEl){ selectedCard = null; }
+      return;
+    }
+    if(selectedCard === cardEl){
+      cardEl.classList.remove("selected");
+      selectedCard = null;
+    } else {
+      if(selectedCard) selectedCard.classList.remove("selected");
+      selectedCard = cardEl;
+      cardEl.classList.add("selected");
+    }
+  }
+
+  function clearEmptyMsg(col){
+    const msg = col.querySelector(".empty-msg");
+    if(msg) msg.remove();
+  }
+
+  function addEmptyMsgIfNeeded(col, text){
+    const hasCards = col.querySelector(".card");
+    if(!hasCards && !col.querySelector(".empty-msg")){
+      const msg = document.createElement("span");
+      msg.className = "empty-msg";
+      msg.textContent = text;
+      col.appendChild(msg);
+    }
+  }
+
+  function handleColumnClick(col){
+    if(!selectedCard) return;
+    clearEmptyMsg(col);
+    selectedCard.classList.remove("selected");
+    col.appendChild(selectedCard);
+    selectedCard = null;
+  }
+
+  colNormal.addEventListener("click", (e) => {
+    if(e.target === colNormal || e.target.classList.contains("empty-msg")){
+      handleColumnClick(colNormal);
+    }
+  });
+  colNotNormal.addEventListener("click", (e) => {
+    if(e.target === colNotNormal || e.target.classList.contains("empty-msg")){
+      handleColumnClick(colNotNormal);
+    }
+  });
+
+  function resetAll(){
+    pool.innerHTML = "";
+    colNormal.innerHTML = "";
+    colNotNormal.innerHTML = "";
+    cards.forEach(c => pool.appendChild(makeCard(c)));
+    addEmptyMsgIfNeeded(colNormal, "Tap a card, then tap here.");
+    addEmptyMsgIfNeeded(colNotNormal, "Tap a card, then tap here.");
+    selectedCard = null;
+  }
+
+  document.getElementById("resetBtn").addEventListener("click", resetAll);
+
+  resetAll();
+</script>
+</body>
+</html>
