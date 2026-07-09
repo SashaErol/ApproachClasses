@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US Holidays — Matching Activity</title>
+<style>
+  :root{
+    --navy: #16233f;
+    --navy-2: #1f3157;
+    --lavender: #eef0fb;
+    --lavender-2: #e2e5f7;
+    --accent-red: #c0392b;
+    --gold: #c9a24b;
+    --ink: #22283a;
+    --muted: #6b7280;
+    --correct: #2f9e5b;
+    --wrong: #c0392b;
+    --white: #ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(180deg, #f6f7fc 0%, #ffffff 260px);
+    color: var(--ink);
+    padding: 28px 16px 60px;
+  }
+  .wrap{ max-width: 980px; margin: 0 auto; }
+
+  .topbar{
+    height:6px;
+    background: var(--accent-red);
+    border-radius: 4px;
+    margin-bottom: 22px;
+    max-width: 980px;
+  }
+
+  h1{
+    font-size: clamp(22px, 3.2vw, 32px);
+    color: var(--navy);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .sub{
+    color: var(--muted);
+    margin: 0 0 22px;
+    font-size: 15px;
+  }
+  .sub b{ color: var(--navy-2); }
+  .hint{
+    display:inline-block;
+    background: var(--lavender);
+    color: var(--navy-2);
+    border: 1px solid var(--lavender-2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    margin-left: 6px;
+  }
+
+  table{
+    width:100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 10px;
+    overflow:hidden;
+    box-shadow: 0 1px 3px rgba(22,35,63,0.08), 0 8px 24px rgba(22,35,63,0.06);
+  }
+  thead th{
+    background: var(--navy);
+    color: var(--white);
+    text-align:left;
+    padding: 14px 18px;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  tbody tr:nth-child(even){ background: var(--lavender); }
+  tbody tr{ border-bottom: 1px solid var(--lavender-2); }
+  tbody tr:last-child{ border-bottom: none; }
+  td{
+    padding: 16px 18px;
+    vertical-align: middle;
+    font-size: 15.5px;
+  }
+
+  .holiday-word{
+    position: relative;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-weight:700;
+    color: var(--navy);
+    cursor: pointer;
+    border-bottom: 2px dashed var(--gold);
+    padding-bottom: 1px;
+    user-select:none;
+  }
+  .holiday-word:hover{ color: var(--navy-2); }
+  .pt-badge{
+    display:none;
+    font-weight:600;
+    font-size: 12.5px;
+    background: var(--gold);
+    color: var(--navy);
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .holiday-word.show-pt .pt-badge{ display:inline-block; }
+
+  select{
+    width: 100%;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1.5px solid var(--lavender-2);
+    background: var(--white);
+    font-size: 14.5px;
+    color: var(--ink);
+    cursor:pointer;
+  }
+  select:focus{ outline: 2px solid var(--gold); outline-offset:1px; }
+
+  select.correct{ border-color: var(--correct); background: #eafaf0; }
+  select.wrong{ border-color: var(--wrong); background: #fdecea; }
+
+  .controls{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  button{
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14.5px;
+    padding: 11px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  #checkBtn{ background: var(--navy); color: var(--white); }
+  #checkBtn:hover{ background: var(--navy-2); }
+  #resetBtn{ background: var(--white); color: var(--navy); border: 1.5px solid var(--navy); }
+  #resetBtn:hover{ background: var(--lavender); }
+
+  #score{
+    font-weight: 700;
+    color: var(--navy-2);
+    font-size: 15px;
+  }
+
+  .footnote{
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 640px){
+    table, thead, tbody, th, td, tr{ display:block; }
+    thead{ display:none; }
+    tbody tr{ padding: 14px 6px; border-bottom: 8px solid #f6f7fc; }
+    td{ padding: 8px 6px; }
+    td::before{
+      content: attr(data-label);
+      display:block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar"></div>
+  <h1>US Holidays — Match the Description &amp; Month</h1>
+  <p class="sub">Tap a <b>holiday name</b> to see its Portuguese translation. Then use the dropdowns to match each holiday with its correct description and month.<span class="hint">🇧🇷 clique na palavra</span></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Holiday</th>
+        <th>Description</th>
+        <th>Month</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <div class="controls">
+    <button id="checkBtn">Check Answers</button>
+    <button id="resetBtn">Reset</button>
+    <span id="score"></span>
+  </div>
+
+  <p class="footnote">Note: the descriptions and months are shuffled on purpose — figure out where each one really belongs!</p>
+</div>
+
+<script>
+  const holidays = [
+    { id: "independence", en: "Independence Day 🇺🇸", pt: "Dia da Independência", desc: "Fireworks, BBQs, and celebrating freedom from Britain", month: "July" },
+    { id: "thanksgiving", en: "Thanksgiving 🦃", pt: "Ação de Graças", desc: "Family meal to give thanks for the year's blessings", month: "November" },
+    { id: "halloween", en: "Halloween 🎃", pt: "Dia das Bruxas", desc: "Costumes, trick-or-treating, and scary decorations", month: "October" },
+    { id: "christmas", en: "Christmas 🎄", pt: "Natal", desc: "Trees, carols, and time with family", month: "December" },
+    { id: "valentines", en: "Valentine's Day 💌", pt: "Dia dos Namorados", desc: "Gifts, cards, chocolate, and flowers for someone you love", month: "February" }
+  ];
+
+  // Shuffle helper
+  function shuffle(arr){
+    const a = [...arr];
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const descOptions = shuffle(holidays.map(h => h.desc));
+  const monthOptions = shuffle(holidays.map(h => h.month));
+
+  const tbody = document.getElementById("tableBody");
+
+  holidays.forEach(h => {
+    const tr = document.createElement("tr");
+
+    const tdHoliday = document.createElement("td");
+    tdHoliday.setAttribute("data-label", "Holiday");
+    const span = document.createElement("span");
+    span.className = "holiday-word";
+    span.innerHTML = `${h.en} <span class="pt-badge">${h.pt}</span>`;
+    span.addEventListener("click", () => span.classList.toggle("show-pt"));
+    tdHoliday.appendChild(span);
+
+    const tdDesc = document.createElement("td");
+    tdDesc.setAttribute("data-label", "Description");
+    const selDesc = document.createElement("select");
+    selDesc.dataset.holiday = h.id;
+    selDesc.dataset.type = "desc";
+    selDesc.innerHTML = `<option value="">— choose a description —</option>` +
+      descOptions.map(d => `<option value="${d.replace(/"/g,'&quot;')}">${d}</option>`).join("");
+    tdDesc.appendChild(selDesc);
+
+    const tdMonth = document.createElement("td");
+    tdMonth.setAttribute("data-label", "Month");
+    const selMonth = document.createElement("select");
+    selMonth.dataset.holiday = h.id;
+    selMonth.dataset.type = "month";
+    selMonth.innerHTML = `<option value="">— choose a month —</option>` +
+      monthOptions.map(m => `<option value="${m}">${m}</option>`).join("");
+    tdMonth.appendChild(selMonth);
+
+    tr.appendChild(tdHoliday);
+    tr.appendChild(tdDesc);
+    tr.appendChild(tdMonth);
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("checkBtn").addEventListener("click", () => {
+    let correctCount = 0;
+    const selects = document.querySelectorAll("select");
+    selects.forEach(sel => {
+      const holiday = holidays.find(h => h.id === sel.dataset.holiday);
+      const expected = sel.dataset.type === "desc" ? holiday.desc : holiday.month;
+      sel.classList.remove("correct", "wrong");
+      if(sel.value === ""){ return; }
+      if(sel.value === expected){
+        sel.classList.add("correct");
+        correctCount++;
+      } else {
+        sel.classList.add("wrong");
+      }
+    });
+    document.getElementById("score").textContent = `Score: ${correctCount} / ${selects.length}`;
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    document.querySelectorAll("select").forEach(sel => {
+      sel.value = "";
+      sel.classList.remove("correct", "wrong");
+    });
+    document.getElementById("score").textContent = "";
+    document.querySelectorAll(".holiday-word").forEach(w => w.classList.remove("show-pt"));
+  });
+</script>
+</body>
+</html>
