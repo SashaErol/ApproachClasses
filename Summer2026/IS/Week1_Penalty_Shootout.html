@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penalty Shootout — Grammar Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,700;1,500&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #16324F;
+    --sand: #E9DCB8;
+    --buoy: #C1443D;
+    --seafoam: #6FA98C;
+    --paper: #FAF6EC;
+    --ink: #1A1A1A;
+    --grass: #4C8C5C;
+    --grass-dark: #3E7249;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  header {
+    text-align: center;
+    padding: 28px 16px 16px;
+  }
+  header .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--buoy);
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(24px, 6vw, 34px);
+    margin: 4px 0 6px;
+    color: var(--navy);
+  }
+  header p {
+    max-width: 420px;
+    margin: 0 auto;
+    color: #445;
+    font-size: 14px;
+  }
+
+  main {
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 6px 16px 50px;
+  }
+
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--navy);
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.15);
+  }
+  .hud .item { text-align: center; }
+  .hud .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--sand);
+    display: block;
+  }
+  .hud .value {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--paper);
+  }
+
+  .pitch {
+    position: relative;
+    height: 260px;
+    background: linear-gradient(var(--grass), var(--grass-dark));
+    border: 3px solid var(--navy);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .pitch::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.06) 0px,
+      rgba(255,255,255,0.06) 30px,
+      transparent 30px,
+      transparent 60px
+    );
+  }
+  .goal-frame {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 210px;
+    height: 78px;
+    border: 5px solid var(--paper);
+    border-bottom: none;
+    border-radius: 2px;
+  }
+  .goal-net {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 210px;
+    height: 78px;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.25) 0 1px, transparent 1px 10px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.25) 0 1px, transparent 1px 10px);
+    opacity: 0.5;
+  }
+  .net-flash {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 210px;
+    height: 78px;
+    background: var(--paper);
+    opacity: 0;
+    border-radius: 2px;
+  }
+  .goalie {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 24px;
+    height: 46px;
+    background: var(--buoy);
+    border-radius: 8px 8px 4px 4px;
+    transition: transform 0.45s cubic-bezier(0.3,0,0.4,1);
+  }
+  .goalie::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--sand);
+  }
+  .ball {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 20px;
+    height: 20px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    box-shadow: 0 3px 4px rgba(0,0,0,0.25);
+    transition: transform 0.5s ease, bottom 0.5s ease;
+  }
+  .kicker {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 16px;
+    height: 34px;
+    background: var(--navy);
+    border-radius: 6px 6px 3px 3px;
+  }
+  .kicker::after {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--sand);
+  }
+  .result-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 32px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  }
+  .result-text.goal { color: var(--sand); }
+  .result-text.saved { color: var(--paper); }
+
+  .card {
+    background: var(--paper);
+    border: 2px solid var(--navy);
+    border-radius: 6px;
+    padding: 18px 18px 16px;
+    box-shadow: 4px 4px 0 rgba(22,50,79,0.12);
+  }
+  .prompt {
+    font-size: 17px;
+    line-height: 1.5;
+    margin: 0 0 16px;
+    min-height: 50px;
+  }
+  .prompt b { color: var(--navy); }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .choices button {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 14px 10px;
+    border: 2px solid var(--navy);
+    background: var(--paper);
+    color: var(--navy);
+    border-radius: 22px;
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+  .choices button:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+  .choices button:disabled { cursor: default; opacity: 0.5; }
+  .choices button.correct {
+    background: var(--seafoam);
+    border-color: var(--seafoam);
+    color: #0b2a1c;
+    opacity: 1;
+  }
+  .choices button.wrong {
+    background: var(--buoy);
+    border-color: var(--buoy);
+    color: var(--paper);
+    opacity: 1;
+  }
+
+  .final-screen { text-align: center; padding: 10px 4px 4px; }
+  .final-screen h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--navy);
+    margin: 4px 0 6px;
+  }
+  .final-screen p {
+    font-size: 14px;
+    color: #445;
+    margin: 0 0 16px;
+  }
+  .final-screen button {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    background: var(--buoy);
+    color: var(--paper);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  }
+  .final-screen button:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+
+  footer {
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #778;
+    padding: 10px 20px 26px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">A1 / A2+ · Week 1</div>
+  <h1>Penalty Shootout</h1>
+  <p>Answer correctly and score the goal. Answer wrong and the goalie saves it. Ten kicks, best streak wins.</p>
+</header>
+
+<main>
+  <div class="hud">
+    <div class="item"><span class="label">Kick</span><span class="value" id="round-value">1/10</span></div>
+    <div class="item"><span class="label">Goals</span><span class="value" id="score-value">0</span></div>
+    <div class="item"><span class="label">Streak</span><span class="value" id="streak-value">0</span></div>
+  </div>
+
+  <div class="pitch">
+    <div class="goal-net"></div>
+    <div class="goal-frame"></div>
+    <div class="net-flash" id="net-flash"></div>
+    <div class="goalie" id="goalie"></div>
+    <div class="kicker"></div>
+    <div class="ball" id="ball"></div>
+    <div class="result-text" id="result-text"></div>
+  </div>
+
+  <div class="card" id="game-card">
+    <p class="prompt" id="prompt"></p>
+    <div class="choices" id="choices"></div>
+  </div>
+
+  <div class="card final-screen" id="final-screen" style="display:none;">
+    <h2 id="final-title"></h2>
+    <p id="final-sub"></p>
+    <button id="restart-btn">Take the shootout again</button>
+  </div>
+</main>
+
+<footer>made for A1/A2+ class · irregular nouns + to be + present simple</footer>
+
+<script>
+const allRounds = [
+  { prompt: 'Their niece <b>___</b> visiting for the summer.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'The fish in the tank <b>___</b> orange.', choices: ['is','are'], answer: 'are' },
+  { prompt: 'One fish <b>___</b> swimming alone near the dock.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'Our equipment <b>___</b> ready for the match.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'The children <b>___</b> playing near the goal.', choices: ['is','are'], answer: 'are' },
+  { prompt: 'The news about the tournament <b>___</b> exciting.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'The scissors <b>___</b> in the equipment bag.', choices: ['is','are'], answer: 'are' },
+  { prompt: 'My glasses <b>___</b> somewhere in my bag.', choices: ['is','are'], answer: 'are' },
+  { prompt: 'The police <b>___</b> watching the game today.', choices: ['is','are'], answer: 'are' },
+  { prompt: 'That sheep near the fence <b>___</b> very calm.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'The sheep in that field <b>___</b> nervous before the storm.', choices: ['is','are'], answer: 'are' },
+  { prompt: 'Everybody <b>___</b> ready for kickoff.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'Our team <b>___</b> practicing every day this summer.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'The information about the schedule <b>___</b> on the board.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'Their luggage <b>___</b> still at the hotel.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'The furniture in the clubhouse <b>___</b> quite old.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'This species of fish <b>___</b> rare near the coast.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'Our neighbors <b>___</b> coming to watch the match.', choices: ['is','are'], answer: 'are' },
+  { prompt: 'The man with the whistle <b>___</b> the referee.', choices: ['is','are'], answer: 'is' },
+  { prompt: 'The team <b>___</b> (practice) every Saturday.', choices: ['practice','practices'], answer: 'practices' },
+  { prompt: 'Their niece <b>___</b> (love) soccer more than anything.', choices: ['love','loves'], answer: 'loves' },
+  { prompt: 'The children <b>___</b> (play) in the park after school.', choices: ['play','plays'], answer: 'play' },
+  { prompt: 'The fish <b>___</b> (swim) close to the shore in summer.', choices: ['swim','swims'], answer: 'swim' },
+  { prompt: 'Our neighbor <b>___</b> (watch) every match from her porch.', choices: ['watch','watches'], answer: 'watches' },
+  { prompt: 'The police <b>___</b> (patrol) near the stadium on game days.', choices: ['patrol','patrols'], answer: 'patrol' },
+  { prompt: 'Everybody <b>___</b> (enjoy) the summer barbecue.', choices: ['enjoy','enjoys'], answer: 'enjoys' },
+  { prompt: 'The equipment <b>___</b> (need) cleaning after every practice.', choices: ['need','needs'], answer: 'needs' },
+  { prompt: 'My glasses <b>___</b> (fog) up whenever it gets humid.', choices: ['fog','fogs'], answer: 'fog' },
+  { prompt: 'Our team <b>___</b> (win) most of its games this year.', choices: ['win','wins'], answer: 'wins' }
+];
+
+const ROUNDS_PER_GAME = 10;
+let rounds = [];
+let idx = 0, goals = 0, streak = 0, bestStreak = 0;
+
+const ball = document.getElementById('ball');
+const goalie = document.getElementById('goalie');
+const netFlash = document.getElementById('net-flash');
+const resultText = document.getElementById('result-text');
+const roundValue = document.getElementById('round-value');
+const scoreValue = document.getElementById('score-value');
+const streakValue = document.getElementById('streak-value');
+const promptEl = document.getElementById('prompt');
+const choicesEl = document.getElementById('choices');
+const gameCard = document.getElementById('game-card');
+const finalScreen = document.getElementById('final-screen');
+const finalTitle = document.getElementById('final-title');
+const finalSub = document.getElementById('final-sub');
+const restartBtn = document.getElementById('restart-btn');
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function newGame() {
+  rounds = shuffle(allRounds).slice(0, ROUNDS_PER_GAME);
+  idx = 0; goals = 0; streak = 0; bestStreak = 0;
+  scoreValue.textContent = '0';
+  streakValue.textContent = '0';
+  gameCard.style.display = 'block';
+  finalScreen.style.display = 'none';
+  loadRound();
+}
+
+function resetPitch() {
+  ball.style.transition = 'none';
+  ball.style.bottom = '20px';
+  ball.style.transform = 'translate(-50%, 0)';
+  goalie.style.transition = 'none';
+  goalie.style.transform = 'translate(-50%, 0)';
+  resultText.style.opacity = 0;
+  netFlash.style.transition = 'none';
+  netFlash.style.opacity = 0;
+  void ball.offsetWidth;
+  ball.style.transition = 'transform 0.5s ease, bottom 0.5s ease';
+  goalie.style.transition = 'transform 0.45s cubic-bezier(0.3,0,0.4,1)';
+  netFlash.style.transition = 'opacity 0.15s ease';
+}
+
+function loadRound() {
+  resetPitch();
+  const r = rounds[idx];
+  roundValue.textContent = (idx + 1) + '/' + rounds.length;
+  promptEl.innerHTML = r.prompt;
+  choicesEl.innerHTML = '';
+  r.choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.textContent = choice;
+    btn.onclick = () => answer(btn, choice, r.answer);
+    choicesEl.appendChild(btn);
+  });
+}
+
+function answer(btn, choice, correct) {
+  const buttons = Array.from(choicesEl.children);
+  buttons.forEach(b => b.disabled = true);
+  const isCorrect = choice === correct;
+  const side = Math.random() > 0.5 ? 1 : -1;
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    ball.style.bottom = '160px';
+    ball.style.transform = 'translate(calc(-50% + ' + (side * 75) + 'px), 0)';
+    goalie.style.transform = 'translate(calc(-50% + ' + (side * -42) + 'px), 0)';
+    goals++; streak++;
+    if (streak > bestStreak) bestStreak = streak;
+    scoreValue.textContent = goals;
+    streakValue.textContent = streak;
+    setTimeout(() => {
+      netFlash.style.opacity = 0.55;
+      resultText.textContent = 'Goal!';
+      resultText.className = 'result-text goal';
+      resultText.style.opacity = 1;
+    }, 480);
+  } else {
+    buttons.forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
+    btn.classList.add('wrong');
+    ball.style.bottom = '78px';
+    ball.style.transform = 'translate(calc(-50% + ' + (side * 32) + 'px), 0)';
+    goalie.style.transform = 'translate(calc(-50% + ' + (side * 32) + 'px), 0)';
+    streak = 0;
+    streakValue.textContent = 0;
+    setTimeout(() => {
+      resultText.textContent = 'Saved';
+      resultText.className = 'result-text saved';
+      resultText.style.opacity = 1;
+    }, 480);
+  }
+
+  setTimeout(() => {
+    idx++;
+    if (idx < rounds.length) {
+      loadRound();
+    } else {
+      endGame();
+    }
+  }, 1500);
+}
+
+function endGame() {
+  gameCard.style.display = 'none';
+  finalScreen.style.display = 'block';
+  const pct = Math.round((goals / rounds.length) * 100);
+  let title;
+  if (pct === 100) title = 'Perfect shootout!';
+  else if (pct >= 70) title = 'Strong finish!';
+  else if (pct >= 40) title = 'Solid effort.';
+  else title = 'Good warm-up round.';
+  finalTitle.textContent = title;
+  finalSub.textContent = 'You scored ' + goals + ' of ' + rounds.length + ' goals. Best streak: ' + bestStreak + '.';
+}
+
+restartBtn.onclick = newGame;
+newGame();
+</script>
+
+</body>
+</html>
