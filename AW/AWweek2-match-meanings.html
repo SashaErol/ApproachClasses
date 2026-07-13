@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Match to Meaning — Week 1 Vocabulary</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+    --good:#2F7D5C;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:22px 14px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{width:100%; max-width:640px;}
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif;
+    font-style:italic;
+    font-size:13px;
+    color:var(--lightblue);
+    text-align:center;
+    letter-spacing:0.04em;
+    margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif;
+    font-weight:700;
+    font-size:clamp(23px,6vw,28px);
+    text-align:center;
+    margin:0 0 8px;
+  }
+  .sub{
+    text-align:center;
+    font-size:13.5px;
+    color:var(--muted);
+    margin:0 0 6px;
+    line-height:1.4;
+  }
+  .progress{
+    text-align:center;
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--darkblue);
+    margin-bottom:16px;
+  }
+
+  .cols{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:10px;
+    align-items:start;
+  }
+  .col-label{
+    font-family:'Cambria',Georgia,serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--muted);
+    text-align:center;
+    margin-bottom:6px;
+    letter-spacing:0.04em;
+  }
+  .item-list{ display:flex; flex-direction:column; gap:8px; }
+
+  .en-item{
+    display:flex; align-items:center; gap:6px;
+    border:1.5px solid var(--darkblue);
+    border-radius:10px;
+    padding:9px 8px;
+    background:var(--white);
+    min-height:52px;
+  }
+  .en-word{
+    flex:1;
+    background:none; border:none;
+    text-align:left;
+    font-family:'Calibri','Segoe UI',sans-serif;
+    font-size:14.5px;
+    font-weight:600;
+    color:var(--darkblue);
+    cursor:pointer;
+    padding:2px 0;
+  }
+  .listen-btn{
+    flex:none;
+    width:30px; height:30px;
+    border-radius:50%;
+    border:1.5px solid var(--lightblue);
+    background:var(--white);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    padding:0;
+  }
+  .listen-btn svg{ width:15px; height:15px; }
+  .listen-btn.playing{ background:var(--lightblue); }
+  .listen-btn.playing svg path, .listen-btn.playing svg polygon{ fill:var(--white) !important; }
+
+  .def-item{
+    border:1.5px solid var(--darkblue);
+    border-radius:10px;
+    padding:11px 12px;
+    background:var(--white);
+    font-family:'Cambria',Georgia,serif;
+    font-style:italic;
+    font-size:13.5px;
+    line-height:1.35;
+    text-align:left;
+    cursor:pointer;
+    color:var(--darkblue);
+    min-height:52px;
+    display:flex; align-items:center;
+  }
+
+  .en-item.selected{ border-color:var(--lightblue); box-shadow:0 0 0 3px rgba(56,140,202,0.16); }
+  .def-item.selected{ border-color:var(--lightblue); box-shadow:0 0 0 3px rgba(56,140,202,0.16); }
+
+  .en-item.matched{ border-color:var(--good); background:rgba(47,125,92,0.06); }
+  .en-item.matched .en-word{ color:var(--good); cursor:default; }
+  .def-item.matched{ border-color:var(--good); background:rgba(47,125,92,0.06); color:var(--good); cursor:default; }
+
+  .en-item.wrong-flash{ border-color:var(--red); background:rgba(159,36,28,0.06); }
+  .def-item.wrong-flash{ border-color:var(--red); background:rgba(159,36,28,0.06); }
+
+  .end{ display:none; text-align:center; margin-top:26px; }
+  .end.show{ display:block; }
+  .end h2{ font-family:'Cambria',Georgia,serif; font-size:24px; margin:0 0 6px; }
+  .end p{ font-size:14.5px; color:var(--muted); margin:0; }
+  .restart-btn{
+    display:none;
+    margin:18px auto 0;
+    padding:12px 24px;
+    border:none; border-radius:12px;
+    background:var(--darkblue); color:var(--white);
+    font-weight:600; font-size:15px; cursor:pointer;
+  }
+  .restart-btn.show{ display:block; }
+
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Week 1 · Vocabulary</div>
+  <h1>Match to Meaning</h1>
+  <p class="sub">Tap a word, then tap its meaning. Tap the round button to hear the word spoken aloud.</p>
+  <div class="progress" id="progress">0 / 8 matched</div>
+
+  <div class="cols">
+    <div>
+      <div class="col-label">WORD</div>
+      <div class="item-list" id="enList"></div>
+    </div>
+    <div>
+      <div class="col-label">MEANING</div>
+      <div class="item-list" id="defList"></div>
+    </div>
+  </div>
+
+  <div class="end" id="end">
+    <h2>All matched.</h2>
+    <p>Great work — you matched all 8 words.</p>
+  </div>
+  <button class="restart-btn" id="restartBtn">Shuffle & try again</button>
+</div>
+
+<script>
+const PAIRS = [
+  { en: "homemade", def: "made at home, not bought in a store" },
+  { en: "pass down", def: "to give something to the next generation, like a family recipe" },
+  { en: "at once", def: "at the same time; simultaneously" },
+  { en: "unforgettable", def: "so special that you will always remember it" },
+  { en: "savory", def: "salty or spicy in a good way — not sweet" },
+  { en: "bland", def: "almost no flavor at all — like baby food or hospital food" },
+  { en: "heartwarming", def: "makes you feel happy and emotional inside" },
+  { en: "refreshing", def: "makes you feel cool and full of energy again" },
+];
+
+function shuffle(arr){
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let matchedCount = 0;
+let selectedEn = null;
+let selectedDef = null;
+
+const enListEl = document.getElementById('enList');
+const defListEl = document.getElementById('defList');
+const progressEl = document.getElementById('progress');
+const endEl = document.getElementById('end');
+const restartBtn = document.getElementById('restartBtn');
+
+const speakerSVG = `<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="#388CCA"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="#388CCA" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M19 6a9 9 0 0 1 0 12" stroke="#388CCA" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;
+
+let voices = [];
+function loadVoices(){ voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : []; }
+if ('speechSynthesis' in window){
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function pickVoice(){
+  const enUS = voices.filter(v => v.lang === 'en-US');
+  if (enUS.length) return enUS.find(v => /female|samantha|zira|jenny/i.test(v.name)) || enUS[0];
+  const enAny = voices.filter(v => v.lang && v.lang.startsWith('en'));
+  return enAny[0] || null;
+}
+
+function speak(word, btn){
+  if (!('speechSynthesis' in window)){
+    alert('Speech is not supported on this browser.');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(word);
+  utter.lang = 'en-US';
+  const v = pickVoice();
+  if (v) utter.voice = v;
+  utter.rate = 0.92;
+  btn.classList.add('playing');
+  utter.onend = () => btn.classList.remove('playing');
+  utter.onerror = () => btn.classList.remove('playing');
+  window.speechSynthesis.speak(utter);
+}
+
+function buildBoard(){
+  matchedCount = 0;
+  selectedEn = null;
+  selectedDef = null;
+  progressEl.textContent = `0 / ${PAIRS.length} matched`;
+  endEl.classList.remove('show');
+  restartBtn.classList.remove('show');
+  enListEl.innerHTML = '';
+  defListEl.innerHTML = '';
+
+  const enOrder = PAIRS.map((p, i) => i); // fixed order, left side
+  const defOrder = shuffle(PAIRS.map((p, i) => i));
+
+  enOrder.forEach(i => {
+    const pair = PAIRS[i];
+    const row = document.createElement('div');
+    row.className = 'en-item';
+    row.dataset.id = i;
+
+    const wordBtn = document.createElement('button');
+    wordBtn.className = 'en-word';
+    wordBtn.textContent = pair.en;
+    wordBtn.addEventListener('click', () => selectEn(row, i));
+
+    const listenBtn = document.createElement('button');
+    listenBtn.className = 'listen-btn';
+    listenBtn.innerHTML = speakerSVG;
+    listenBtn.setAttribute('aria-label', 'Listen to pronunciation');
+    listenBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      speak(pair.en, listenBtn);
+    });
+
+    row.appendChild(wordBtn);
+    row.appendChild(listenBtn);
+    enListEl.appendChild(row);
+  });
+
+  defOrder.forEach(i => {
+    const pair = PAIRS[i];
+    const item = document.createElement('div');
+    item.className = 'def-item';
+    item.dataset.id = i;
+    item.textContent = pair.def;
+    item.addEventListener('click', () => selectDef(item, i));
+    defListEl.appendChild(item);
+  });
+}
+
+function selectEn(el, id){
+  if (el.classList.contains('matched')) return;
+  if (selectedEn && selectedEn.el === el){
+    el.classList.remove('selected');
+    selectedEn = null;
+    return;
+  }
+  if (selectedEn) selectedEn.el.classList.remove('selected');
+  selectedEn = { id, el };
+  el.classList.add('selected');
+  if (selectedDef) attemptMatch();
+}
+
+function selectDef(el, id){
+  if (el.classList.contains('matched')) return;
+  if (selectedDef && selectedDef.el === el){
+    el.classList.remove('selected');
+    selectedDef = null;
+    return;
+  }
+  if (selectedDef) selectedDef.el.classList.remove('selected');
+  selectedDef = { id, el };
+  el.classList.add('selected');
+  if (selectedEn) attemptMatch();
+}
+
+function attemptMatch(){
+  const correct = selectedEn.id === selectedDef.id;
+  const enEl = selectedEn.el, defEl = selectedDef.el;
+
+  if (correct){
+    enEl.classList.remove('selected');
+    defEl.classList.remove('selected');
+    enEl.classList.add('matched');
+    defEl.classList.add('matched');
+    matchedCount++;
+    progressEl.textContent = `${matchedCount} / ${PAIRS.length} matched`;
+    selectedEn = null;
+    selectedDef = null;
+    if (matchedCount === PAIRS.length){
+      endEl.classList.add('show');
+      restartBtn.classList.add('show');
+    }
+  } else {
+    enEl.classList.add('wrong-flash');
+    defEl.classList.add('wrong-flash');
+    setTimeout(() => {
+      enEl.classList.remove('selected', 'wrong-flash');
+      defEl.classList.remove('selected', 'wrong-flash');
+    }, 500);
+    selectedEn = null;
+    selectedDef = null;
+  }
+}
+
+restartBtn.addEventListener('click', buildBoard);
+buildBoard();
+</script>
+</body>
+</html>
