@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Question Tags — Practice 1.4 & 1.5</title>
+<style>
+  :root{
+    --orange:#E8703A;
+    --orange-dark:#C6552A;
+    --cream:#FDF6EC;
+    --card:#FFF9F1;
+    --border:#F0C9A8;
+    --text:#3A2E28;
+    --green:#3F8B4C;
+    --red:#C0392B;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+    background:var(--cream);
+    color:var(--text);
+    padding:20px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .banner{
+    background:var(--orange);
+    color:white;
+    border-radius:14px;
+    padding:18px 24px;
+    margin-bottom:22px;
+  }
+  .banner .num{
+    display:inline-block;
+    background:var(--orange-dark);
+    padding:4px 14px;
+    border-radius:8px;
+    font-weight:700;
+    font-size:1.1em;
+    margin-bottom:8px;
+  }
+  .banner h1{margin:6px 0 4px 0;font-size:1.6em;}
+  .banner p{margin:0;font-size:0.95em;opacity:0.95;}
+  .meta{
+    display:flex;
+    gap:18px;
+    font-size:0.85em;
+    margin-top:10px;
+    flex-wrap:wrap;
+  }
+  .meta span{
+    background:rgba(255,255,255,0.18);
+    padding:3px 10px;
+    border-radius:6px;
+  }
+  .section{
+    background:var(--card);
+    border:2px solid var(--border);
+    border-radius:14px;
+    padding:20px 22px;
+    margin-bottom:24px;
+  }
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .icon-box{
+    background:var(--orange);
+    color:white;
+    width:34px;height:34px;
+    border-radius:9px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.1em;
+    flex-shrink:0;
+  }
+  .section h2{margin:0;font-size:1.15em;color:var(--orange-dark);}
+  .instructions{
+    font-size:0.92em;
+    color:#6b5a4e;
+    margin:6px 0 16px 44px;
+  }
+  .item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .item .qnum{
+    background:var(--cream);
+    border:1px solid var(--border);
+    color:var(--orange-dark);
+    font-weight:700;
+    width:26px;height:26px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.85em;
+    flex-shrink:0;
+  }
+  .item .stem{flex:1;min-width:200px;font-size:1em;}
+  .item input[type=text]{
+    border:2px solid var(--border);
+    border-radius:8px;
+    padding:7px 10px;
+    font-size:0.95em;
+    width:150px;
+    font-family:inherit;
+  }
+  .item input[type=text]:focus{outline:none;border-color:var(--orange);}
+  .feedback{
+    font-size:1.2em;
+    width:24px;
+    text-align:center;
+  }
+  .feedback.correct{color:var(--green);}
+  .feedback.incorrect{color:var(--red);}
+  .speak-btn{
+    background:var(--orange);
+    border:none;
+    color:white;
+    width:32px;height:32px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:0.95em;
+    flex-shrink:0;
+  }
+  .speak-btn:hover{background:var(--orange-dark);}
+  .full-input{
+    border:2px solid var(--border);
+    border-radius:8px;
+    padding:7px 10px;
+    font-size:0.95em;
+    width:100%;
+    max-width:340px;
+    font-family:inherit;
+  }
+  .full-input:focus{outline:none;border-color:var(--orange);}
+  .actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:14px;
+  }
+  .check-btn{
+    background:var(--orange);
+    color:white;
+    border:none;
+    padding:9px 22px;
+    border-radius:8px;
+    font-size:0.95em;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .check-btn:hover{background:var(--orange-dark);}
+  .section-score{
+    font-size:0.9em;
+    color:var(--orange-dark);
+    font-weight:600;
+  }
+  .score-panel{
+    position:sticky;
+    bottom:14px;
+    background:var(--orange-dark);
+    color:white;
+    border-radius:14px;
+    padding:14px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 14px rgba(0,0,0,0.2);
+  }
+  .score-panel .big{font-size:1.4em;font-weight:700;}
+  .hint{font-size:0.8em;color:#8a7a6c;margin-top:6px;margin-left:44px;}
+  .reveal-answer{
+    font-size:0.85em;
+    color:#8a7a6c;
+    margin-left:38px;
+    display:none;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="banner">
+    <div class="num">01</div>
+    <h1>Making Conversation — Question Tags</h1>
+    <p>Practice adding question tags to statements you'll hear all over town this week.</p>
+    <div class="meta">
+      <span>Level: B1</span>
+      <span>Focus: Question Tags</span>
+      <span>Recycled words: café, book club, PTA meeting</span>
+    </div>
+  </div>
+
+  <!-- SECTION 1.4 -->
+  <div class="section">
+    <div class="section-head">
+      <div class="icon-box">✏️</div>
+      <h2>1.4 &nbsp; Add Question Tags to the Sentences</h2>
+    </div>
+    <div class="instructions">Type the correct question tag for each statement. Example: <em>They're good dancers, <strong>aren't they</strong>?</em></div>
+
+    <div id="s14"></div>
+
+    <div class="actions">
+      <button class="check-btn" onclick="checkSection('s14', s14data)">Check My Answers</button>
+      <span class="section-score" id="score14">0 / 8</span>
+    </div>
+  </div>
+
+  <!-- SECTION 1.5 -->
+  <div class="section">
+    <div class="section-head">
+      <div class="icon-box">🔊</div>
+      <h2>1.5 &nbsp; Listen and Respond With a Full Sentence</h2>
+    </div>
+    <div class="instructions">Press the speaker to hear the statement, then type the <strong>whole sentence</strong> with its question tag. Example: <em>She's a great guitarist, <strong>isn't she</strong>?</em></div>
+
+    <div id="s15"></div>
+
+    <div class="actions">
+      <button class="check-btn" onclick="checkSection('s15', s15data)">Check My Answers</button>
+      <span class="section-score" id="score15">0 / 6</span>
+    </div>
+  </div>
+
+  <div class="score-panel">
+    <span>Total Score</span>
+    <span class="big" id="totalScore">0 / 14</span>
+  </div>
+
+</div>
+
+<script>
+// ---------- 1.4 DATA ----------
+// Statement, correct tag (lowercase, no punctuation)
+const s14data = [
+  { stem: "The coffee at that new café downtown is amazing,", tag: "isn't it" },
+  { stem: "You're joining the book club this month,", tag: "aren't you" },
+  { stem: "Mrs. Alvarez isn't coming to the PTA meeting,", tag: "is she" },
+  { stem: "We've met before at the gym,", tag: "haven't we" },
+  { stem: "Your dentist's office moved last year,", tag: "didn't it" },
+  { stem: "I'm not talking too fast,", tag: "am i" },
+  { stem: "The kids don't have practice on Thursdays,", tag: "do they" },
+  { stem: "That's your car in the parking lot,", tag: "isn't it" },
+];
+
+// ---------- 1.5 DATA ----------
+// audio text (what gets spoken), and the full correct sentence (checked loosely)
+const s15data = [
+  {
+    audio: "The line at Trader Joe's is really long today.",
+    correctContains: "isn't it",
+    display: "The line at Trader Joe's is really long today, ____?"
+  },
+  {
+    audio: "You haven't tried the new bakery on Main Street.",
+    correctContains: "have you",
+    display: "You haven't tried the new bakery on Main Street, ____?"
+  },
+  {
+    audio: "Your neighbor works at the hospital.",
+    correctContains: "doesn't she",
+    display: "Your neighbor works at the hospital, ____? (she)"
+  },
+  {
+    audio: "We're meeting at the café before the PTA meeting.",
+    correctContains: "aren't we",
+    display: "We're meeting at the café before the PTA meeting, ____?"
+  },
+  {
+    audio: "The gym wasn't crowded this morning.",
+    correctContains: "was it",
+    display: "The gym wasn't crowded this morning, ____?"
+  },
+  {
+    audio: "I've already told you about the book club.",
+    correctContains: "haven't i",
+    display: "I've already told you about the book club, ____?"
+  },
+];
+
+function renderS14(){
+  const container = document.getElementById('s14');
+  s14data.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <div class="qnum">${i+1}</div>
+      <div class="stem">${item.stem}</div>
+      <input type="text" id="s14-${i}" placeholder="question tag">
+      <span class="feedback" id="s14-fb-${i}"></span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function renderS15(){
+  const container = document.getElementById('s15');
+  s15data.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <div class="qnum">${i+1}</div>
+      <button class="speak-btn" onclick="speak(${i})">▶</button>
+      <div style="flex:1;min-width:220px;">
+        <div style="font-size:0.85em;color:#8a7a6c;margin-bottom:4px;">${item.display}</div>
+        <input type="text" class="full-input" id="s15-${i}" placeholder="type the full sentence with the tag">
+      </div>
+      <span class="feedback" id="s15-fb-${i}"></span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function speak(i){
+  const utter = new SpeechSynthesisUtterance(s15data[i].audio);
+  const voices = speechSynthesis.getVoices();
+  const preferred = voices.find(v => /neural|enhanced|premium/i.test(v.name)) ||
+                     voices.find(v => v.lang === 'en-US') ||
+                     voices[0];
+  if (preferred) utter.voice = preferred;
+  utter.rate = 0.95;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+function normalize(str){
+  return str.toLowerCase().replace(/[.,?!]/g,'').replace(/\s+/g,' ').trim();
+}
+
+function checkSection(sectionId, data){
+  let correct = 0;
+  if (sectionId === 's14'){
+    data.forEach((item, i) => {
+      const input = document.getElementById(`s14-${i}`);
+      const fb = document.getElementById(`s14-fb-${i}`);
+      const userVal = normalize(input.value);
+      const correctVal = normalize(item.tag);
+      if (userVal === correctVal){
+        fb.textContent = '✓';
+        fb.className = 'feedback correct';
+        input.style.borderColor = 'var(--green)';
+        correct++;
+      } else {
+        fb.textContent = '✗';
+        fb.className = 'feedback incorrect';
+        input.style.borderColor = 'var(--red)';
+      }
+    });
+    document.getElementById('score14').textContent = `${correct} / ${data.length}`;
+    window.score14 = correct;
+  } else {
+    data.forEach((item, i) => {
+      const input = document.getElementById(`s15-${i}`);
+      const fb = document.getElementById(`s15-fb-${i}`);
+      const userVal = normalize(input.value);
+      const target = normalize(item.correctContains);
+      if (userVal.includes(target)){
+        fb.textContent = '✓';
+        fb.className = 'feedback correct';
+        input.style.borderColor = 'var(--green)';
+        correct++;
+      } else {
+        fb.textContent = '✗';
+        fb.className = 'feedback incorrect';
+        input.style.borderColor = 'var(--red)';
+      }
+    });
+    document.getElementById('score15').textContent = `${correct} / ${data.length}`;
+    window.score15 = correct;
+  }
+  updateTotal();
+}
+
+function updateTotal(){
+  const total = (window.score14 || 0) + (window.score15 || 0);
+  document.getElementById('totalScore').textContent = `${total} / 14`;
+}
+
+renderS14();
+renderS15();
+
+// pre-load voices for Chrome
+speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+</script>
+</body>
+</html>
