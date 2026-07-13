@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>A2 Quiz — Tag Questions, Prepositions, Greetings</title>
+<style>
+  :root{
+    --orange:#E8703A;
+    --orange-dark:#C6552A;
+    --cream:#FDF6EC;
+    --card:#FFF9F1;
+    --border:#F0C9A8;
+    --text:#3A2E28;
+    --green:#3F8B4C;
+    --red:#C0392B;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+    background:var(--cream);
+    color:var(--text);
+    padding:20px;
+  }
+  .wrap{max-width:800px;margin:0 auto;}
+  .banner{
+    background:var(--orange);
+    color:white;
+    border-radius:14px;
+    padding:18px 24px;
+    margin-bottom:20px;
+  }
+  .banner .num{
+    display:inline-block;
+    background:var(--orange-dark);
+    padding:4px 14px;
+    border-radius:8px;
+    font-weight:700;
+    font-size:1.05em;
+    margin-bottom:8px;
+  }
+  .banner h1{margin:6px 0 4px 0;font-size:1.5em;}
+  .banner p{margin:0;font-size:0.92em;opacity:0.95;}
+  .part-label{
+    font-weight:700;
+    color:var(--orange-dark);
+    font-size:1.05em;
+    margin:22px 0 8px;
+    padding-bottom:4px;
+    border-bottom:2px solid var(--border);
+  }
+  .question{
+    background:var(--card);
+    border:2px solid var(--border);
+    border-radius:12px;
+    padding:14px 18px;
+    margin-bottom:12px;
+  }
+  .qtext{
+    font-weight:600;
+    margin-bottom:10px;
+    font-size:1em;
+  }
+  .qtext .qnum{color:var(--orange-dark);margin-right:4px;}
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .option{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 10px;
+    border-radius:8px;
+    border:1.5px solid var(--border);
+    background:white;
+    cursor:pointer;
+    font-size:0.95em;
+    transition:background 0.15s ease;
+  }
+  .option:hover{background:#fff2e4;}
+  .option input{accent-color:var(--orange);}
+  .option.correct{background:#e3f3e6;border-color:var(--green);}
+  .option.wrong{background:#fbe6e3;border-color:var(--red);}
+  .option.disabled{cursor:default;}
+  .submit-bar{
+    position:sticky;
+    bottom:14px;
+    background:var(--orange-dark);
+    color:white;
+    border-radius:14px;
+    padding:14px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 14px rgba(0,0,0,0.2);
+    margin-top:20px;
+  }
+  .submit-bar button{
+    background:white;
+    color:var(--orange-dark);
+    border:none;
+    padding:10px 22px;
+    border-radius:8px;
+    font-weight:700;
+    font-size:0.95em;
+    cursor:pointer;
+  }
+  .submit-bar button:hover{background:var(--cream);}
+  .submit-bar .score{font-size:1.15em;font-weight:700;}
+  .result-msg{
+    display:none;
+    background:var(--card);
+    border:2px solid var(--border);
+    border-radius:12px;
+    padding:16px 20px;
+    margin-top:16px;
+    text-align:center;
+    font-size:1.05em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="banner">
+    <div class="num">Quiz</div>
+    <h1>A2 Check-Up: Tag Questions, Prepositions &amp; Greetings</h1>
+    <p>20 questions. Choose one answer for each, then check your score at the bottom.</p>
+  </div>
+
+  <div class="part-label">Part 1 — Tag Questions (Q1–7)</div>
+  <div id="quiz-container"></div>
+
+  <div class="submit-bar">
+    <button onclick="checkAll()">Check My Answers</button>
+    <span class="score" id="score-display">0 / 20</span>
+  </div>
+
+  <div class="result-msg" id="result-msg"></div>
+
+</div>
+
+<script>
+const questions = [
+  // ---- TAG QUESTIONS (1-7) ----
+  { part: 1, q: "You're a teacher, ___?", options: ["aren't you","are you","isn't you"], answer: 0 },
+  { part: 1, q: "She isn't from Boston, ___?", options: ["isn't she","is she","does she"], answer: 1 },
+  { part: 1, q: "They can swim, ___?", options: ["can't they","can they","don't they"], answer: 0 },
+  { part: 1, q: "He doesn't like coffee, ___?", options: ["doesn't he","does he","isn't he"], answer: 1 },
+  { part: 1, q: "We are late, ___?", options: ["aren't we","are we","don't we"], answer: 0 },
+  { part: 1, q: "You didn't call me, ___?", options: ["did you","didn't you","do you"], answer: 0 },
+  { part: 1, q: "I'm right, ___?", options: ["am I","aren't I","isn't I"], answer: 1 },
+
+  // ---- PREPOSITIONS IN/ON (8-14) ----
+  { part: 2, q: "The keys are ___ the table.", options: ["in","on"], answer: 1 },
+  { part: 2, q: "She lives ___ Marlborough.", options: ["in","on"], answer: 0 },
+  { part: 2, q: "The picture is ___ the wall.", options: ["in","on"], answer: 1 },
+  { part: 2, q: "My phone is ___ my bag.", options: ["in","on"], answer: 0 },
+  { part: 2, q: "The meeting is ___ Monday.", options: ["in","on"], answer: 1 },
+  { part: 2, q: "We are ___ the classroom.", options: ["in","on"], answer: 0 },
+  { part: 2, q: "Put the plate ___ the shelf.", options: ["in","on"], answer: 1 },
+
+  // ---- GREETINGS (15-20) ----
+  { part: 3, q: "Formal: \"Good morning, Dr. Lee. ___?\"", options: ["How are you","What's up","Hey"], answer: 0 },
+  { part: 3, q: "Informal: \"Hey Mike! ___?\"", options: ["How are you doing","I'd like to introduce","Good afternoon"], answer: 0 },
+  { part: 3, q: "Formal introduction: \"___ Mr. Chen?\"", options: ["May I introduce","What's up","Hi"], answer: 0 },
+  { part: 3, q: "Informal reply to \"How's it going?\"", options: ["I'm delighted to meet you","Not bad, thanks","Good evening"], answer: 1 },
+  { part: 3, q: "\"I'm very well, thank you\" is a reply to:", options: ["Hi!","How are you?","See ya"], answer: 1 },
+  { part: 3, q: "Which greeting is informal?", options: ["Good evening","What's up","I'm delighted to meet you"], answer: 1 },
+];
+
+const container = document.getElementById('quiz-container');
+const partLabels = { 1: null, 2: "Part 2 — Prepositions: IN or ON (Q8–14)", 3: "Part 3 — Formal & Informal Greetings (Q15–20)" };
+let lastPart = 1;
+
+questions.forEach((item, i) => {
+  if (item.part !== lastPart && partLabels[item.part]) {
+    const label = document.createElement('div');
+    label.className = 'part-label';
+    label.textContent = partLabels[item.part];
+    container.appendChild(label);
+    lastPart = item.part;
+  }
+
+  const qDiv = document.createElement('div');
+  qDiv.className = 'question';
+  qDiv.id = 'q' + i;
+
+  const qText = document.createElement('div');
+  qText.className = 'qtext';
+  qText.innerHTML = `<span class="qnum">${i + 1}.</span> ${item.q}`;
+  qDiv.appendChild(qText);
+
+  const optsDiv = document.createElement('div');
+  optsDiv.className = 'options';
+
+  item.options.forEach((opt, j) => {
+    const label = document.createElement('label');
+    label.className = 'option';
+    label.id = `q${i}-opt${j}`;
+    label.innerHTML = `<input type="radio" name="q${i}" value="${j}"> ${opt}`;
+    optsDiv.appendChild(label);
+  });
+
+  qDiv.appendChild(optsDiv);
+  container.appendChild(qDiv);
+});
+
+function checkAll() {
+  let score = 0;
+
+  questions.forEach((item, i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const allOpts = document.querySelectorAll(`#q${i} .option`);
+    allOpts.forEach(o => o.classList.add('disabled'));
+    allOpts.forEach(o => {
+      const input = o.querySelector('input');
+      input.disabled = true;
+    });
+
+    const correctLabel = document.getElementById(`q${i}-opt${item.answer}`);
+    correctLabel.classList.add('correct');
+
+    if (selected) {
+      const chosenIdx = parseInt(selected.value);
+      if (chosenIdx === item.answer) {
+        score++;
+      } else {
+        document.getElementById(`q${i}-opt${chosenIdx}`).classList.add('wrong');
+      }
+    }
+  });
+
+  document.getElementById('score-display').textContent = `${score} / 20`;
+
+  const resultMsg = document.getElementById('result-msg');
+  resultMsg.style.display = 'block';
+  const pct = Math.round((score / 20) * 100);
+  let msg;
+  if (pct === 100) msg = "Perfect score! 🎉";
+  else if (pct >= 80) msg = "Great job — almost there!";
+  else if (pct >= 60) msg = "Good effort — review the missed ones.";
+  else msg = "Let's go over these together in class.";
+  resultMsg.textContent = `You scored ${score} out of 20 (${pct}%). ${msg}`;
+}
+</script>
+</body>
+</html>
