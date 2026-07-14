@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whose Is It? — Possessive Adjectives</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1F2A44;
+    --navy-deep:#141C30;
+    --sand:#EFE6D2;
+    --sand-light:#F8F3E7;
+    --buoy-red:#B3261E;
+    --ok-green:#2E6B4F;
+    --ink:#2B2B26;
+    --line:#C9BC9C;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--sand-light);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(31,42,68,0.05) 0, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(179,38,30,0.05) 0, transparent 40%);
+    font-family:'Work Sans', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+
+  .postcard-frame{
+    max-width:780px;
+    margin:0 auto;
+    background:var(--sand-light);
+    border:2px solid var(--navy);
+    border-radius:6px;
+    position:relative;
+    padding:0;
+    box-shadow:0 6px 0 rgba(31,42,68,0.08);
+  }
+  .postcard-frame::before{
+    content:"";
+    position:absolute;
+    inset:8px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    pointer-events:none;
+  }
+
+  header{
+    text-align:center;
+    padding:30px 24px 18px;
+    border-bottom:2px dashed var(--line);
+  }
+  .eyebrow{
+    font-family:'Work Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--buoy-red);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(28px, 5vw, 40px);
+    margin:0 0 6px;
+    color:var(--navy);
+    letter-spacing:-0.01em;
+  }
+  .subtitle{
+    font-size:15px;
+    color:#5B5648;
+    max-width:480px;
+    margin:0 auto;
+  }
+  .stamp{
+    position:absolute;
+    top:18px;
+    right:18px;
+    width:58px;
+    height:58px;
+    border:2px solid var(--navy);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform:rotate(8deg);
+    font-family:'Fraunces', serif;
+    font-size:10px;
+    text-align:center;
+    line-height:1.2;
+    color:var(--navy);
+    font-weight:700;
+    letter-spacing:0.02em;
+    opacity:0.85;
+  }
+
+  .instructions{
+    padding:20px 28px 4px;
+    font-size:14.5px;
+    color:#5B5648;
+    text-align:center;
+  }
+  .instructions strong{color:var(--navy);}
+
+  /* word bank */
+  .wordbank{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+    padding:18px 24px 6px;
+  }
+  .tile{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:16px;
+    background:var(--navy);
+    color:var(--sand-light);
+    padding:10px 18px;
+    border-radius:20px;
+    cursor:grab;
+    user-select:none;
+    border:2px solid var(--navy);
+    transition:transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    touch-action:none;
+  }
+  .tile:active{cursor:grabbing;}
+  .tile.selected{
+    box-shadow:0 0 0 3px rgba(179,38,30,0.35);
+    transform:translateY(-2px);
+  }
+  .tile.used{
+    opacity:0.3;
+    pointer-events:none;
+  }
+  .tile.dragging{opacity:0.4;}
+
+  /* sentence list */
+  .sentences{
+    padding:10px 24px 6px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .sentence-card{
+    background:#fff;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:15.5px;
+    line-height:1.5;
+    flex-wrap:wrap;
+  }
+  .sentence-num{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    color:var(--buoy-red);
+    min-width:20px;
+  }
+  .blank{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:88px;
+    height:34px;
+    border:2px dashed var(--navy);
+    border-radius:6px;
+    background:var(--sand);
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    color:var(--navy);
+    padding:0 10px;
+    transition:background 0.2s ease, border-color 0.2s ease;
+  }
+  .blank.over{background:#e4d9bd;}
+  .blank.correct{
+    border-style:solid;
+    border-color:var(--ok-green);
+    background:#E4F0E9;
+    color:var(--ok-green);
+  }
+  .blank.incorrect{
+    border-style:solid;
+    border-color:var(--buoy-red);
+    background:#F7E6E4;
+    color:var(--buoy-red);
+  }
+  .blank .placed-tile{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    cursor:grab;
+  }
+
+  /* controls */
+  .controls{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    padding:20px 24px 10px;
+    flex-wrap:wrap;
+  }
+  button.action{
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    padding:11px 26px;
+    border-radius:24px;
+    border:2px solid var(--navy);
+    background:var(--navy);
+    color:var(--sand-light);
+    cursor:pointer;
+    transition:transform 0.15s ease, background 0.15s ease;
+  }
+  button.action:hover{transform:translateY(-1px);}
+  button.action.secondary{
+    background:transparent;
+    color:var(--navy);
+  }
+
+  .score-line{
+    text-align:center;
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    color:var(--navy);
+    min-height:24px;
+    padding:0 24px 24px;
+  }
+  .score-line.win{color:var(--ok-green); font-weight:700;}
+
+  footer.postmark{
+    text-align:center;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:#8b846c;
+    padding:6px 0 20px;
+  }
+
+  @media (max-width:480px){
+    .sentence-card{font-size:14.5px; padding:12px;}
+    .blank{min-width:76px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="postcard-frame">
+  <div class="stamp">A1<br>LEVEL</div>
+  <header>
+    <div class="eyebrow">Grammar Postcard · Station 2</div>
+    <h1>Whose Is It?</h1>
+    <p class="subtitle">Drag each word into the correct sentence. Every tile is used once.</p>
+  </header>
+
+  <p class="instructions">Drag a tile from the word bank below into the blank <strong>___</strong> where it belongs. On a phone, tap a tile, then tap the blank.</p>
+
+  <div class="wordbank" id="wordbank"></div>
+
+  <div class="sentences" id="sentences"></div>
+
+  <div class="controls">
+    <button class="action" id="checkBtn">Check my answers</button>
+    <button class="action secondary" id="resetBtn">Reset</button>
+  </div>
+
+  <div class="score-line" id="scoreLine"></div>
+  <footer class="postmark">✉ Posted from Unit 1 — Object &amp; Possessive Pronouns</footer>
+</div>
+
+<script>
+const DATA = [
+  { id: 1, before: "This is Maria.", blank: "her", after: "brother is a teacher.", answer: "her" },
+  { id: 2, before: "I live next to Mr. Silva.", blank: "his", after: "dog is very friendly.", answer: "his" },
+  { id: 3, before: "Ana and Beto are our neighbors.", blank: "their", after: "house is blue.", answer: "their" },
+  { id: 4, before: "This weekend, we invited", blank: "our", after: "classmates to a BBQ.", answer: "our" },
+  { id: 5, before: "Excuse me, is this", blank: "your", after: "notebook?", answer: "your" },
+  { id: 6, before: "I love", blank: "my", after: "family. We meet every Sunday.", answer: "my" },
+];
+
+const WORDS = ["her", "his", "their", "our", "your", "my"];
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+let selectedTile = null; // for tap-to-place mode
+let placements = {}; // sentenceId -> word
+
+const wordbankEl = document.getElementById('wordbank');
+const sentencesEl = document.getElementById('sentences');
+const scoreLine = document.getElementById('scoreLine');
+
+function buildTile(word){
+  const tile = document.createElement('div');
+  tile.className = 'tile';
+  tile.textContent = word;
+  tile.draggable = true;
+  tile.dataset.word = word;
+
+  tile.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('text/plain', word);
+    tile.classList.add('dragging');
+  });
+  tile.addEventListener('dragend', () => tile.classList.remove('dragging'));
+
+  tile.addEventListener('click', () => {
+    if (tile.classList.contains('used')) return;
+    document.querySelectorAll('.tile.selected').forEach(t => t.classList.remove('selected'));
+    if (selectedTile === tile) {
+      selectedTile = null;
+      return;
+    }
+    selectedTile = tile;
+    tile.classList.add('selected');
+  });
+
+  return tile;
+}
+
+function buildSentence(item){
+  const card = document.createElement('div');
+  card.className = 'sentence-card';
+  card.dataset.id = item.id;
+
+  const num = document.createElement('span');
+  num.className = 'sentence-num';
+  num.textContent = item.id + '.';
+  card.appendChild(num);
+
+  const beforeSpan = document.createElement('span');
+  beforeSpan.textContent = item.before;
+  card.appendChild(beforeSpan);
+
+  const blank = document.createElement('span');
+  blank.className = 'blank';
+  blank.dataset.answer = item.answer;
+  blank.dataset.id = item.id;
+  blank.textContent = '____';
+  card.appendChild(blank);
+
+  const afterSpan = document.createElement('span');
+  afterSpan.textContent = item.after;
+  card.appendChild(afterSpan);
+
+  // drag & drop targets
+  blank.addEventListener('dragover', (e) => { e.preventDefault(); blank.classList.add('over'); });
+  blank.addEventListener('dragleave', () => blank.classList.remove('over'));
+  blank.addEventListener('drop', (e) => {
+    e.preventDefault();
+    blank.classList.remove('over');
+    const word = e.dataTransfer.getData('text/plain');
+    placeWord(blank, word);
+  });
+
+  // tap-to-place
+  blank.addEventListener('click', () => {
+    if (selectedTile) {
+      placeWord(blank, selectedTile.dataset.word);
+      selectedTile.classList.remove('selected');
+      selectedTile = null;
+    } else if (placements[item.id]) {
+      // tap a filled blank to clear it
+      clearBlank(blank);
+    }
+  });
+
+  return card;
+}
+
+function placeWord(blank, word){
+  const id = blank.dataset.id;
+  // if this blank already has a word, return it to the bank first
+  if (placements[id]) {
+    clearBlank(blank);
+  }
+  placements[id] = word;
+  blank.innerHTML = '';
+  const placedTile = document.createElement('span');
+  placedTile.className = 'placed-tile';
+  placedTile.textContent = word;
+  blank.appendChild(placedTile);
+  blank.classList.remove('correct','incorrect');
+
+  const sourceTile = [...wordbankEl.children].find(t => t.dataset.word === word && !t.classList.contains('used'));
+  if (sourceTile) sourceTile.classList.add('used');
+}
+
+function clearBlank(blank){
+  const id = blank.dataset.id;
+  const word = placements[id];
+  if (!word) return;
+  delete placements[id];
+  blank.textContent = '____';
+  blank.classList.remove('correct','incorrect');
+  const usedTile = [...wordbankEl.children].find(t => t.dataset.word === word && t.classList.contains('used'));
+  if (usedTile) usedTile.classList.remove('used');
+}
+
+function init(){
+  wordbankEl.innerHTML = '';
+  sentencesEl.innerHTML = '';
+  placements = {};
+  selectedTile = null;
+  scoreLine.textContent = '';
+  scoreLine.classList.remove('win');
+
+  shuffle(WORDS).forEach(word => wordbankEl.appendChild(buildTile(word)));
+  DATA.forEach(item => sentencesEl.appendChild(buildSentence(item)));
+}
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  let correctCount = 0;
+  document.querySelectorAll('.blank').forEach(blank => {
+    const id = blank.dataset.id;
+    const answer = blank.dataset.answer;
+    const given = placements[id];
+    blank.classList.remove('correct','incorrect');
+    if (!given) return;
+    if (given === answer) {
+      blank.classList.add('correct');
+      correctCount++;
+    } else {
+      blank.classList.add('incorrect');
+    }
+  });
+  const total = DATA.length;
+  if (correctCount === total) {
+    scoreLine.textContent = `Perfect! ${correctCount}/${total} correct. ✉ Well posted!`;
+    scoreLine.classList.add('win');
+  } else {
+    scoreLine.textContent = `${correctCount}/${total} correct. Fix the red blanks and check again.`;
+    scoreLine.classList.remove('win');
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', init);
+
+init();
+</script>
+</body>
+</html>
