@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speaking Cards · American Culture</title>
+<style>
+  :root{
+    --navy:#1E3A5F;
+    --navy-deep:#122542;
+    --green:#2E7D4F;
+    --red:#C0392B;
+    --gold:#D4A017;
+    --paper:#F7F4EC;
+    --ink:#22314B;
+    --line:#DCD5C4;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Georgia', 'Iowan Old Style', serif;
+    color:var(--ink);
+    padding:32px 16px 80px;
+  }
+
+  header{
+    max-width:920px;
+    margin:0 auto 36px;
+    text-align:center;
+  }
+
+  .kicker{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--red);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+
+  h1{
+    font-size:clamp(28px,4vw,40px);
+    margin:0 0 10px;
+    color:var(--navy-deep);
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+
+  .sub{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14.5px;
+    color:#5b6577;
+    max-width:560px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+
+  /* language toggle */
+  .lang-toggle{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-top:20px;
+  }
+  .lang-toggle span{
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:#5b6577;
+  }
+  .lang-btns{
+    display:inline-flex;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:3px;
+  }
+  .lang-btns button{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    border:none;
+    background:transparent;
+    padding:6px 16px;
+    font-size:13px;
+    font-weight:700;
+    border-radius:999px;
+    cursor:pointer;
+    color:#5b6577;
+    transition:.15s;
+  }
+  .lang-btns button.active{
+    background:var(--navy);
+    color:#fff;
+  }
+
+  .deck{
+    max-width:640px;
+    margin:0 auto;
+    position:relative;
+    min-height:420px;
+  }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:6px solid var(--navy);
+    border-radius:6px;
+    padding:26px 28px 24px;
+    position:relative;
+    box-shadow:0 1px 2px rgba(18,37,66,.04);
+    display:none;
+    animation:fadeIn .35s ease;
+  }
+  .card.active{display:block;}
+
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .card{animation:none;}
+  }
+  .card:nth-child(2){border-left-color:var(--green);}
+  .card:nth-child(3){border-left-color:var(--gold);}
+  .card:nth-child(4){border-left-color:var(--red);}
+  .card:nth-child(5){border-left-color:var(--navy);}
+
+  .card-head{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    margin-bottom:14px;
+  }
+
+  .num{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-weight:700;
+    font-size:12px;
+    color:#fff;
+    background:var(--navy-deep);
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    margin-top:3px;
+  }
+  .card:nth-child(2) .num{background:var(--green);}
+  .card:nth-child(3) .num{background:var(--gold);}
+  .card:nth-child(4) .num{background:var(--red);}
+
+  .card-title-wrap{flex:1;}
+
+  .topic-eyebrow{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#8a92a3;
+    margin-bottom:3px;
+  }
+
+  h2{
+    margin:0;
+    font-size:22px;
+    color:var(--navy-deep);
+    font-weight:700;
+  }
+
+  .icon{
+    font-size:26px;
+    line-height:1;
+  }
+
+  .warmup{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    background:var(--paper);
+    border:1px dashed var(--line);
+    border-radius:6px;
+    padding:10px 14px;
+    font-size:14px;
+    font-style:italic;
+    color:var(--navy-deep);
+    margin-bottom:16px;
+  }
+
+  ol.questions{
+    margin:0 0 16px;
+    padding-left:20px;
+  }
+  ol.questions li{
+    font-size:16px;
+    line-height:1.6;
+    margin-bottom:9px;
+  }
+
+  .vocab-label{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:10.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:#8a92a3;
+    margin:14px 0 8px;
+  }
+
+  .vocab-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  .gloss{
+    position:relative;
+    border-bottom:2px dotted var(--gold);
+    cursor:pointer;
+    font-weight:600;
+    color:var(--navy-deep);
+    padding:0 1px;
+  }
+  .gloss:hover{background:#FBF3DC;}
+
+  .tooltip{
+    display:none;
+    position:absolute;
+    bottom:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--navy-deep);
+    color:#fff;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:13px;
+    font-weight:400;
+    padding:7px 12px;
+    border-radius:5px;
+    white-space:nowrap;
+    z-index:5;
+    box-shadow:0 4px 10px rgba(0,0,0,.18);
+  }
+  .tooltip::after{
+    content:"";
+    position:absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%);
+    border:5px solid transparent;
+    border-top-color:var(--navy-deep);
+  }
+  .gloss.open .tooltip{display:block;}
+
+  .nav{
+    max-width:640px;
+    margin:24px auto 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .nav-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--navy-deep);
+    color:#fff;
+    border:none;
+    padding:11px 20px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s;
+    font-family:inherit;
+  }
+  .nav-btn:hover{background:var(--navy);}
+  .nav-btn:disabled{
+    background:#d9dce3;
+    color:#9aa1b0;
+    cursor:not-allowed;
+  }
+  .nav-btn.prev{background:#fff; color:var(--navy-deep); border:1px solid var(--line);}
+  .nav-btn.prev:hover{background:var(--paper);}
+  .nav-btn.prev:disabled{background:#fff; color:#c7ccd6; border-color:var(--line);}
+
+  .progress{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+
+  .dots{display:flex; gap:7px;}
+  .dot{
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--line);
+    cursor:pointer;
+    transition:.15s;
+  }
+  .dot.active{
+    background:var(--gold);
+    transform:scale(1.3);
+  }
+
+  .counter{
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:#8a92a3;
+  }
+
+  @media (max-width:520px){
+    .nav-btn span.label{display:none;}
+    .nav-btn{padding:11px 16px;}
+  }
+
+  footer{
+    max-width:920px;
+    margin:40px auto 0;
+    text-align:center;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    color:#9aa1b0;
+  }
+
+  .brand-bar{
+    height:4px;
+    max-width:920px;
+    margin:0 auto 30px;
+    border-radius:3px;
+    background:linear-gradient(90deg, var(--navy) 0 25%, var(--green) 25% 50%, var(--gold) 50% 75%, var(--red) 75% 100%);
+  }
+
+  @media (max-width:520px){
+    .card{padding:20px 18px;}
+    h2{font-size:19px;}
+    ol.questions li{font-size:15px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Approach · Speaking Cards</div>
+  <h1>Talk About American Culture</h1>
+  <p class="sub">Look at the questions. Click the underlined words for help. Talk with a partner.</p>
+  <div class="lang-toggle">
+    <span>Translate to:</span>
+    <div class="lang-btns">
+      <button id="btn-pt" class="active" onclick="setLang('pt')">Português</button>
+      <button id="btn-es" onclick="setLang('es')">Español</button>
+    </div>
+  </div>
+</header>
+
+<div class="brand-bar"></div>
+
+<div class="deck">
+
+  <!-- CARD 1 -->
+  <div class="card active">
+    <div class="card-head">
+      <div class="num">1</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Shopping</div>
+        <h2><span class="icon">🛒</span> Big Stores, Big Packs</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: Do you know Costco or BJ's? What do people buy there?</div>
+    <ol class="questions">
+      <li>In the US, people buy food <span class="gloss" data-word="in bulk" data-pt="em grande quantidade" data-es="al por mayor">in bulk<span class="tooltip"></span></span> at stores like Costco. Do you do this in your country?</li>
+      <li>You need a <span class="gloss" data-word="membership" data-pt="associação/cartão de sócio" data-es="membresía">membership<span class="tooltip"></span></span> card to shop at Costco. Is that normal in your country?</li>
+      <li>Is there a big <span class="gloss" data-word="warehouse store" data-pt="loja de depósito/atacado" data-es="tienda de almacén">warehouse store<span class="tooltip"></span></span> in your city? What is it called?</li>
+      <li>Do you think buying in bulk saves money? Or does it make people waste more food?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="wholesale" data-pt="atacado" data-es="al por mayor">wholesale<span class="tooltip"></span></span>
+      <span class="gloss" data-word="discount" data-pt="desconto" data-es="descuento">discount<span class="tooltip"></span></span>
+      <span class="gloss" data-word="stock up" data-pt="abastecer-se" data-es="abastecerse">stock up<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">2</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Restaurants</div>
+        <h2><span class="icon">🥡</span> Can I Get a Doggy Bag?</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: What do you do with food you don't finish at a restaurant?</div>
+    <ol class="questions">
+      <li>In the US, people often ask for a <span class="gloss" data-word="doggy bag" data-pt="sacola para levar sobras" data-es="bolsa para las sobras">doggy bag<span class="tooltip"></span></span> for their <span class="gloss" data-word="leftovers" data-pt="sobras" data-es="sobras">leftovers<span class="tooltip"></span></span>. Do people do this in your country?</li>
+      <li>Do you feel <span class="gloss" data-word="embarrassed" data-pt="envergonhado(a)" data-es="avergonzado(a)">embarrassed<span class="tooltip"></span></span> asking for a box, or is it normal?</li>
+      <li>What do you call this "to-go" box in your language?</li>
+      <li>Why do you think Americans ask for doggy bags so often?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="to-go box" data-pt="caixa para viagem" data-es="caja para llevar">to-go box<span class="tooltip"></span></span>
+      <span class="gloss" data-word="portion" data-pt="porção" data-es="porción">portion<span class="tooltip"></span></span>
+      <span class="gloss" data-word="waste" data-pt="desperdício" data-es="desperdicio">waste<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">3</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Health & Body</div>
+        <h2><span class="icon">🏃</span> Fit Nation or Fast-Food Nation?</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: When you think of an American, what body type comes to mind? Why?</div>
+    <ol class="questions">
+      <li>Are people in your country mostly <span class="gloss" data-word="fit" data-pt="em forma" data-es="en forma">fit<span class="tooltip"></span></span>, or mostly <span class="gloss" data-word="overweight" data-pt="acima do peso" data-es="con sobrepeso">overweight<span class="tooltip"></span></span>?</li>
+      <li>Is "all Americans are fat" a true fact or just a <span class="gloss" data-word="stereotype" data-pt="estereótipo" data-es="estereotipo">stereotype<span class="tooltip"></span></span>?</li>
+      <li>Do people in your country exercise a lot? Where do they exercise?</li>
+      <li>What food habits are different between the US and your country?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="obesity" data-pt="obesidade" data-es="obesidad">obesity<span class="tooltip"></span></span>
+      <span class="gloss" data-word="habit" data-pt="hábito" data-es="hábito">habit<span class="tooltip"></span></span>
+      <span class="gloss" data-word="portion size" data-pt="tamanho da porção" data-es="tamaño de la porción">portion size<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">4</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Laws</div>
+        <h2><span class="icon">⚖️</span> Buying a Gun: Easy or Hard?</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: Can a regular person buy a gun in your country? Is it easy?</div>
+    <ol class="questions">
+      <li>In your country, is it easy or hard to buy a <span class="gloss" data-word="gun" data-pt="arma de fogo" data-es="arma de fuego">gun<span class="tooltip"></span></span>?</li>
+      <li>Fact: gun <span class="gloss" data-word="laws" data-pt="leis" data-es="leyes">laws<span class="tooltip"></span></span> are NOT the same in every US state. Does this surprise you?</li>
+      <li>Do you think every country should have the same gun laws?</li>
+      <li>Have you ever seen a real gun in daily life? Where?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="background check" data-pt="verificação de antecedentes" data-es="verificación de antecedentes">background check<span class="tooltip"></span></span>
+      <span class="gloss" data-word="allowed" data-pt="permitido" data-es="permitido">allowed<span class="tooltip"></span></span>
+      <span class="gloss" data-word="strict" data-pt="rígido/rigoroso" data-es="estricto">strict<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">5</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Identity</div>
+        <h2><span class="icon">🎌</span> Hand on Heart: Patriotism</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: Do you know all the words to your national anthem? Try to sing one line!</div>
+    <ol class="questions">
+      <li>Are people in your country <span class="gloss" data-word="patriotic" data-pt="patriota" data-es="patriota">patriotic<span class="tooltip"></span></span>? How do they show it?</li>
+      <li>Do you know your national <span class="gloss" data-word="anthem" data-pt="hino" data-es="himno">anthem<span class="tooltip"></span></span> by heart?</li>
+      <li>Do you see the <span class="gloss" data-word="flag" data-pt="bandeira" data-es="bandera">flag<span class="tooltip"></span></span> often — at school, at home, on TV?</li>
+      <li>Do you think Americans are more or less patriotic than people in your country?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="pledge" data-pt="juramento" data-es="juramento">pledge<span class="tooltip"></span></span>
+      <span class="gloss" data-word="pride" data-pt="orgulho" data-es="orgullo">pride<span class="tooltip"></span></span>
+      <span class="gloss" data-word="tradition" data-pt="tradição" data-es="tradición">tradition<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nav-btn prev" id="prevBtn" onclick="goTo(currentIndex - 1)">
+    <span>&larr;</span><span class="label">Back</span>
+  </button>
+
+  <div class="progress">
+    <div class="dots" id="dots"></div>
+    <div class="counter" id="counter">Card 1 of 5</div>
+  </div>
+
+  <button class="nav-btn next" id="nextBtn" onclick="goTo(currentIndex + 1)">
+    <span class="label">Next</span><span>&rarr;</span>
+  </button>
+</div>
+
+<footer>Approach · English for Real Life</footer>
+
+<script>
+  const cards = document.querySelectorAll('.card');
+  const total = cards.length;
+  let currentIndex = 0;
+
+  const dotsWrap = document.getElementById('dots');
+  cards.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(d);
+  });
+  const dots = document.querySelectorAll('.dot');
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function goTo(index){
+    if(index < 0 || index >= total) return;
+    cards[currentIndex].classList.remove('active');
+    dots[currentIndex].classList.remove('active');
+    currentIndex = index;
+    cards[currentIndex].classList.add('active');
+    dots[currentIndex].classList.add('active');
+    counter.textContent = 'Card ' + (currentIndex + 1) + ' of ' + total;
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex === total - 1;
+    document.querySelectorAll('.gloss.open').forEach(g => g.classList.remove('open'));
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowRight') goTo(currentIndex + 1);
+    if(e.key === 'ArrowLeft') goTo(currentIndex - 1);
+  });
+
+  goTo(0);
+
+  let currentLang = 'pt';
+
+  function setLang(lang){
+    currentLang = lang;
+    document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    document.querySelectorAll('.gloss.open').forEach(g => renderTooltip(g));
+  }
+
+  function renderTooltip(el){
+    const text = currentLang === 'pt' ? el.dataset.pt : el.dataset.es;
+    el.querySelector('.tooltip').textContent = text;
+  }
+
+  document.querySelectorAll('.gloss').forEach(el => {
+    el.addEventListener('click', (e) => {
+      const wasOpen = el.classList.contains('open');
+      document.querySelectorAll('.gloss.open').forEach(g => g.classList.remove('open'));
+      if(!wasOpen){
+        renderTooltip(el);
+        el.classList.add('open');
+      }
+      e.stopPropagation();
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.gloss.open').forEach(g => g.classList.remove('open'));
+  });
+</script>
+
+</body>
+</html>
