@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beach Volleyball Prepositions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#1FB6E0;
+    --sky-bottom:#9FE7F5;
+    --sea:#0B8CA6;
+    --sand-top:#F6E0AC;
+    --sand-bottom:#E7C583;
+    --ink:#0B2B3C;
+    --coral:#FF6B4A;
+    --pink:#FF3E7F;
+    --gold:#FFC94A;
+    --board-bg:#0B2B3C;
+    --board-glow:#5CFFE0;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+    background:var(--sky-bottom);
+  }
+
+  /* ---------- SCENE BACKGROUND ---------- */
+  .scene{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+  }
+  .sky{
+    position:absolute; top:0; left:0; right:0; height:62%;
+    background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
+  }
+  .sun{
+    position:absolute; top:6%; right:8%;
+    width:110px; height:110px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #FFF6D6, var(--gold) 70%);
+    box-shadow:0 0 60px 20px rgba(255,201,74,0.55);
+  }
+  .cloud{
+    position:absolute; background:#fff; border-radius:50px;
+    opacity:0.85;
+  }
+  .cloud::before, .cloud::after{
+    content:''; position:absolute; background:#fff; border-radius:50%;
+  }
+  .cloud1{ width:90px; height:28px; top:14%; left:8%; }
+  .cloud1::before{ width:50px; height:50px; top:-24px; left:8px; }
+  .cloud1::after{ width:36px; height:36px; top:-16px; left:44px; }
+  .cloud2{ width:70px; height:22px; top:24%; left:60%; }
+  .cloud2::before{ width:38px; height:38px; top:-18px; left:6px; }
+  .cloud2::after{ width:28px; height:28px; top:-12px; left:34px; }
+
+  .sea{
+    position:absolute; top:52%; left:0; right:0; height:16%;
+    background:linear-gradient(180deg, var(--sea), #0A6E84);
+  }
+  .wave{
+    position:absolute; left:0; right:0; height:22px;
+    background:repeating-linear-gradient(90deg, rgba(255,255,255,0.55) 0 22px, transparent 22px 44px);
+    border-radius:0 0 50% 50%;
+    animation:drift 6s linear infinite;
+  }
+  .wave1{ top:52%; opacity:0.8; }
+  .wave2{ top:58%; opacity:0.5; animation-duration:9s; animation-direction:reverse;}
+  @keyframes drift{ from{background-position-x:0;} to{background-position-x:200px;} }
+
+  .sand{
+    position:absolute; top:68%; left:0; right:0; bottom:0;
+    background:linear-gradient(180deg, var(--sand-top), var(--sand-bottom));
+  }
+  .sand::before{
+    content:''; position:absolute; top:-2px; left:0; right:0; height:14px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.5), transparent);
+  }
+
+  .net{
+    position:absolute; left:50%; top:34%; bottom:16%; width:2px;
+    transform:translateX(-50%);
+  }
+  .net .pole{
+    position:absolute; top:0; bottom:0; width:6px; left:-3px;
+    background:linear-gradient(180deg,#8a5a2b,#5c3a1a);
+    border-radius:3px;
+  }
+  .net .mesh{
+    position:absolute; top:8%; bottom:30%; left:-70px; right:-70px;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.55) 0 1px, transparent 1px 14px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.55) 0 1px, transparent 1px 14px);
+    border-top:3px solid #fff;
+    border-bottom:3px solid #fff;
+    opacity:0.85;
+  }
+
+  .decor{
+    position:absolute; font-size:34px; filter:drop-shadow(0 4px 4px rgba(0,0,0,0.15));
+  }
+
+  /* ---------- LAYOUT ---------- */
+  #app{ position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:18px 16px 40px; }
+
+  /* Scoreboard sign */
+  .scoreboard-sign{
+    position:relative;
+    margin:6px auto 18px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .board{
+    background:var(--board-bg);
+    border:6px solid #08202D;
+    border-radius:14px;
+    padding:10px 22px;
+    display:flex;
+    gap:22px;
+    box-shadow:0 10px 0 #08202D, 0 14px 18px rgba(0,0,0,0.35);
+  }
+  .board-item{ text-align:center; min-width:64px; }
+  .board-item .label{
+    display:block; font-family:'Nunito',sans-serif; font-weight:800;
+    font-size:10px; letter-spacing:1.5px; color:#8FD9CC; margin-bottom:2px;
+  }
+  .board-item .digits{
+    font-family:'VT323', monospace; font-size:30px; line-height:1;
+    color:var(--board-glow); text-shadow:0 0 8px rgba(92,255,224,0.85);
+  }
+  .board-item.lives .digits{ font-size:22px; text-shadow:none; }
+  .board-legs{ display:flex; gap:60px; margin-top:-2px; }
+  .board-legs span{ width:6px; height:26px; background:#5c3a1a; display:block; border-radius:2px; }
+
+  .flicker{ animation:flicker 0.4s ease; }
+  @keyframes flicker{ 0%{opacity:0.2;} 40%{opacity:1;} 60%{opacity:0.4;} 100%{opacity:1;} }
+
+  /* Screens */
+  .screen{ display:none; width:100%; max-width:640px; flex-direction:column; align-items:center; text-align:center; }
+  .screen.active{ display:flex; }
+
+  h1{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:clamp(28px,6vw,44px);
+    margin:6px 0 4px; color:var(--white); text-shadow:0 3px 0 rgba(11,43,60,0.5);
+    line-height:1.05;
+  }
+  h1 span{ color:var(--gold); }
+  .subtitle{
+    font-weight:700; color:var(--white); background:rgba(11,43,60,0.35);
+    padding:10px 18px; border-radius:14px; max-width:480px; margin:8px 0 22px;
+  }
+
+  .btn-play{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:20px;
+    color:var(--white); background:var(--coral);
+    border:none; padding:16px 34px; border-radius:50px; cursor:pointer;
+    box-shadow:0 6px 0 #C6421F;
+    transition:transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .btn-play:hover{ transform:translateY(-2px); }
+  .btn-play:active{ transform:translateY(3px); box-shadow:0 2px 0 #C6421F; }
+  .btn-play:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
+
+  /* Game card (beach towel) */
+  .towel-card{
+    position:relative;
+    background:repeating-linear-gradient(135deg, #FFFFFF 0 26px, #FFE6DA 26px 52px);
+    border-radius:18px;
+    padding:26px 24px 22px;
+    width:100%;
+    max-width:560px;
+    box-shadow:0 14px 0 rgba(11,43,60,0.18), 0 18px 30px rgba(0,0,0,0.25);
+    border:4px solid var(--white);
+  }
+  .progress-track{
+    height:8px; width:100%; background:rgba(11,43,60,0.15); border-radius:6px; overflow:hidden; margin-bottom:18px;
+  }
+  .progress-fill{
+    height:100%; background:var(--coral); width:0%; transition:width 0.4s ease;
+  }
+  .sentence{
+    font-family:'Baloo 2', sans-serif; font-size:clamp(18px,4vw,24px); font-weight:700;
+    color:var(--ink); margin-bottom:22px; line-height:1.4;
+  }
+  .blank{
+    display:inline-block; min-width:70px; border-bottom:3px dashed var(--pink);
+    color:transparent;
+  }
+  .options{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
+  .opt-btn{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:17px;
+    padding:16px 8px; border-radius:16px; border:none; cursor:pointer;
+    color:var(--white); background:linear-gradient(180deg,#2FBFD1,#0F8CA0);
+    box-shadow:0 5px 0 #0B6C7C;
+    transition:transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+  }
+  .opt-btn:hover:not(:disabled){ transform:translateY(-2px); filter:brightness(1.06); }
+  .opt-btn:active:not(:disabled){ transform:translateY(3px); box-shadow:0 2px 0 #0B6C7C; }
+  .opt-btn:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .opt-btn:disabled{ cursor:default; }
+  .opt-btn.correct{ background:linear-gradient(180deg,#4CD37A,#22A857); box-shadow:0 5px 0 #178142; }
+  .opt-btn.wrong{ background:linear-gradient(180deg,#FF7B6A,var(--pink)); box-shadow:0 5px 0 #B92457; }
+  .opt-btn.dim{ opacity:0.55; }
+
+  .feedback{ min-height:30px; font-weight:800; font-size:16px; }
+  .feedback.good{ color:#1C8A4E; }
+  .feedback.bad{ color:#C6265B; }
+  .feedback .streak{ color:var(--coral); }
+
+  .ball{
+    position:absolute; top:-46px; left:50%; transform:translateX(-50%);
+    font-size:40px; filter:drop-shadow(0 6px 6px rgba(0,0,0,0.25));
+  }
+  .ball.spike{ animation:spike 0.9s ease; }
+  @keyframes spike{
+    0%{ transform:translate(-50%,0) rotate(0deg); }
+    40%{ transform:translate(10px,-70px) rotate(180deg); }
+    100%{ transform:translate(-50%,0) rotate(360deg); }
+  }
+  .ball.flop{ animation:flop 0.7s ease; }
+  @keyframes flop{
+    0%{ transform:translate(-50%,0) rotate(0deg); }
+    50%{ transform:translate(-70%,26px) rotate(-40deg); }
+    100%{ transform:translate(-50%,10px) rotate(-20deg); }
+  }
+  .towel-card.shake{ animation:shake 0.4s ease; }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-6px); }
+    75%{ transform:translateX(6px); }
+  }
+
+  /* End screen */
+  .end-card{
+    background:rgba(255,255,255,0.94); border-radius:20px; padding:30px 26px;
+    box-shadow:0 14px 30px rgba(0,0,0,0.25); max-width:480px; width:100%;
+  }
+  .end-card h2{ font-family:'Baloo 2', sans-serif; font-size:28px; margin:0 0 6px; color:var(--ink); }
+  .end-stats{ display:flex; justify-content:center; gap:22px; margin:18px 0; flex-wrap:wrap; }
+  .end-stat{ text-align:center; }
+  .end-stat .num{ font-family:'VT323', monospace; font-size:34px; color:var(--sea); }
+  .end-stat .lbl{ font-size:12px; font-weight:800; letter-spacing:1px; color:#5b7a86; text-transform:uppercase; }
+  .end-msg{ font-weight:700; margin-bottom:6px; }
+
+  @media (max-width:480px){
+    .options{ grid-template-columns:1fr; }
+    .board{ gap:12px; padding:8px 14px; }
+    .board-item{ min-width:50px; }
+    .board-item .digits{ font-size:24px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .ball.spike, .ball.flop, .towel-card.shake, .wave, .flicker{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <div class="sky"></div>
+  <div class="cloud cloud1"></div>
+  <div class="cloud cloud2"></div>
+  <div class="sun"></div>
+  <div class="sea"></div>
+  <div class="wave wave1"></div>
+  <div class="wave wave2"></div>
+  <div class="sand"></div>
+  <div class="net"><div class="pole" style="left:-3px;"></div><div class="mesh"></div></div>
+  <div class="decor" style="left:6%; bottom:8%;">🍹</div>
+  <div class="decor" style="right:8%; bottom:6%; font-size:44px;">🏖️</div>
+  <div class="decor" style="left:14%; bottom:20%; font-size:26px;">🐚</div>
+</div>
+
+<div id="app">
+
+  <div class="scoreboard-sign">
+    <div class="board">
+      <div class="board-item">
+        <span class="label">SCORE</span>
+        <span class="digits" id="scoreDisplay">000</span>
+      </div>
+      <div class="board-item">
+        <span class="label">ROUND</span>
+        <span class="digits" id="roundDisplay">01/12</span>
+      </div>
+      <div class="board-item lives">
+        <span class="label">DRINKS</span>
+        <span class="digits" id="livesDisplay">🍹🍹🍹</span>
+      </div>
+    </div>
+    <div class="board-legs"><span></span><span></span></div>
+  </div>
+
+  <main id="screen-start" class="screen active">
+    <h1>Beach Volleyball<br><span>Prepositions</span></h1>
+    <p class="subtitle">Pick the correct word before your drink melts! Three wrong answers and the game's over — 12 simple beach sentences (plus a few about volleyball). IN / ON / AT / UNDER / BEHIND / NEXT TO / BETWEEN / ACROSS FROM / NEAR.</p>
+    <button class="btn-play" id="startBtn">Serve it up 🏐</button>
+  </main>
+
+  <main id="screen-game" class="screen">
+    <div class="towel-card" id="towelCard">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="ball" id="ball">🏐</div>
+      <div class="sentence" id="sentenceText"></div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </main>
+
+  <main id="screen-end" class="screen">
+    <div class="end-card">
+      <h2 id="endTitle">Game over!</h2>
+      <p class="end-msg" id="endMsg"></p>
+      <div class="end-stats">
+        <div class="end-stat"><div class="num" id="finalScore">0</div><div class="lbl">Score</div></div>
+        <div class="end-stat"><div class="num" id="finalAccuracy">0%</div><div class="lbl">Accuracy</div></div>
+        <div class="end-stat"><div class="num" id="finalBest">0</div><div class="lbl">Best</div></div>
+      </div>
+      <button class="btn-play" id="playAgainBtn">Play again</button>
+    </div>
+  </main>
+
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    { sentence: "The net is ___ two poles.", answer: "between", options: ["between","next to","behind"] },
+    { sentence: "We sit ___ the sand.", answer: "on", options: ["on","in","at"] },
+    { sentence: "The chairs are ___ the umbrella, for shade.", answer: "under", options: ["under","next to","on"] },
+    { sentence: "My phone is ___ my bag.", answer: "in", options: ["in","on","at"] },
+    { sentence: "The sunglasses are ___ my towel.", answer: "on", options: ["on","in","under"] },
+    { sentence: "The lifeguard tower is ___ the water, so the lifeguard can see the swimmers.", answer: "near", options: ["near","at","between"] },
+    { sentence: "The snack bar is ___ the entrance to the beach.", answer: "at", options: ["at","in","on"] },
+    { sentence: "Before the game starts, the players stand ___ the net.", answer: "behind", options: ["behind","next to","under"] },
+    { sentence: "The shell is ___ the sand — I can see it easily.", answer: "on", options: ["on","in","under"] },
+    { sentence: "The snack bar is ___ the lifeguard tower, on the other side of the path.", answer: "across from", options: ["across from","next to","between"] },
+    { sentence: "My flip-flops are ___ my towel, right where I left them.", answer: "on", options: ["on","in","under"] },
+    { sentence: "The lifeguard tower is ___ the snack bar, right beside it.", answer: "next to", options: ["next to","across from","between"] },
+  ];
+
+  const TOTAL_ROUNDS = QUESTIONS.length;
+  const MAX_LIVES = 3;
+
+  let deck = [];
+  let round = 0;
+  let score = 0;
+  let streak = 0;
+  let lives = MAX_LIVES;
+  let correctCount = 0;
+  let answered = false;
+  let bestScore = 0;
+
+  const el = (id) => document.getElementById(id);
+  const screens = {
+    start: el('screen-start'),
+    game: el('screen-game'),
+    end: el('screen-end'),
+  };
+
+  function showScreen(name){
+    Object.values(screens).forEach(s => s.classList.remove('active'));
+    screens[name].classList.add('active');
+  }
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function flick(node){
+    node.classList.remove('flicker');
+    void node.offsetWidth;
+    node.classList.add('flicker');
+  }
+
+  function updateBoard(){
+    el('scoreDisplay').textContent = String(score).padStart(3,'0');
+    el('roundDisplay').textContent = String(Math.min(round+1,TOTAL_ROUNDS)).padStart(2,'0') + '/' + TOTAL_ROUNDS;
+    el('livesDisplay').textContent = '🍹'.repeat(lives) + '🥤'.repeat(MAX_LIVES-lives);
+    flick(el('scoreDisplay'));
+  }
+
+  function startGame(){
+    deck = shuffle(QUESTIONS);
+    round = 0; score = 0; streak = 0; lives = MAX_LIVES; correctCount = 0;
+    updateBoard();
+    showScreen('game');
+    renderRound();
+  }
+
+  function renderRound(){
+    answered = false;
+    const q = deck[round];
+    el('sentenceText').innerHTML = q.sentence.replace('___', '<span class="blank">_____</span>');
+    el('progressFill').style.width = (round/TOTAL_ROUNDS*100) + '%';
+    el('feedback').textContent = '';
+    el('feedback').className = 'feedback';
+    el('ball').className = '';
+    el('towelCard').classList.remove('shake');
+
+    const container = el('optionsContainer');
+    container.innerHTML = '';
+    const opts = shuffle(q.options);
+    opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.type = 'button';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => selectOption(opt, btn, q));
+      container.appendChild(btn);
+    });
+    updateBoard();
+  }
+
+  function selectOption(chosen, btnEl, q){
+    if(answered) return;
+    answered = true;
+    const buttons = Array.from(el('optionsContainer').children);
+    buttons.forEach(b => { b.disabled = true; if(b !== btnEl) b.classList.add('dim'); });
+
+    const fb = el('feedback');
+    const ball = el('ball');
+
+    if(chosen === q.answer){
+      correctCount++;
+      streak++;
+      let gained = 10;
+      let bonusMsg = '';
+      if(streak >= 3){
+        gained += 5;
+        bonusMsg = ' <span class="streak">🔥 Streak bonus +5!</span>';
+      }
+      score += gained;
+      btnEl.classList.remove('dim');
+      btnEl.classList.add('correct');
+      fb.className = 'feedback good';
+      fb.innerHTML = 'Nice spike! +' + gained + ' points ✅' + bonusMsg;
+      ball.textContent = '🏐';
+      ball.classList.add('spike');
+    } else {
+      streak = 0;
+      lives--;
+      btnEl.classList.remove('dim');
+      btnEl.classList.add('wrong');
+      buttons.forEach(b => { if(b.textContent === q.answer){ b.classList.remove('dim'); b.classList.add('correct'); } });
+      fb.className = 'feedback bad';
+      fb.textContent = "Not quite — it's \"" + q.answer + "\". A drink melted! 🥤";
+      ball.textContent = '🏐';
+      ball.classList.add('flop');
+      el('towelCard').classList.add('shake');
+    }
+
+    updateBoard();
+
+    setTimeout(() => {
+      if(lives <= 0){
+        endGame('lost');
+        return;
+      }
+      round++;
+      if(round >= TOTAL_ROUNDS){
+        endGame('finished');
+        return;
+      }
+      renderRound();
+    }, 1400);
+  }
+
+  function endGame(reason){
+    el('progressFill').style.width = '100%';
+    if(score > bestScore) bestScore = score;
+
+    const accuracy = Math.round((correctCount/TOTAL_ROUNDS)*100);
+    let title, msg;
+
+    if(reason === 'lost'){
+      title = 'Wiped out! 🌊';
+      msg = "Your drinks melted before you finished the match. Try again — you'll get it!";
+    } else if(accuracy === 100){
+      title = 'Beach MVP! 🏆';
+      msg = 'Perfect round — every serve landed in!';
+    } else if(accuracy >= 75){
+      title = 'Great rally! 🏐';
+      msg = "You've nearly mastered these prepositions.";
+    } else if(accuracy >= 50){
+      title = 'Nice game! ☀️';
+      msg = 'A solid effort — a little more practice and you\'ll be unstoppable.';
+    } else {
+      title = 'Keep practicing! 🥥';
+      msg = 'Review IN / ON / AT / UNDER / BEHIND / NEXT TO and try again.';
+    }
+
+    el('endTitle').textContent = title;
+    el('endMsg').textContent = msg;
+    el('finalScore').textContent = score;
+    el('finalAccuracy').textContent = accuracy + '%';
+    el('finalBest').textContent = bestScore;
+
+    showScreen('end');
+  }
+
+  el('startBtn').addEventListener('click', startGame);
+  el('playAgainBtn').addEventListener('click', startGame);
+
+  updateBoard();
+})();
+</script>
+
+</body>
+</html>
