@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Speaking Cards — Warm Up</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+    --gold:#C9A227;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:24px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:480px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(23px,6vw,28px); text-align:center; margin:0 0 14px;
+  }
+
+  .progress-row{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-bottom:18px;
+  }
+  .dot{ width:9px; height:9px; border-radius:50%; background:var(--gray); border:1.5px solid var(--gray); }
+  .dot.done{ background:var(--lightblue); border-color:var(--lightblue); }
+  .dot.active{ border-color:var(--darkblue); }
+
+  .card{
+    border:1.5px solid var(--darkblue);
+    border-radius:20px;
+    padding:36px 26px 28px;
+    min-height:230px;
+    display:flex; flex-direction:column; justify-content:center;
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .card-topic{
+    font-family:'Calibri','Segoe UI',sans-serif; font-weight:700; font-size:11.5px;
+    color:var(--lightblue); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;
+  }
+  .card-question{
+    font-family:'Cambria',Georgia,serif; font-weight:700; font-style:italic;
+    font-size:21px; line-height:1.45; color:var(--darkblue);
+  }
+
+  .challenge-toggle{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:11px; border:1.5px dashed var(--gold); border-radius:12px;
+    background:var(--white); color:var(--gold); font-weight:700; font-size:13px;
+    cursor:pointer; margin-bottom:10px;
+  }
+  .challenge-toggle svg{ width:15px; height:15px; }
+
+  .challenge-box{
+    display:none;
+    border:1.5px solid var(--gold);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:16px;
+    background:rgba(201,162,39,0.05);
+  }
+  .challenge-box.show{ display:block; }
+  .challenge-label{
+    display:flex; align-items:center; gap:6px;
+    font-family:'Calibri','Segoe UI',sans-serif; font-weight:700; font-size:11px;
+    color:var(--gold); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;
+  }
+  .challenge-label svg{ width:13px; height:13px; }
+  .challenge-question{
+    font-family:'Cambria',Georgia,serif; font-style:italic; font-size:15.5px;
+    line-height:1.5; color:var(--darkblue); margin-bottom:8px;
+  }
+  .challenge-words{ font-size:12px; color:var(--muted); }
+  .challenge-words b{ color:var(--darkblue); }
+
+  .nav-row{ display:flex; gap:10px; }
+  .nav-btn{
+    flex:1; padding:14px; border:1.5px solid var(--darkblue); background:var(--white);
+    color:var(--darkblue); border-radius:12px; font-weight:700; font-size:14.5px; cursor:pointer;
+  }
+  .nav-btn:disabled{ opacity:0.35; cursor:default; }
+  .nav-btn.primary{ background:var(--darkblue); color:var(--white); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Warm Up · Speaking</div>
+  <h1>Talk About It</h1>
+
+  <div class="progress-row" id="dots"></div>
+
+  <div class="card">
+    <div class="card-topic" id="cardTopic"></div>
+    <div class="card-question" id="cardQuestion"></div>
+  </div>
+
+  <button class="challenge-toggle" id="challengeToggle">
+    <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.9L22 9.6l-5.4 4.9L18 22l-6-3.6L6 22l1.4-7.5L2 9.6l7.1-0.7L12 2z" fill="none" stroke="#C9A227" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    Show challenge question
+  </button>
+
+  <div class="challenge-box" id="challengeBox">
+    <div class="challenge-label">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.9L22 9.6l-5.4 4.9L18 22l-6-3.6L6 22l1.4-7.5L2 9.6l7.1-0.7L12 2z" fill="#C9A227"/></svg>
+      For a challenge
+    </div>
+    <div class="challenge-question" id="challengeQuestion"></div>
+    <div class="challenge-words" id="challengeWords"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn">&larr; Prev</button>
+    <button class="nav-btn primary" id="nextBtn">Next &rarr;</button>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  {
+    topic: "Growing Up",
+    question: "What is one important thing your parents taught you?",
+    challenge: "Would you say your parents were patient teachers? Why or why not?",
+    words: ["patient"],
+  },
+  {
+    topic: "Growing Up",
+    question: "Did you grow up with brothers, sisters, or cousins? What was that like?",
+    challenge: "Was there a sibling or cousin who was especially generous or stubborn? Tell a story.",
+    words: ["sibling", "generous", "stubborn"],
+  },
+  {
+    topic: "Family Memories",
+    question: "What is a funny memory from your childhood with your family?",
+    challenge: "Do you have a homemade recipe or an unforgettable family tradition from your childhood?",
+    words: ["homemade", "unforgettable"],
+  },
+  {
+    topic: "Dating",
+    question: "What was your best date ever? What happened?",
+    challenge: "Describe a heartwarming or comforting moment from a date, even if the date itself was ordinary.",
+    words: ["heartwarming", "comforting"],
+  },
+  {
+    topic: "Work",
+    question: "Do you remember a kind co-worker from a job you had? What did they do?",
+    challenge: "Was there a co-worker who was especially reliable or supportive during a difficult deadline?",
+    words: ["reliable", "supportive", "deadline"],
+  },
+];
+
+let current = 0;
+const dotsEl = document.getElementById('dots');
+const cardTopic = document.getElementById('cardTopic');
+const cardQuestion = document.getElementById('cardQuestion');
+const challengeToggle = document.getElementById('challengeToggle');
+const challengeBox = document.getElementById('challengeBox');
+const challengeQuestion = document.getElementById('challengeQuestion');
+const challengeWords = document.getElementById('challengeWords');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+const STAR_SVG = '<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.9L22 9.6l-5.4 4.9L18 22l-6-3.6L6 22l1.4-7.5L2 9.6l7.1-0.7L12 2z" fill="none" stroke="#C9A227" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  CARDS.forEach((_, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i < current ? ' done' : '') + (i === current ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+}
+
+function render(){
+  const item = CARDS[current];
+  cardTopic.textContent = item.topic;
+  cardQuestion.textContent = item.question;
+  challengeQuestion.textContent = item.challenge;
+  challengeWords.innerHTML = 'Try using: ' + item.words.map(w => `<b>${w}</b>`).join(', ');
+  challengeBox.classList.remove('show');
+  challengeToggle.innerHTML = STAR_SVG + ' Show challenge question';
+
+  prevBtn.disabled = current === 0;
+  nextBtn.textContent = current === CARDS.length - 1 ? 'Restart \u21ba' : 'Next \u2192';
+
+  buildDots();
+}
+
+challengeToggle.addEventListener('click', () => {
+  const showing = challengeBox.classList.toggle('show');
+  challengeToggle.innerHTML = STAR_SVG + (showing ? ' Hide challenge question' : ' Show challenge question');
+});
+
+prevBtn.addEventListener('click', () => {
+  if (current > 0){ current--; render(); }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (current < CARDS.length - 1){ current++; } else { current = 0; }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
