@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speaking Discussion | Approach</title>
+<style>
+  :root {
+    --navy-dark: #0B1828;
+    --navy-mid: #0F2A47;
+    --red: #9E251A;
+    --blue: #4289BD;
+    --gray: #E8E8E8;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Georgia', 'Iowan Old Style', 'Palatino Linotype', serif;
+    background: var(--navy-dark);
+    color: var(--navy-dark);
+  }
+  body {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 24px;
+  }
+  .deck { width: 100%; max-width: 880px; }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px; padding: 0 6px;
+  }
+  .brand-mark {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--white); font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .brand-mark .logo-letters {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border: 2px solid var(--white); border-radius: 50%;
+    font-weight: 800; font-size: 14px; letter-spacing: -1px;
+  }
+  .brand-name {
+    font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.85;
+  }
+  .counter {
+    color: var(--white); font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px; letter-spacing: 0.04em; opacity: 0.85;
+  }
+  .card {
+    background: var(--white); border-radius: 6px; padding: 64px 56px; min-height: 380px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35); position: relative;
+  }
+  .card-number {
+    position: absolute; top: 24px; left: 28px;
+    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; color: var(--blue);
+    letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+  }
+  .question { font-size: 29px; line-height: 1.5; color: var(--navy-dark); text-align: left; }
+  .vocab {
+    color: var(--red); font-weight: 700; border-bottom: 2px dotted var(--red);
+    cursor: pointer; padding-bottom: 1px; position: relative;
+  }
+  .vocab.active { background: var(--gray); }
+  .tooltip {
+    display: none; position: absolute; left: 0; top: 100%; margin-top: 10px;
+    background: var(--navy-mid); color: var(--white);
+    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.4;
+    font-weight: 400; padding: 14px 18px; border-radius: 5px; width: 320px; max-width: 80vw;
+    z-index: 10; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  }
+  .tooltip::before {
+    content: ""; position: absolute; top: -7px; left: 22px;
+    border-left: 7px solid transparent; border-right: 7px solid transparent;
+    border-bottom: 7px solid var(--navy-mid);
+  }
+  .vocab.active .tooltip { display: block; }
+  .controls {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 22px; padding: 0 6px;
+  }
+  .dots { display: flex; gap: 8px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+  .dot.done { background: var(--blue); }
+  .dot.current { background: var(--white); }
+  button {
+    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 15px; letter-spacing: 0.04em;
+    text-transform: uppercase; font-weight: 600; padding: 13px 30px; border-radius: 4px;
+    border: none; cursor: pointer; transition: opacity 0.15s ease;
+  }
+  button:disabled { opacity: 0.3; cursor: default; }
+  #prevBtn { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.4); }
+  #nextBtn { background: var(--blue); color: var(--white); }
+  #nextBtn:hover:not(:disabled), #prevBtn:hover:not(:disabled) { opacity: 0.85; }
+  @media (max-width: 600px) {
+    .card { padding: 40px 26px; min-height: 300px; }
+    .question { font-size: 22px; }
+    .tooltip { width: 240px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+  <div class="topbar">
+    <div class="brand-mark">
+      <span class="logo-letters">A&Oslash;</span>
+      <span class="brand-name">Approach</span>
+    </div>
+    <div class="counter" id="counter">1 / 6</div>
+  </div>
+
+  <div class="card">
+    <div class="card-number">GROUP DISCUSSION</div>
+    <div class="question" id="question"></div>
+  </div>
+
+  <div class="controls">
+    <button id="prevBtn">Back</button>
+    <div class="dots" id="dots"></div>
+    <button id="nextBtn">Next</button>
+  </div>
+</div>
+
+<script>
+  const cards = [
+    { text: "Think of one moment last summer that truly <span class=\"vocab\" data-def=\"To surprise someone very much; to amaze.\">astonished</span> you. What happened, and why did it catch you so off guard?" },
+    { text: "So-called <span class=\"vocab\" data-def=\"Informal/slang: feeling sexually excited. As a genre label, it's used loosely to describe romance fiction full of sexual tension.\">horny</span> fantasy novels \u2014 think Fourth Wing or A Court of Thorns and Roses \u2014 are dominating bestseller lists right now. Could a genre like this ever shape culture in a meaningful way, or is it just escapism?" },
+    { text: "Some people <span class=\"vocab\" data-def=\"Informal: to treat something or someone as perfect or ideal, beyond criticism. Comes from the phrase 'to put someone on a pedestal.'\">pedestal</span> productivity and mindfulness, almost treating them like religions. Do you ever catch yourself doing that \u2014 and is it healthy?" },
+    { text: "Do your friends often <span class=\"vocab\" data-def=\"To choose not to take part in something.\">opt out</span> of activities you suggest? How do you usually feel when that happens?" },
+    { text: "What's one thing your mom, grandmother, or partner often <span class=\"vocab\" data-def=\"To talk about something at length, usually in an emotional or complaining way.\">rants about</span>? And while we're on the subject \u2014 any <span class=\"vocab\" data-def=\"Interesting, often scandalous information about other people's private lives.\">juicy gossip</span> you've picked up recently?" },
+    { text: "Is there something you often <span class=\"vocab\" data-def=\"To want something very strongly.\">crave</span> late at night, after midnight? What do you think causes it?" }
+  ];
+
+  let current = 0;
+  const questionEl = document.getElementById('question');
+  const counterEl = document.getElementById('counter');
+  const dotsEl = document.getElementById('dots');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function buildDots() {
+    dotsEl.innerHTML = '';
+    cards.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot';
+      d.id = 'dot-' + i;
+      dotsEl.appendChild(d);
+    });
+  }
+
+  function updateDots() {
+    cards.forEach((_, i) => {
+      const d = document.getElementById('dot-' + i);
+      d.classList.remove('done', 'current');
+      if (i < current) d.classList.add('done');
+      if (i === current) d.classList.add('current');
+    });
+  }
+
+  function render() {
+    questionEl.innerHTML = cards[current].text;
+    counterEl.textContent = (current + 1) + ' / ' + cards.length;
+    prevBtn.disabled = current === 0;
+    nextBtn.textContent = current === cards.length - 1 ? 'Restart' : 'Next';
+    updateDots();
+    attachVocabHandlers();
+  }
+
+  function attachVocabHandlers() {
+    document.querySelectorAll('.vocab').forEach(el => {
+      if (el.querySelector('.tooltip')) return;
+      const tip = document.createElement('span');
+      tip.className = 'tooltip';
+      tip.textContent = el.getAttribute('data-def');
+      el.appendChild(tip);
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasActive = el.classList.contains('active');
+        document.querySelectorAll('.vocab.active').forEach(v => v.classList.remove('active'));
+        if (!wasActive) el.classList.add('active');
+      });
+    });
+  }
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.vocab.active').forEach(v => v.classList.remove('active'));
+  });
+
+  nextBtn.addEventListener('click', () => {
+    current = (current === cards.length - 1) ? 0 : current + 1;
+    render();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (current > 0) { current--; render(); }
+  });
+
+  buildDots();
+  render();
+</script>
+
+</body>
+</html>
