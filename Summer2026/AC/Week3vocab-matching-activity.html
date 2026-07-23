@@ -135,12 +135,19 @@
     padding:9px 16px;
     cursor:grab;
     user-select:none;
+    -webkit-user-select:none;
+    touch-action:none;
     text-align:center;
     box-shadow:0 1px 2px rgba(18,37,66,.15);
   }
   .pt-chip:active{cursor:grabbing;}
-  .pt-chip.placed{
-    cursor:default;
+  .pt-chip.dragging{
+    position:fixed;
+    z-index:2000;
+    pointer-events:none;
+    cursor:grabbing;
+    box-shadow:0 8px 18px rgba(18,37,66,.28);
+    transform:scale(1.05);
   }
   .dropzone.correct .pt-chip{background:var(--green);}
   .dropzone.incorrect .pt-chip{background:var(--red);}
@@ -296,21 +303,18 @@
   const dropzones = document.querySelectorAll('.dropzone');
   const resultEl = document.getElementById('result');
 
-  let dragged = null;
+  function clearZoneStyles(zone){
+    zone.classList.remove('correct', 'incorrect', 'hover', 'filled');
+  }
+
+  let drag = null; // { chip, offsetX, offsetY, originParent, originNext }
 
   function createChip(word){
     const chip = document.createElement('div');
     chip.className = 'pt-chip';
     chip.textContent = word;
-    chip.draggable = true;
     chip.dataset.word = word;
-    chip.addEventListener('dragstart', (e) => {
-      dragged = chip;
-      setTimeout(() => chip.style.opacity = '0.4', 0);
-    });
-    chip.addEventListener('dragend', () => {
-      chip.style.opacity = '1';
-    });
+    chip.addEventListener('pointerdown', onPointerDown);
     return chip;
   }
 
@@ -319,48 +323,99 @@
     shuffle(words).forEach(w => bank.appendChild(createChip(w)));
   }
 
-  function clearZoneStyles(zone){
-    zone.classList.remove('correct', 'incorrect', 'hover');
+  function onPointerDown(e){
+    const chip = e.currentTarget;
+    e.preventDefault();
+
+    const rect = chip.getBoundingClientRect();
+    const originParent = chip.parentElement;
+
+    // if this chip is leaving a dropzone, that zone becomes empty again
+    if(originParent && originParent.classList.contains('dropzone')){
+      clearZoneStyles(originParent);
+    }
+
+    drag = {
+      chip,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+      originParent,
+      originNext: chip.nextSibling
+    };
+
+    chip.style.width = rect.width + 'px';
+    chip.classList.add('dragging');
+    document.body.appendChild(chip);
+    positionChip(e.clientX, e.clientY);
+
+    chip.setPointerCapture(e.pointerId);
+    chip.addEventListener('pointermove', onPointerMove);
+    chip.addEventListener('pointerup', onPointerUp);
+    chip.addEventListener('pointercancel', onPointerUp);
   }
 
-  dropzones.forEach(zone => {
-    zone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      zone.classList.add('hover');
-    });
-    zone.addEventListener('dragleave', () => {
-      zone.classList.remove('hover');
-    });
-    zone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      zone.classList.remove('hover');
-      if(!dragged) return;
+  function positionChip(clientX, clientY){
+    const chip = drag.chip;
+    chip.style.left = (clientX - drag.offsetX) + 'px';
+    chip.style.top = (clientY - drag.offsetY) + 'px';
+  }
 
-      // if zone already has a chip, send it back to the bank
-      const existing = zone.querySelector('.pt-chip');
-      if(existing){
-        bank.appendChild(existing);
+  function onPointerMove(e){
+    if(!drag) return;
+    positionChip(e.clientX, e.clientY);
+
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    dropzones.forEach(z => z.classList.remove('hover'));
+    const zone = under ? under.closest('.dropzone') : null;
+    if(zone) zone.classList.add('hover');
+  }
+
+  function onPointerUp(e){
+    if(!drag) return;
+    const chip = drag.chip;
+
+    chip.releasePointerCapture(e.pointerId);
+    chip.removeEventListener('pointermove', onPointerMove);
+    chip.removeEventListener('pointerup', onPointerUp);
+    chip.removeEventListener('pointercancel', onPointerUp);
+
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    const zoneEl = under ? under.closest('.dropzone') : null;
+    const bankEl = under ? under.closest('#bank') : null;
+
+    chip.classList.remove('dragging');
+    chip.style.position = '';
+    chip.style.left = '';
+    chip.style.top = '';
+    chip.style.width = '';
+
+    dropzones.forEach(z => z.classList.remove('hover'));
+
+    if(zoneEl){
+      const existing = zoneEl.querySelector('.pt-chip');
+      if(existing && existing !== chip) bank.appendChild(existing);
+      clearZoneStyles(zoneEl);
+      zoneEl.classList.add('filled');
+      zoneEl.appendChild(chip);
+    } else if(bankEl){
+      bank.appendChild(chip);
+    } else if(drag.originParent){
+      // dropped somewhere invalid — snap back to where it came from
+      if(drag.originNext){
+        drag.originParent.insertBefore(chip, drag.originNext);
+      } else {
+        drag.originParent.appendChild(chip);
       }
+      if(drag.originParent.classList.contains('dropzone')){
+        drag.originParent.classList.add('filled');
+      }
+    } else {
+      bank.appendChild(chip);
+    }
 
-      clearZoneStyles(zone);
-      zone.classList.add('filled');
-      zone.appendChild(dragged);
-      dragged = null;
-      resultEl.textContent = '';
-    });
-  });
-
-  // allow dropping back onto the bank to un-place a chip
-  bank.addEventListener('dragover', (e) => e.preventDefault());
-  bank.addEventListener('drop', (e) => {
-    e.preventDefault();
-    if(!dragged) return;
-    const parentZone = dragged.closest('.dropzone');
-    if(parentZone) clearZoneStyles(parentZone);
-    bank.appendChild(dragged);
-    dragged = null;
     resultEl.textContent = '';
-  });
+    drag = null;
+  }
 
   function checkAnswers(){
     let correctCount = 0;
@@ -392,10 +447,7 @@
   }
 
   function resetBoard(){
-    dropzones.forEach(zone => {
-      clearZoneStyles(zone);
-      zone.classList.remove('filled');
-    });
+    dropzones.forEach(zone => clearZoneStyles(zone));
     resultEl.textContent = '';
     populateBank();
   }
