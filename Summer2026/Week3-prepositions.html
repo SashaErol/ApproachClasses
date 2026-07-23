@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backyard BBQ Prepositions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#FF9A56;
+    --sky-bottom:#FFD37A;
+    --grass:#3E9A5B;
+    --grass-dark:#2E7C46;
+    --deck-light:#B4813F;
+    --deck-dark:#8B5A2B;
+    --ink:#3A2A18;
+    --flame:#E8562D;
+    --mustard:#FFC94A;
+    --pink:#E23A6E;
+    --board-bg:#2A1B10;
+    --board-glow:#FFD37A;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+    background:var(--sky-bottom);
+  }
+
+  /* ---------- SCENE BACKGROUND ---------- */
+  .scene{ position:fixed; inset:0; z-index:0; overflow:hidden; }
+  .sky{
+    position:absolute; top:0; left:0; right:0; height:56%;
+    background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
+  }
+  .sun{
+    position:absolute; top:8%; left:10%;
+    width:100px; height:100px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #FFF3D6, var(--mustard) 70%);
+    box-shadow:0 0 60px 18px rgba(255,201,74,0.5);
+  }
+  .lights{
+    position:absolute; top:4%; left:0; right:0; height:40px;
+  }
+  .lights svg{ width:100%; height:100%; display:block; }
+  .bulb{ animation:glow 1.8s ease-in-out infinite; }
+  .bulb:nth-child(odd){ animation-delay:0.5s; }
+  .bulb:nth-child(3n){ animation-delay:1s; }
+  @keyframes glow{ 0%,100%{ opacity:0.55; } 50%{ opacity:1; } }
+
+  .grass{
+    position:absolute; top:40%; left:0; right:0; height:20%;
+    background:linear-gradient(180deg, var(--grass), var(--grass-dark));
+  }
+  .deck{
+    position:absolute; top:60%; left:0; right:0; bottom:0;
+    background:repeating-linear-gradient(90deg, var(--deck-light) 0 46px, var(--deck-dark) 46px 50px);
+  }
+  .deck::before{
+    content:''; position:absolute; top:-2px; left:0; right:0; height:10px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.35), transparent);
+  }
+
+  .decor{ position:absolute; font-size:34px; filter:drop-shadow(0 4px 4px rgba(0,0,0,0.18)); }
+
+  /* ---------- LAYOUT ---------- */
+  #app{ position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:16px 16px 40px; }
+
+  .scoreboard-sign{ position:relative; margin:6px auto 18px; display:flex; flex-direction:column; align-items:center; }
+  .board{
+    background:var(--board-bg);
+    border:6px solid #1B1109;
+    border-radius:14px;
+    padding:10px 22px;
+    display:flex; gap:22px;
+    box-shadow:0 10px 0 #1B1109, 0 14px 18px rgba(0,0,0,0.35);
+  }
+  .board-item{ text-align:center; min-width:64px; }
+  .board-item .label{
+    display:block; font-weight:800; font-size:10px; letter-spacing:1.5px; color:#F2B23A; margin-bottom:2px;
+  }
+  .board-item .digits{
+    font-family:'VT323', monospace; font-size:30px; line-height:1;
+    color:var(--board-glow); text-shadow:0 0 8px rgba(255,211,122,0.9);
+  }
+  .board-item.lives .digits{ font-size:22px; text-shadow:none; }
+  .board-legs{ display:flex; gap:60px; margin-top:-2px; }
+  .board-legs span{ width:6px; height:26px; background:var(--deck-dark); display:block; border-radius:2px; }
+
+  .flicker{ animation:flicker 0.4s ease; }
+  @keyframes flicker{ 0%{opacity:0.2;} 40%{opacity:1;} 60%{opacity:0.4;} 100%{opacity:1;} }
+
+  .screen{ display:none; width:100%; max-width:640px; flex-direction:column; align-items:center; text-align:center; }
+  .screen.active{ display:flex; }
+
+  h1{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:clamp(26px,6vw,42px);
+    margin:6px 0 4px; color:var(--white); text-shadow:0 3px 0 rgba(58,42,24,0.5); line-height:1.05;
+  }
+  h1 span{ color:var(--mustard); }
+  .subtitle{
+    font-weight:700; color:var(--white); background:rgba(58,42,24,0.4);
+    padding:10px 18px; border-radius:14px; max-width:480px; margin:8px 0 22px;
+  }
+
+  .btn-play{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:20px;
+    color:var(--white); background:var(--flame);
+    border:none; padding:16px 34px; border-radius:50px; cursor:pointer;
+    box-shadow:0 6px 0 #B23E1D;
+    transition:transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .btn-play:hover{ transform:translateY(-2px); }
+  .btn-play:active{ transform:translateY(3px); box-shadow:0 2px 0 #B23E1D; }
+  .btn-play:focus-visible{ outline:3px solid var(--mustard); outline-offset:3px; }
+
+  /* Picnic tablecloth card */
+  .picnic-card{
+    position:relative;
+    background-color:#fff;
+    background-image:
+      linear-gradient(90deg, rgba(226,58,110,0.16) 50%, transparent 50%),
+      linear-gradient(rgba(226,58,110,0.16) 50%, transparent 50%);
+    background-size:26px 26px;
+    border-radius:18px;
+    padding:26px 24px 22px;
+    width:100%; max-width:560px;
+    box-shadow:0 14px 0 rgba(58,42,24,0.2), 0 18px 30px rgba(0,0,0,0.25);
+    border:4px solid var(--white);
+  }
+  .progress-track{ height:8px; width:100%; background:rgba(58,42,24,0.15); border-radius:6px; overflow:hidden; margin-bottom:18px; }
+  .progress-fill{ height:100%; background:var(--flame); width:0%; transition:width 0.4s ease; }
+  .sentence{
+    font-family:'Baloo 2', sans-serif; font-size:clamp(18px,4vw,24px); font-weight:700;
+    color:var(--ink); margin-bottom:22px; line-height:1.4;
+  }
+  .blank{ display:inline-block; min-width:70px; border-bottom:3px dashed var(--pink); color:transparent; }
+  .options{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:16px; }
+  .opt-btn{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:16px;
+    padding:14px 4px; border-radius:14px; border:none; cursor:pointer;
+    color:var(--white); background:linear-gradient(180deg,#4CB57A,#2E9457);
+    box-shadow:0 5px 0 #1F7A44;
+    transition:transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+  }
+  .opt-btn:hover:not(:disabled){ transform:translateY(-2px); filter:brightness(1.06); }
+  .opt-btn:active:not(:disabled){ transform:translateY(3px); box-shadow:0 2px 0 #1F7A44; }
+  .opt-btn:focus-visible{ outline:3px solid var(--mustard); outline-offset:2px; }
+  .opt-btn:disabled{ cursor:default; }
+  .opt-btn.correct{ background:linear-gradient(180deg,#FFCB5C,#F2A22A); box-shadow:0 5px 0 #C97D14; }
+  .opt-btn.wrong{ background:linear-gradient(180deg,#FF7B6A,var(--pink)); box-shadow:0 5px 0 #A81E52; }
+  .opt-btn.dim{ opacity:0.5; }
+
+  .feedback{ min-height:30px; font-weight:800; font-size:16px; }
+  .feedback.good{ color:#B9700F; }
+  .feedback.bad{ color:#C6265B; }
+  .feedback .streak{ color:var(--flame); }
+
+  .icon-pop{
+    position:absolute; top:-46px; left:50%; transform:translateX(-50%);
+    font-size:40px; filter:drop-shadow(0 6px 6px rgba(0,0,0,0.25));
+  }
+  .icon-pop.flip{ animation:flip 0.9s ease; }
+  @keyframes flip{
+    0%{ transform:translate(-50%,0) rotate(0deg); }
+    40%{ transform:translate(10px,-70px) rotate(200deg); }
+    100%{ transform:translate(-50%,0) rotate(360deg); }
+  }
+  .icon-pop.melt{ animation:melt 0.8s ease forwards; }
+  @keyframes melt{
+    0%{ transform:translate(-50%,0) scale(1); opacity:1; }
+    100%{ transform:translate(-50%,20px) scale(0.5); opacity:0.15; }
+  }
+  .picnic-card.shake{ animation:shake 0.4s ease; }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-6px); }
+    75%{ transform:translateX(6px); }
+  }
+
+  .end-card{
+    background:rgba(255,255,255,0.95); border-radius:20px; padding:30px 26px;
+    box-shadow:0 14px 30px rgba(0,0,0,0.25); max-width:480px; width:100%;
+  }
+  .end-card h2{ font-family:'Baloo 2', sans-serif; font-size:28px; margin:0 0 6px; color:var(--ink); }
+  .end-stats{ display:flex; justify-content:center; gap:22px; margin:18px 0; flex-wrap:wrap; }
+  .end-stat{ text-align:center; }
+  .end-stat .num{ font-family:'VT323', monospace; font-size:34px; color:var(--flame); }
+  .end-stat .lbl{ font-size:12px; font-weight:800; letter-spacing:1px; color:#8a6a4a; text-transform:uppercase; }
+  .end-msg{ font-weight:700; margin-bottom:6px; }
+
+  @media (max-width:480px){
+    .options{ grid-template-columns:repeat(2,1fr); }
+    .board{ gap:10px; padding:8px 12px; }
+    .board-item{ min-width:44px; }
+    .board-item .digits{ font-size:22px; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .icon-pop.flip, .icon-pop.melt, .picnic-card.shake, .bulb, .flicker{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <div class="sky"></div>
+  <div class="sun"></div>
+  <div class="lights">
+    <svg viewBox="0 0 800 40" preserveAspectRatio="none">
+      <path d="M0,4 Q200,40 400,4 T800,4" fill="none" stroke="#5c4324" stroke-width="2"/>
+      <circle class="bulb" cx="40" cy="10" r="6" fill="#FFC94A"/>
+      <circle class="bulb" cx="120" cy="24" r="6" fill="#FF9A56"/>
+      <circle class="bulb" cx="200" cy="30" r="6" fill="#FFC94A"/>
+      <circle class="bulb" cx="280" cy="24" r="6" fill="#E23A6E"/>
+      <circle class="bulb" cx="360" cy="10" r="6" fill="#FFC94A"/>
+      <circle class="bulb" cx="440" cy="10" r="6" fill="#FF9A56"/>
+      <circle class="bulb" cx="520" cy="24" r="6" fill="#FFC94A"/>
+      <circle class="bulb" cx="600" cy="30" r="6" fill="#E23A6E"/>
+      <circle class="bulb" cx="680" cy="24" r="6" fill="#FFC94A"/>
+      <circle class="bulb" cx="760" cy="10" r="6" fill="#FF9A56"/>
+    </svg>
+  </div>
+  <div class="grass"></div>
+  <div class="deck"></div>
+  <div class="decor" style="left:6%; bottom:10%; font-size:44px;">🔥</div>
+  <div class="decor" style="right:8%; bottom:10%; font-size:40px;">🧊</div>
+  <div class="decor" style="left:16%; bottom:26%; font-size:26px;">⛱️</div>
+  <div class="decor" style="right:18%; bottom:24%; font-size:26px;">🎶</div>
+</div>
+
+<div id="app">
+
+  <div class="scoreboard-sign">
+    <div class="board">
+      <div class="board-item">
+        <span class="label">SCORE</span>
+        <span class="digits" id="scoreDisplay">000</span>
+      </div>
+      <div class="board-item">
+        <span class="label">ROUND</span>
+        <span class="digits" id="roundDisplay">01/12</span>
+      </div>
+      <div class="board-item lives">
+        <span class="label">ICE</span>
+        <span class="digits" id="livesDisplay">🧊🧊🧊</span>
+      </div>
+    </div>
+    <div class="board-legs"><span></span><span></span></div>
+  </div>
+
+  <main id="screen-start" class="screen active">
+    <h1>Backyard BBQ<br><span>Prepositions</span></h1>
+    <p class="subtitle">Get the patio ready! Choose the right word before the ice melts — 12 rounds, 5 words: UNDER / BEHIND / ON / AT / IN.</p>
+    <button class="btn-play" id="startBtn">Light the grill 🔥</button>
+  </main>
+
+  <main id="screen-game" class="screen">
+    <div class="picnic-card" id="picnicCard">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="icon-pop" id="iconPop">🍔</div>
+      <div class="sentence" id="sentenceText"></div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </main>
+
+  <main id="screen-end" class="screen">
+    <div class="end-card">
+      <h2 id="endTitle">Party's over!</h2>
+      <p class="end-msg" id="endMsg"></p>
+      <div class="end-stats">
+        <div class="end-stat"><div class="num" id="finalScore">0</div><div class="lbl">Score</div></div>
+        <div class="end-stat"><div class="num" id="finalAccuracy">0%</div><div class="lbl">Accuracy</div></div>
+        <div class="end-stat"><div class="num" id="finalBest">0</div><div class="lbl">Best</div></div>
+      </div>
+      <button class="btn-play" id="playAgainBtn">Play again</button>
+    </div>
+  </main>
+
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    { sentence: "We sit ___ the umbrella, in the shade.", answer: "under", options: ["under","on","in"] },
+    { sentence: "The cooler is ___ the table, out of the sun.", answer: "under", options: ["under","on","behind"] },
+    { sentence: "The grill is ___ the house, near the wall.", answer: "behind", options: ["behind","on","in"] },
+    { sentence: "My neighbor's yard is ___ the fence.", answer: "behind", options: ["behind","at","on"] },
+    { sentence: "The snacks are ___ the table.", answer: "on", options: ["on","in","under"] },
+    { sentence: "The speaker is ___ the chair, playing music.", answer: "on", options: ["on","under","in"] },
+    { sentence: "My friends are ___ the gate.", answer: "at", options: ["at","in","on"] },
+    { sentence: "Let's meet ___ the barbecue this weekend.", answer: "at", options: ["at","in","on"] },
+    { sentence: "The drinks are ___ the fridge.", answer: "in", options: ["in","on","at"] },
+    { sentence: "The extra chairs are ___ the garage.", answer: "in", options: ["in","on","under"] },
+    { sentence: "The music is playing ___ the patio.", answer: "on", options: ["on","at","in"] },
+    { sentence: "The extra ice is ___ the cooler.", answer: "in", options: ["in","on","under"] },
+  ];
+
+  const TOTAL_ROUNDS = QUESTIONS.length;
+  const MAX_LIVES = 3;
+
+  let deck = [];
+  let round = 0;
+  let score = 0;
+  let streak = 0;
+  let lives = MAX_LIVES;
+  let correctCount = 0;
+  let answered = false;
+  let bestScore = 0;
+
+  const el = (id) => document.getElementById(id);
+  const screens = { start: el('screen-start'), game: el('screen-game'), end: el('screen-end') };
+
+  function showScreen(name){
+    Object.values(screens).forEach(s => s.classList.remove('active'));
+    screens[name].classList.add('active');
+  }
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function flick(node){
+    node.classList.remove('flicker');
+    void node.offsetWidth;
+    node.classList.add('flicker');
+  }
+
+  function updateBoard(){
+    el('scoreDisplay').textContent = String(score).padStart(3,'0');
+    el('roundDisplay').textContent = String(Math.min(round+1,TOTAL_ROUNDS)).padStart(2,'0') + '/' + TOTAL_ROUNDS;
+    el('livesDisplay').textContent = '🧊'.repeat(lives) + '💧'.repeat(MAX_LIVES-lives);
+    flick(el('scoreDisplay'));
+  }
+
+  function startGame(){
+    deck = shuffle(QUESTIONS);
+    round = 0; score = 0; streak = 0; lives = MAX_LIVES; correctCount = 0;
+    updateBoard();
+    showScreen('game');
+    renderRound();
+  }
+
+  function renderRound(){
+    answered = false;
+    const q = deck[round];
+    el('sentenceText').innerHTML = q.sentence.replace('___', '<span class="blank">_____</span>');
+    el('progressFill').style.width = (round/TOTAL_ROUNDS*100) + '%';
+    el('feedback').textContent = '';
+    el('feedback').className = 'feedback';
+    const iconPop = el('iconPop');
+    iconPop.className = 'icon-pop';
+    iconPop.textContent = '🍔';
+    el('picnicCard').classList.remove('shake');
+
+    const container = el('optionsContainer');
+    container.innerHTML = '';
+    const opts = shuffle(q.options);
+    opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.type = 'button';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => selectOption(opt, btn, q));
+      container.appendChild(btn);
+    });
+    updateBoard();
+  }
+
+  function selectOption(chosen, btnEl, q){
+    if(answered) return;
+    answered = true;
+    const buttons = Array.from(el('optionsContainer').children);
+    buttons.forEach(b => { b.disabled = true; if(b !== btnEl) b.classList.add('dim'); });
+
+    const fb = el('feedback');
+    const iconPop = el('iconPop');
+
+    if(chosen === q.answer){
+      correctCount++;
+      streak++;
+      let gained = 10;
+      let bonusMsg = '';
+      if(streak >= 3){
+        gained += 5;
+        bonusMsg = ' <span class="streak">🔥 Streak bonus +5!</span>';
+      }
+      score += gained;
+      btnEl.classList.remove('dim');
+      btnEl.classList.add('correct');
+      fb.className = 'feedback good';
+      fb.innerHTML = 'Nice! +' + gained + ' points 🍔' + bonusMsg;
+      iconPop.textContent = '🍔';
+      iconPop.classList.add('flip');
+    } else {
+      streak = 0;
+      lives--;
+      btnEl.classList.remove('dim');
+      btnEl.classList.add('wrong');
+      buttons.forEach(b => { if(b.textContent === q.answer){ b.classList.remove('dim'); b.classList.add('correct'); } });
+      fb.className = 'feedback bad';
+      fb.textContent = "Not quite — it's \"" + q.answer + "\". The ice is melting! 🧊";
+      iconPop.textContent = '🧊';
+      iconPop.classList.add('melt');
+      el('picnicCard').classList.add('shake');
+    }
+
+    updateBoard();
+
+    setTimeout(() => {
+      if(lives <= 0){
+        endGame('lost');
+        return;
+      }
+      round++;
+      if(round >= TOTAL_ROUNDS){
+        endGame('finished');
+        return;
+      }
+      renderRound();
+    }, 1400);
+  }
+
+  function endGame(reason){
+    el('progressFill').style.width = '100%';
+    if(score > bestScore) bestScore = score;
+
+    const accuracy = Math.round((correctCount/TOTAL_ROUNDS)*100);
+    let title, msg;
+
+    if(reason === 'lost'){
+      title = 'All melted! 🧊';
+      msg = "The ice ran out before the party ended. Grab more ice and try again!";
+    } else if(accuracy === 100){
+      title = 'Grill Master! 🏆';
+      msg = 'Perfect party — every answer was spot on!';
+    } else if(accuracy >= 75){
+      title = 'Great host! 🍔';
+      msg = "You've nearly mastered these prepositions.";
+    } else if(accuracy >= 50){
+      title = 'Nice party! ☀️';
+      msg = 'A solid effort — a little more practice and you\'ll be unstoppable.';
+    } else {
+      title = 'Keep practicing! 🧊';
+      msg = 'Review UNDER / BEHIND / ON / AT / IN and try again.';
+    }
+
+    el('endTitle').textContent = title;
+    el('endMsg').textContent = msg;
+    el('finalScore').textContent = score;
+    el('finalAccuracy').textContent = accuracy + '%';
+    el('finalBest').textContent = bestScore;
+
+    showScreen('end');
+  }
+
+  el('startBtn').addEventListener('click', startGame);
+  el('playAgainBtn').addEventListener('click', startGame);
+
+  updateBoard();
+})();
+</script>
+
+</body>
+</html>
