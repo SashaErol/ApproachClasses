@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matching Activity · Vocabulary</title>
+<style>
+  :root{
+    --navy:#1E3A5F;
+    --navy-deep:#122542;
+    --green:#2E7D4F;
+    --red:#C0392B;
+    --gold:#D4A017;
+    --paper:#F7F4EC;
+    --ink:#22314B;
+    --line:#DCD5C4;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Georgia', 'Iowan Old Style', serif;
+    color:var(--ink);
+    padding:32px 16px 80px;
+  }
+
+  header{
+    max-width:760px;
+    margin:0 auto 26px;
+    text-align:center;
+  }
+
+  .kicker{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--red);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+
+  h1{
+    font-size:clamp(26px,4vw,36px);
+    margin:0 0 10px;
+    color:var(--navy-deep);
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+
+  .sub{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14px;
+    color:#5b6577;
+    max-width:520px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+
+  .brand-bar{
+    height:4px;
+    max-width:760px;
+    margin:0 auto 30px;
+    border-radius:3px;
+    background:linear-gradient(90deg, var(--navy) 0 25%, var(--green) 25% 50%, var(--gold) 50% 75%, var(--red) 75% 100%);
+  }
+
+  .board{
+    max-width:760px;
+    margin:0 auto;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:26px 28px;
+    box-shadow:0 1px 2px rgba(18,37,66,.04);
+  }
+
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    align-items:center;
+    margin-bottom:12px;
+  }
+
+  .en-card{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-weight:700;
+    font-size:15px;
+    color:var(--navy-deep);
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-left:5px solid var(--navy);
+    border-radius:6px;
+    padding:12px 14px;
+  }
+
+  .dropzone{
+    min-height:44px;
+    border:2px dashed var(--line);
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px;
+    background:#fdfcf9;
+    transition:.15s;
+  }
+  .dropzone.hover{
+    border-color:var(--gold);
+    background:#FBF3DC;
+  }
+  .dropzone.filled{
+    border-style:solid;
+    border-color:var(--line);
+  }
+  .dropzone.correct{
+    border-color:var(--green);
+    background:#EAF5EE;
+  }
+  .dropzone.incorrect{
+    border-color:var(--red);
+    background:#FBEAE8;
+  }
+
+  .pt-chip{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-weight:700;
+    font-size:14px;
+    color:#fff;
+    background:var(--navy);
+    border-radius:20px;
+    padding:9px 16px;
+    cursor:grab;
+    user-select:none;
+    text-align:center;
+    box-shadow:0 1px 2px rgba(18,37,66,.15);
+  }
+  .pt-chip:active{cursor:grabbing;}
+  .pt-chip.placed{
+    cursor:default;
+  }
+  .dropzone.correct .pt-chip{background:var(--green);}
+  .dropzone.incorrect .pt-chip{background:var(--red);}
+
+  .bank-label{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#8a92a3;
+    margin:22px 0 10px;
+  }
+
+  .bank{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    min-height:44px;
+    padding:12px;
+    background:var(--paper);
+    border:1px dashed var(--line);
+    border-radius:8px;
+  }
+
+  .controls{
+    max-width:760px;
+    margin:20px auto 0;
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .btn{
+    border:none;
+    padding:11px 22px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s;
+    font-family:inherit;
+  }
+  .btn-check{background:var(--navy-deep); color:#fff;}
+  .btn-check:hover{background:var(--navy);}
+  .btn-reset{background:#fff; color:var(--navy-deep); border:1px solid var(--line);}
+  .btn-reset:hover{background:var(--paper);}
+
+  .result{
+    max-width:760px;
+    margin:14px auto 0;
+    text-align:center;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:var(--navy-deep);
+    min-height:20px;
+  }
+
+  footer{
+    max-width:760px;
+    margin:36px auto 0;
+    text-align:center;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    color:#9aa1b0;
+  }
+
+  @media (max-width:560px){
+    .board{padding:18px 16px;}
+    .row{grid-template-columns:1fr 1fr; gap:10px;}
+    .en-card{font-size:13.5px; padding:10px;}
+    .pt-chip{font-size:12.5px; padding:8px 10px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Approach · Speaking &amp; Vocabulary</div>
+  <h1>Match to Portuguese</h1>
+  <p class="sub">Drag each Portuguese word to its English match. Then press "Check Answers."</p>
+</header>
+
+<div class="brand-bar"></div>
+
+<div class="board">
+
+  <div class="row">
+    <div class="en-card">wholesale</div>
+    <div class="dropzone" data-answer="atacado"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">membership</div>
+    <div class="dropzone" data-answer="associação (cartão de sócio)"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">in bulk</div>
+    <div class="dropzone" data-answer="a granel"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">leftovers</div>
+    <div class="dropzone" data-answer="sobras"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">embarrassed</div>
+    <div class="dropzone" data-answer="envergonhado(a)"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">waste</div>
+    <div class="dropzone" data-answer="desperdício"></div>
+  </div>
+
+  <div class="bank-label">Word Bank — drag from here</div>
+  <div class="bank" id="bank"></div>
+
+</div>
+
+<div class="controls">
+  <button class="btn btn-check" onclick="checkAnswers()">Check Answers</button>
+  <button class="btn btn-reset" onclick="resetBoard()">Reset</button>
+</div>
+
+<div class="result" id="result"></div>
+
+<footer>Approach · English for Real Life</footer>
+
+<script>
+  const words = [
+    "atacado",
+    "associação (cartão de sócio)",
+    "a granel",
+    "sobras",
+    "envergonhado(a)",
+    "desperdício"
+  ];
+
+  function shuffle(arr){
+    const a = [...arr];
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const bank = document.getElementById('bank');
+  const dropzones = document.querySelectorAll('.dropzone');
+  const resultEl = document.getElementById('result');
+
+  let dragged = null;
+
+  function createChip(word){
+    const chip = document.createElement('div');
+    chip.className = 'pt-chip';
+    chip.textContent = word;
+    chip.draggable = true;
+    chip.dataset.word = word;
+    chip.addEventListener('dragstart', (e) => {
+      dragged = chip;
+      setTimeout(() => chip.style.opacity = '0.4', 0);
+    });
+    chip.addEventListener('dragend', () => {
+      chip.style.opacity = '1';
+    });
+    return chip;
+  }
+
+  function populateBank(){
+    bank.innerHTML = '';
+    shuffle(words).forEach(w => bank.appendChild(createChip(w)));
+  }
+
+  function clearZoneStyles(zone){
+    zone.classList.remove('correct', 'incorrect', 'hover');
+  }
+
+  dropzones.forEach(zone => {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zone.classList.add('hover');
+    });
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('hover');
+    });
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('hover');
+      if(!dragged) return;
+
+      // if zone already has a chip, send it back to the bank
+      const existing = zone.querySelector('.pt-chip');
+      if(existing){
+        bank.appendChild(existing);
+      }
+
+      clearZoneStyles(zone);
+      zone.classList.add('filled');
+      zone.appendChild(dragged);
+      dragged = null;
+      resultEl.textContent = '';
+    });
+  });
+
+  // allow dropping back onto the bank to un-place a chip
+  bank.addEventListener('dragover', (e) => e.preventDefault());
+  bank.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if(!dragged) return;
+    const parentZone = dragged.closest('.dropzone');
+    if(parentZone) clearZoneStyles(parentZone);
+    bank.appendChild(dragged);
+    dragged = null;
+    resultEl.textContent = '';
+  });
+
+  function checkAnswers(){
+    let correctCount = 0;
+    let filledCount = 0;
+    dropzones.forEach(zone => {
+      const chip = zone.querySelector('.pt-chip');
+      zone.classList.remove('correct', 'incorrect');
+      if(chip){
+        filledCount++;
+        if(chip.dataset.word === zone.dataset.answer){
+          zone.classList.add('correct');
+          correctCount++;
+        } else {
+          zone.classList.add('incorrect');
+        }
+      }
+    });
+
+    if(filledCount < dropzones.length){
+      resultEl.style.color = 'var(--gold)';
+      resultEl.textContent = `Match all words first (${filledCount}/${dropzones.length} done).`;
+    } else if(correctCount === dropzones.length){
+      resultEl.style.color = 'var(--green)';
+      resultEl.textContent = `Great job! ${correctCount}/${dropzones.length} correct.`;
+    } else {
+      resultEl.style.color = 'var(--red)';
+      resultEl.textContent = `${correctCount}/${dropzones.length} correct. Try again!`;
+    }
+  }
+
+  function resetBoard(){
+    dropzones.forEach(zone => {
+      clearZoneStyles(zone);
+      zone.classList.remove('filled');
+    });
+    resultEl.textContent = '';
+    populateBank();
+  }
+
+  populateBank();
+</script>
+
+</body>
+</html>
