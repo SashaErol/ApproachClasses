@@ -189,6 +189,15 @@ const nextBtn = document.getElementById('nextBtn');
 const gameEl = document.getElementById('game');
 const endEl = document.getElementById('end');
 
+function shuffle(arr){
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function renderRound(){
   const round = ROUNDS[roundIndex];
   filledCount = 0;
@@ -199,7 +208,8 @@ function renderRound(){
   nextBtn.classList.remove('show');
 
   bankEl.innerHTML = '';
-  round.words.forEach(word => {
+  const shuffledWords = shuffle(round.words);
+  shuffledWords.forEach(word => {
     const chip = document.createElement('button');
     chip.className = 'chip';
     chip.textContent = word;
@@ -209,7 +219,8 @@ function renderRound(){
   });
 
   sentenceListEl.innerHTML = '';
-  round.sentences.forEach((s, i) => {
+  const shuffledSentences = shuffle(round.sentences);
+  shuffledSentences.forEach((s, i) => {
     const parts = s.text.split('____');
     const p = document.createElement('div');
     p.className = 'sentence';
