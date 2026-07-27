@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Fill in the Blank — Word Bank</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+    --good:#2F7D5C;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:22px 14px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:560px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(23px,6vw,28px); text-align:center; margin:0 0 6px;
+  }
+  .sub{
+    text-align:center; font-size:13px; color:var(--muted);
+    margin:0 0 6px; line-height:1.4;
+  }
+  .progress{
+    text-align:center; font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--darkblue); margin-bottom:16px;
+  }
+
+  .bank-label{
+    font-family:'Cambria',Georgia,serif; font-weight:700; font-size:12.5px;
+    color:var(--muted); text-align:center; margin-bottom:8px; letter-spacing:0.04em;
+  }
+  .bank{
+    display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+    margin-bottom:20px;
+  }
+  .chip{
+    border:1.5px solid var(--lightblue); background:var(--white); color:var(--darkblue);
+    border-radius:999px; padding:9px 16px; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  .chip.selected{ background:var(--lightblue); color:var(--white); }
+  .chip:disabled{ opacity:0.25; pointer-events:none; }
+
+  .sentence-list{ display:flex; flex-direction:column; gap:12px; margin-bottom:10px; }
+  .sentence{
+    border:1.5px solid var(--darkblue); border-radius:12px;
+    padding:12px 14px; font-size:15px; line-height:1.6;
+  }
+  .sentence .num{ font-weight:700; margin-right:2px; }
+  .blank{
+    display:inline-block; min-width:110px; text-align:center;
+    border-bottom:2px solid var(--gray); padding:2px 6px; margin:0 2px;
+    font-weight:700; color:var(--muted); cursor:pointer;
+  }
+  .blank.filled{
+    border-bottom-color:var(--good); color:var(--good); cursor:pointer;
+    background:rgba(47,125,92,0.07); border-radius:6px;
+  }
+  .blank.shake{ animation:shake 0.3s; border-bottom-color:var(--red); color:var(--red); }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-4px); }
+    75%{ transform:translateX(4px); }
+  }
+
+  .trans-popup{
+    display:none; border:1.5px solid var(--lightblue); border-radius:12px;
+    padding:10px 14px; margin-bottom:16px; background:rgba(56,140,202,0.06);
+    font-size:13.5px; color:var(--darkblue); text-align:left;
+  }
+  .trans-popup.show{ display:block; }
+  .trans-popup b{ color:var(--lightblue); }
+  .trans-popup .lang{ color:var(--muted); font-style:italic; }
+
+  .next-btn{
+    display:none; width:100%; padding:14px; border:none; border-radius:12px;
+    background:var(--darkblue); color:var(--white); font-weight:700; font-size:16px; cursor:pointer;
+  }
+  .next-btn.show{ display:block; }
+
+  .end{ display:none; text-align:center; padding-top:16px; }
+  .end.show{ display:block; }
+  .end h2{ font-family:'Cambria',Georgia,serif; font-size:24px; margin:0 0 8px; }
+  .end p{ font-size:14.5px; color:var(--muted); margin:0 0 16px; }
+  .restart-btn{
+    padding:12px 24px; border:none; border-radius:12px;
+    background:var(--lightblue); color:var(--white); font-weight:600; font-size:15px; cursor:pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Vocabulary Review</div>
+  <h1>Fill in the Blank</h1>
+  <p class="sub">Tap a word from the box, then tap the blank where it belongs. Once a blank is filled correctly, tap it to see the translation.</p>
+  <div class="progress" id="progress"></div>
+
+  <div id="game">
+    <div class="bank-label" id="roundLabel">WORD BANK</div>
+    <div class="bank" id="bank"></div>
+
+    <div class="sentence-list" id="sentenceList"></div>
+
+    <div class="trans-popup" id="transPopup"></div>
+
+    <button class="next-btn" id="nextBtn">Next round \u2192</button>
+  </div>
+
+  <div class="end" id="end">
+    <h2>All done!</h2>
+    <p>You filled in all 12 sentences correctly.</p>
+    <button class="restart-btn" id="restartBtn">Start over</button>
+  </div>
+</div>
+
+<script>
+const TRANSLATIONS = {
+  stubborn:    { pt: "teimoso",   es: "terco",     ar: "\u0639\u0646\u064a\u062f" },
+  generous:    { pt: "generoso",  es: "generoso",  ar: "\u0643\u0631\u064a\u0645" },
+  reliable:    { pt: "confi\u00e1vel", es: "confiable", ar: "\u0645\u0648\u062b\u0648\u0642" },
+  patient:     { pt: "paciente",  es: "paciente",  ar: "\u0635\u0628\u0648\u0631" },
+  honest:      { pt: "honesto",   es: "honesto",   ar: "\u0635\u0627\u062f\u0642" },
+  supportive:  { pt: "apoiador",  es: "solidario", ar: "\u062f\u0627\u0639\u0645" },
+  homemade:    { pt: "caseiro",   es: "casero",    ar: "\u0645\u0646\u0632\u0644\u064a" },
+  heartwarming:{ pt: "comovente", es: "conmovedor",ar: "\u0645\u0624\u062b\u0631" },
+  bland:       { pt: "insosso",   es: "soso",      ar: "\u0628\u0644\u0627 \u0637\u0639\u0645" },
+  savory:      { pt: "salgado",   es: "sabroso",   ar: "\u0645\u0627\u0644\u062d" },
+  stew:        { pt: "ensopado",  es: "guiso",     ar: "\u064a\u062e\u0646\u0629" },
+  deadline:    { pt: "prazo final", es: "fecha l\u00edmite", ar: "\u0627\u0644\u0645\u0648\u0639\u062f \u0627\u0644\u0646\u0647\u0627\u0626\u064a" },
+};
+
+const ROUNDS = [
+  {
+    label: "ROUND 1 \u00b7 WORD BANK",
+    words: ["honest", "patient", "homemade", "bland", "savory", "stew"],
+    sentences: [
+      { text: "My grandmother always tells the truth. She is very ____.", answer: "honest" },
+      { text: "The bus was two hours late, but Elena waited without getting angry. She was very ____.", answer: "patient" },
+      { text: "My mother made this bread at home. It is ____ bread.", answer: "homemade" },
+      { text: "The soup had no salt and no spice. It tasted ____.", answer: "bland" },
+      { text: "The chicken had a lot of flavor, with garlic and herbs. It was very ____.", answer: "savory" },
+      { text: "On cold days, my family eats a hot ____ with meat and vegetables.", answer: "stew" },
+    ],
+  },
+  {
+    label: "ROUND 2 \u00b7 WORD BANK",
+    words: ["stubborn", "generous", "reliable", "supportive", "heartwarming", "deadline"],
+    sentences: [
+      { text: "My brother never changes his mind, even when he is wrong. He is very ____.", answer: "stubborn" },
+      { text: "The volunteers gave their time and money to help the school. They were very ____.", answer: "generous" },
+      { text: "My coworker always finishes her work on time. She is very ____.", answer: "reliable" },
+      { text: "When I was sick, my friends called me every day. They were very ____.", answer: "supportive" },
+      { text: "The video of the dog waiting for its owner at the door was ____. Everyone cried.", answer: "heartwarming" },
+      { text: "I need to finish this report by Friday. That is my ____.", answer: "deadline" },
+    ],
+  },
+];
+
+let roundIndex = 0;
+let filledCount = 0;
+let selectedChip = null; // { word, el }
+
+const progressEl = document.getElementById('progress');
+const roundLabel = document.getElementById('roundLabel');
+const bankEl = document.getElementById('bank');
+const sentenceListEl = document.getElementById('sentenceList');
+const transPopup = document.getElementById('transPopup');
+const nextBtn = document.getElementById('nextBtn');
+const gameEl = document.getElementById('game');
+const endEl = document.getElementById('end');
+
+function renderRound(){
+  const round = ROUNDS[roundIndex];
+  filledCount = 0;
+  selectedChip = null;
+  roundLabel.textContent = round.label;
+  progressEl.textContent = `0 / ${round.sentences.length} filled`;
+  transPopup.classList.remove('show');
+  nextBtn.classList.remove('show');
+
+  bankEl.innerHTML = '';
+  round.words.forEach(word => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.word = word;
+    chip.addEventListener('click', () => selectChip(chip, word));
+    bankEl.appendChild(chip);
+  });
+
+  sentenceListEl.innerHTML = '';
+  round.sentences.forEach((s, i) => {
+    const parts = s.text.split('____');
+    const p = document.createElement('div');
+    p.className = 'sentence';
+    p.innerHTML = `<span class="num">${i + 1}.</span>${parts[0]}`;
+    const blank = document.createElement('span');
+    blank.className = 'blank';
+    blank.textContent = '__________';
+    blank.dataset.answer = s.answer;
+    blank.dataset.index = i;
+    blank.addEventListener('click', () => handleBlankClick(blank));
+    p.appendChild(blank);
+    p.appendChild(document.createTextNode(parts[1]));
+    sentenceListEl.appendChild(p);
+  });
+}
+
+function selectChip(chipEl, word){
+  if (chipEl.disabled) return;
+  if (selectedChip && selectedChip.el === chipEl){
+    chipEl.classList.remove('selected');
+    selectedChip = null;
+    return;
+  }
+  if (selectedChip) selectedChip.el.classList.remove('selected');
+  selectedChip = { word, el: chipEl };
+  chipEl.classList.add('selected');
+}
+
+function handleBlankClick(blankEl){
+  if (blankEl.classList.contains('filled')){
+    showTranslation(blankEl.dataset.answer);
+    return;
+  }
+  if (!selectedChip) return;
+
+  if (selectedChip.word === blankEl.dataset.answer){
+    blankEl.textContent = selectedChip.word;
+    blankEl.classList.add('filled');
+    selectedChip.el.disabled = true;
+    selectedChip.el.classList.remove('selected');
+    selectedChip = null;
+    filledCount++;
+    const round = ROUNDS[roundIndex];
+    progressEl.textContent = `${filledCount} / ${round.sentences.length} filled`;
+    if (filledCount === round.sentences.length){
+      nextBtn.classList.add('show');
+      nextBtn.textContent = roundIndex < ROUNDS.length - 1 ? 'Next round \u2192' : 'See results';
+    }
+  } else {
+    blankEl.classList.remove('shake');
+    void blankEl.offsetWidth;
+    blankEl.classList.add('shake');
+    setTimeout(() => blankEl.classList.remove('shake'), 350);
+    if (selectedChip) selectedChip.el.classList.remove('selected');
+    selectedChip = null;
+  }
+}
+
+function showTranslation(word){
+  const t = TRANSLATIONS[word];
+  if (!t) return;
+  const alreadyShowing = transPopup.classList.contains('show') && transPopup.dataset.word === word;
+  if (alreadyShowing){
+    transPopup.classList.remove('show');
+    transPopup.dataset.word = '';
+    return;
+  }
+  transPopup.innerHTML = `<b>${word}</b><br>
+    <span class="lang">Portugu\u00eas:</span> ${t.pt} &nbsp;&middot;&nbsp;
+    <span class="lang">Espa\u00f1ol:</span> ${t.es} &nbsp;&middot;&nbsp;
+    <span class="lang">\u0627\u0644\u0639\u0631\u0628\u064a\u0629:</span> ${t.ar}`;
+  transPopup.dataset.word = word;
+  transPopup.classList.add('show');
+}
+
+nextBtn.addEventListener('click', () => {
+  roundIndex++;
+  if (roundIndex < ROUNDS.length){
+    renderRound();
+  } else {
+    gameEl.style.display = 'none';
+    endEl.classList.add('show');
+  }
+});
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+  roundIndex = 0;
+  gameEl.style.display = 'block';
+  endEl.classList.remove('show');
+  renderRound();
+});
+
+renderRound();
+</script>
+</body>
+</html>
