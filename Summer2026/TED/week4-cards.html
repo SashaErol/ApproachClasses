@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Approach | Warm-Up Speaking Cards</title>
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    height:100%;
+    background:var(--navy-dark);
+    font-family:'Georgia', 'Iowan Old Style', serif;
+    color:var(--white);
+    overflow:hidden;
+  }
+  .stage{
+    position:relative;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  /* Logo mark, top-left corner */
+  .brand{
+    position:absolute;
+    top:22px;
+    left:26px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    opacity:0.9;
+  }
+  .brand svg{width:26px;height:26px;display:block;}
+  .brand span{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gray);
+  }
+
+  .counter{
+    position:absolute;
+    top:26px;
+    right:28px;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--blue);
+  }
+
+  .deck{
+    width:100%;
+    max-width:640px;
+    height:420px;
+    position:relative;
+  }
+
+  .card{
+    position:absolute;
+    inset:0;
+    background:var(--navy-mid);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:6px;
+    padding:52px 44px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    opacity:0;
+    transform:translateX(24px);
+    pointer-events:none;
+    transition:opacity 0.35s ease, transform 0.35s ease;
+  }
+  .card.active{
+    opacity:1;
+    transform:translateX(0);
+    pointer-events:auto;
+  }
+  .card.exit-left{
+    transform:translateX(-24px);
+  }
+
+  .eyebrow{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--red);
+    margin-bottom:18px;
+  }
+
+  .prompt{
+    font-size:26px;
+    line-height:1.5;
+    font-weight:400;
+    color:var(--white);
+  }
+
+  .term{
+    color:var(--blue);
+    font-weight:700;
+    cursor:pointer;
+    border-bottom:1px dotted var(--blue);
+    position:relative;
+  }
+  .term:hover{color:#5fa3d1;}
+
+  .tooltip{
+    display:none;
+    position:absolute;
+    bottom:calc(100% + 10px);
+    left:0;
+    background:var(--white);
+    color:var(--navy-dark);
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:13.5px;
+    line-height:1.4;
+    padding:10px 14px;
+    border-radius:4px;
+    width:240px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.35);
+    z-index:5;
+    font-weight:400;
+  }
+  .term.open .tooltip{display:block;}
+  .tooltip::after{
+    content:"";
+    position:absolute;
+    top:100%;
+    left:18px;
+    border:6px solid transparent;
+    border-top-color:var(--white);
+  }
+
+  .nav{
+    display:flex;
+    align-items:center;
+    gap:22px;
+    margin-top:26px;
+  }
+  .nav button{
+    background:none;
+    border:1px solid var(--blue);
+    color:var(--blue);
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:10px 20px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:background 0.2s, color 0.2s;
+  }
+  .nav button:hover:not(:disabled){
+    background:var(--blue);
+    color:var(--white);
+  }
+  .nav button:disabled{
+    opacity:0.3;
+    cursor:default;
+  }
+
+  .dots{
+    display:flex;
+    gap:8px;
+  }
+  .dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.25);
+    transition:background 0.2s;
+  }
+  .dot.active{background:var(--red);}
+
+  .hint{
+    margin-top:16px;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:11px;
+    color:rgba(255,255,255,0.4);
+    letter-spacing:0.04em;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="brand">
+    <svg viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="46" stroke="#4289BD" stroke-width="4"/>
+      <text x="50" y="63" text-anchor="middle" font-family="Georgia, serif" font-size="46" font-weight="700" fill="#FFFFFF">A</text>
+    </svg>
+    <span>Approach</span>
+  </div>
+  <div class="counter" id="counter">1 / 7</div>
+
+  <div class="deck" id="deck"></div>
+
+  <div class="nav">
+    <button id="prevBtn">Back</button>
+    <div class="dots" id="dots"></div>
+    <button id="nextBtn">Next</button>
+  </div>
+  <div class="hint">Tap a blue word for its meaning</div>
+</div>
+
+<script>
+const glossary = {
+  addictive: "causing a strong, hard-to-resist need to keep doing or using something",
+  gambling: "risking money on a game of chance, hoping to win more",
+  "psychological barriers": "mental blocks — fears or beliefs — that stop you from taking action",
+  engaged: "interested and mentally involved in something",
+  pushy: "too forceful in trying to get someone to do what you want",
+  "vice versa": "the other way around, with the two things reversed",
+  "guilty pleasure": "something you enjoy, even though you feel a little embarrassed about it",
+  "dumb-scrolling": "mindlessly scrolling through your phone with no real purpose",
+  zeitgeist: "the general mood and ideas that define a particular period of time"
+};
+
+function withTerms(text){
+  let out = text;
+  const keys = Object.keys(glossary).sort((a,b)=>b.length-a.length);
+  keys.forEach(k=>{
+    const re = new RegExp(k, "g");
+    out = out.replace(re, `<span class="term" data-term="${k}">${k}<span class="tooltip">${glossary[k]}</span></span>`);
+  });
+  return out;
+}
+
+const cardsData = [
+  { eyebrow:"Warm-Up · 01", text:"In your opinion, what are the most addictive things out there? Think about gambling, drugs, sugar, or coffee — which one do you think hooks people the hardest, and why?" },
+  { eyebrow:"Warm-Up · 02", text:"We all want to learn new skills, but something always gets in the way. Why do you think psychological barriers stop us from developing new skills?" },
+  { eyebrow:"Warm-Up · 03", text:"Not every habit is bad. Which routines or tools actually help keep you engaged and motivated — at work, at the gym, or in your studies?" },
+  { eyebrow:"Warm-Up · 04", text:"Honest opinion: do you think teachers at Approach are sometimes too pushy — or vice versa, not motivating enough? Where's the line?" },
+  { eyebrow:"Warm-Up · 05", text:"If you were in charge for a day, how would you improve our AAP/BP class? What activities would you want to add?" },
+  { eyebrow:"Warm-Up · 06", text:"Everyone has a guilty pleasure. Do you have one? Is dumb-scrolling through your phone one of them?" },
+  { eyebrow:"Warm-Up · 07", text:"Last one. If you had to describe the zeitgeist of the next decade in one sentence, what would it be?" }
+];
+
+const deck = document.getElementById("deck");
+const dotsEl = document.getElementById("dots");
+const counterEl = document.getElementById("counter");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+let current = 0;
+
+cardsData.forEach((c,i)=>{
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.index = i;
+  card.innerHTML = `<div class="eyebrow">${c.eyebrow}</div><div class="prompt">${withTerms(c.text)}</div>`;
+  deck.appendChild(card);
+
+  const dot = document.createElement("div");
+  dot.className = "dot";
+  dotsEl.appendChild(dot);
+});
+
+function render(){
+  document.querySelectorAll(".card").forEach((card,i)=>{
+    card.classList.toggle("active", i===current);
+  });
+  document.querySelectorAll(".dot").forEach((dot,i)=>{
+    dot.classList.toggle("active", i===current);
+  });
+  counterEl.textContent = `${current+1} / ${cardsData.length}`;
+  prevBtn.disabled = current===0;
+  nextBtn.disabled = current===cardsData.length-1;
+}
+
+prevBtn.addEventListener("click", ()=>{ if(current>0){ current--; render(); } });
+nextBtn.addEventListener("click", ()=>{ if(current<cardsData.length-1){ current++; render(); } });
+
+document.addEventListener("keydown", (e)=>{
+  if(e.key==="ArrowRight") nextBtn.click();
+  if(e.key==="ArrowLeft") prevBtn.click();
+});
+
+document.addEventListener("click", (e)=>{
+  const term = e.target.closest(".term");
+  document.querySelectorAll(".term.open").forEach(t=>{
+    if(t!==term) t.classList.remove("open");
+  });
+  if(term) term.classList.toggle("open");
+});
+
+render();
+</script>
+
+</body>
+</html>
