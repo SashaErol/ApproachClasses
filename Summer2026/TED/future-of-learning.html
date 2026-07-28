@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Approach Speaking Cards: The Future of Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Rubik', sans-serif;
+    background:var(--gray);
+    color:var(--navy-dark);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .deck-wrap{
+    width:100%;
+    max-width:660px;
+  }
+  .header{
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .header .brand{
+    color:var(--blue);
+    font-size:11px;
+    letter-spacing:2px;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .header h1{
+    font-size:21px;
+    margin-top:6px;
+    color:var(--navy-dark);
+  }
+  .header .subline{
+    font-size:13px;
+    color:var(--navy-mid);
+    margin-top:6px;
+  }
+
+  .dots{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin:16px 0 20px;
+  }
+  .dot{
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--gray);
+    border:2px solid var(--blue);
+    cursor:pointer;
+  }
+  .dot.active{ background:var(--red); border-color:var(--red); }
+
+  .card{
+    background:var(--white);
+    border-radius:18px;
+    box-shadow:0 12px 34px rgba(11,24,40,0.14);
+    overflow:hidden;
+    display:none;
+  }
+  .card.visible{ display:block; }
+
+  .card-top{
+    background:var(--navy-dark);
+    padding:20px 26px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .card-num{
+    font-size:12px;
+    font-weight:700;
+    color:var(--blue);
+    letter-spacing:1px;
+    background:rgba(66,137,189,0.18);
+    border:1px solid var(--blue);
+    border-radius:20px;
+    padding:4px 12px;
+    white-space:nowrap;
+  }
+  .card-top h2{
+    color:var(--white);
+    font-size:19px;
+    line-height:1.35;
+  }
+
+  .card-body{
+    padding:24px 26px 26px;
+  }
+  .idea-box{
+    background:var(--gray);
+    border-left:4px solid var(--blue);
+    border-radius:8px;
+    padding:14px 16px;
+    font-size:13.5px;
+    line-height:1.7;
+    color:var(--navy-mid);
+    margin-bottom:20px;
+  }
+  .idea-box strong{ color:var(--navy-dark); }
+
+  .section-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    color:var(--blue);
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+
+  .questions{
+    list-style:none;
+    margin-bottom:20px;
+  }
+  .questions li{
+    font-size:15px;
+    font-weight:500;
+    line-height:1.6;
+    color:var(--navy-dark);
+    padding:12px 0 12px 30px;
+    position:relative;
+    border-bottom:1px solid var(--gray);
+  }
+  .questions li:last-child{ border-bottom:none; }
+  .questions li::before{
+    content:attr(data-num);
+    position:absolute;
+    left:0; top:12px;
+    font-family:'Rubik', sans-serif;
+    font-weight:900;
+    font-size:14px;
+    color:var(--red);
+  }
+
+  .vocab-wrap{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .vword{
+    position:relative;
+    background:#EAF2F8;
+    border:1px solid var(--blue);
+    color:var(--navy-dark);
+    font-size:12.5px;
+    font-weight:700;
+    padding:6px 12px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .vword .tip{
+    display:none;
+    position:absolute;
+    bottom:130%;
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--navy-dark);
+    color:var(--white);
+    font-size:12px;
+    font-weight:500;
+    line-height:1.5;
+    padding:10px 12px;
+    border-radius:8px;
+    width:210px;
+    z-index:5;
+    box-shadow:0 8px 20px rgba(0,0,0,0.25);
+  }
+  .vword .tip::after{
+    content:"";
+    position:absolute;
+    top:100%; left:50%;
+    transform:translateX(-50%);
+    border:6px solid transparent;
+    border-top-color:var(--navy-dark);
+  }
+  .vword.open .tip{ display:block; }
+
+  .nav-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:20px;
+  }
+  .nav-btn{
+    background:var(--white);
+    border:2px solid var(--blue);
+    color:var(--navy-dark);
+    font-weight:700;
+    font-size:13px;
+    padding:11px 18px;
+    border-radius:9px;
+    cursor:pointer;
+  }
+  .nav-btn:hover{ background:#EAF2F8; }
+  .nav-btn.primary{
+    background:var(--red);
+    border-color:var(--red);
+    color:var(--white);
+  }
+  .nav-btn:disabled{
+    opacity:.4;
+    cursor:default;
+  }
+  .nav-label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--navy-mid);
+  }
+
+  @media (max-width:480px){
+    .card-top{ flex-direction:column; align-items:flex-start; gap:8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-wrap">
+  <div class="header">
+    <div class="brand">Approach International Student Center</div>
+    <h1>The Future of Learning: Speaking Cards</h1>
+    <div class="subline">Based on Luis von Ahn's TED Talk on Duolingo and the future of education</div>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+  <!-- CARD 1 -->
+  <div class="card visible" data-index="0">
+    <div class="card-top">
+      <span class="card-num">CARD 1</span>
+      <h2>Rethinking What "Education" Even Means</h2>
+    </div>
+    <div class="card-body">
+      <div class="idea-box">
+        <strong>From the talk:</strong> Von Ahn says traditional education tries to cover too much at once. Duolingo's founders decided to focus on just one subject — language learning — because it reaches a <span style="font-weight:700;">vast</span> global audience and can directly raise people's income.
+      </div>
+      <div class="section-label">Discuss</div>
+      <ul class="questions">
+        <li data-num="1">If you had to redesign school from scratch and could only teach one subject really well, which subject would you choose, and why?</li>
+        <li data-num="2">Do you think language learning deserves more attention in schools than it usually gets? Explain your reasoning.</li>
+        <li data-num="3">What's one skill you wish you had learned earlier in life, and how would learning it have changed things for you?</li>
+      </ul>
+      <div class="section-label">Useful language</div>
+      <div class="vocab-wrap">
+        <span class="vword">vast<span class="tip">Extremely large in size or amount.</span></span>
+        <span class="vword">to broaden<span class="tip">To make something wider or more general.</span></span>
+        <span class="vword">realm<span class="tip">An area of activity, interest, or knowledge.</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card" data-index="1">
+    <div class="card-top">
+      <span class="card-num">CARD 2</span>
+      <h2>Who Actually Gets Access to Education?</h2>
+    </div>
+    <div class="card-body">
+      <div class="idea-box">
+        <strong>From the talk:</strong> Building schools everywhere is far too expensive, but most of the world already owns a smartphone. Duolingo uses a freemium model: it's free for everyone, but <span style="font-weight:700;">well-off</span> users in richer countries pay to remove ads, which quietly funds free access for learners in poorer countries.
+      </div>
+      <div class="section-label">Discuss</div>
+      <ul class="questions">
+        <li data-num="1">Von Ahn calls this a form of "wealth redistribution." Do you think it's fair to expect wealthier users to fund free access for others? Why or why not?</li>
+        <li data-num="2">Besides smartphones, what other tools or systems could realistically bring quality education to people with very little money?</li>
+        <li data-num="3">Is access to a smartphone really the same as access to a good education? What's still missing?</li>
+      </ul>
+      <div class="section-label">Useful language</div>
+      <div class="vocab-wrap">
+        <span class="vword">well-off<span class="tip">Having a comfortable amount of money; financially secure.</span></span>
+        <span class="vword">wealth<span class="tip">A large amount of money or valuable possessions.</span></span>
+        <span class="vword">insecurity<span class="tip">A lack of confidence or a lack of safety and stability.</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card" data-index="2">
+    <div class="card-top">
+      <span class="card-num">CARD 3</span>
+      <h2>Broccoli vs. Dessert: Competing with Social Media</h2>
+    </div>
+    <div class="card-body">
+      <div class="idea-box">
+        <strong>From the talk:</strong> Von Ahn compares delivering education through a smartphone to serving broccoli right next to the most delicious dessert imaginable. Apps like TikTok and Instagram are built to be addictive, so an educational app has to compete for the exact same attention.
+      </div>
+      <div class="section-label">Discuss</div>
+      <ul class="questions">
+        <li data-num="1">Do you think it's actually possible for a learning app to feel as exciting as social media? Why does it barely ever happen?</li>
+        <li data-num="2">Think about your own phone habits. Which app has the strongest pull on your attention, and what exactly makes it so hard to put down?</li>
+        <li data-num="3">Should schools compete with social media for students' attention, or should they take a completely different approach instead?</li>
+      </ul>
+      <div class="section-label">Useful language</div>
+      <div class="vocab-wrap">
+        <span class="vword">barely<span class="tip">Almost not; only just.</span></span>
+        <span class="vword">crave<span class="tip">To want something very strongly.</span></span>
+        <span class="vword">to hoard<span class="tip">To collect and store large amounts of something.</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="card" data-index="3">
+    <div class="card-top">
+      <span class="card-num">CARD 4</span>
+      <h2>Streaks, Notifications, and the Psychology of Habit</h2>
+    </div>
+    <div class="card-body">
+      <div class="idea-box">
+        <strong>From the talk:</strong> A visible daily streak, plus notifications timed around a person's usual free time, keep millions of users coming back. Von Ahn even admits Duolingo's notifications can be "passive-aggressive" — but he argues it works, and that it helps people actually reach a goal instead of quietly giving up.
+      </div>
+      <div class="section-label">Discuss</div>
+      <ul class="questions">
+        <li data-num="1">Where's the line between a helpful reminder and manipulative design? Give a real example from an app you use.</li>
+        <li data-num="2">Have you ever kept doing something — a habit, a class, a hobby — mainly because you didn't want to "lose your streak"? What happened?</li>
+        <li data-num="3">If you were designing a habit-building feature for a study app, what would you add, and what would you deliberately leave out?</li>
+      </ul>
+      <div class="section-label">Useful language</div>
+      <div class="vocab-wrap">
+        <span class="vword">to reach a goal<span class="tip">To succeed in achieving something you were aiming for.</span></span>
+        <span class="vword">opt out<span class="tip">To choose not to take part in something.</span></span>
+        <span class="vword">mayhem<span class="tip">Wild confusion and disorder.</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="card" data-index="4">
+    <div class="card-top">
+      <span class="card-num">CARD 5</span>
+      <h2>A Future Where Screen Time Isn't the Enemy</h2>
+    </div>
+    <div class="card-body">
+      <div class="idea-box">
+        <strong>From the talk:</strong> Von Ahn's hope is a future where screen time isn't automatically seen as a bad thing, because a phone can deliver real, high-quality education to anyone, rich or poor. He believes the same tricks that keep people scrolling could eventually help people learn math, physics, or almost anything else.
+      </div>
+      <div class="section-label">Discuss</div>
+      <ul class="questions">
+        <li data-num="1">Do you share this hope, or do you think screen time will always come with a hidden cost, no matter the content? Explain.</li>
+        <li data-num="2">Ten years from now, how do you think people your age will be learning new skills? Will classrooms still exist?</li>
+        <li data-num="3">What's one fear you have about the future of technology and learning — and, on the other hand, one thing that gives you hope?</li>
+      </ul>
+      <div class="section-label">Useful language</div>
+      <div class="vocab-wrap">
+        <span class="vword">fear<span class="tip">A strong feeling caused by danger, worry, or threat.</span></span>
+        <span class="vword">therefore<span class="tip">As a result; for this reason.</span></span>
+        <span class="vword">to sink in<span class="tip">To be fully understood or realized, often after some time.</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn">◂ Previous</button>
+    <span class="nav-label" id="navLabel">Card 1 of 5</span>
+    <button class="nav-btn primary" id="nextBtn">Next ▸</button>
+  </div>
+</div>
+
+<script>
+const cards = document.querySelectorAll('.card');
+const dotsWrap = document.getElementById('dots');
+let current = 0;
+
+cards.forEach((c, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i===0 ? ' active' : '');
+  dot.addEventListener('click', () => goTo(i));
+  dotsWrap.appendChild(dot);
+});
+const dots = document.querySelectorAll('.dot');
+
+function goTo(i){
+  current = i;
+  cards.forEach((c, idx) => c.classList.toggle('visible', idx === i));
+  dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
+  document.getElementById('navLabel').textContent = 'Card ' + (i+1) + ' of ' + cards.length;
+  document.getElementById('prevBtn').disabled = (i === 0);
+  document.getElementById('nextBtn').textContent = (i === cards.length - 1) ? 'Restart ▸' : 'Next ▸';
+  document.querySelectorAll('.vword.open').forEach(v => v.classList.remove('open'));
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if(current > 0) goTo(current - 1);
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if(current < cards.length - 1) goTo(current + 1);
+  else goTo(0);
+});
+
+document.querySelectorAll('.vword').forEach(v => {
+  v.addEventListener('click', (e) => {
+    const wasOpen = v.classList.contains('open');
+    document.querySelectorAll('.vword.open').forEach(o => o.classList.remove('open'));
+    if(!wasOpen) v.classList.add('open');
+    e.stopPropagation();
+  });
+});
+document.addEventListener('click', () => {
+  document.querySelectorAll('.vword.open').forEach(o => o.classList.remove('open'));
+});
+
+goTo(0);
+</script>
+
+</body>
+</html>
