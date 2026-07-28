@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Approach Vocabulary Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Rubik', sans-serif;
+    background:var(--gray);
+    color:var(--navy-dark);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .card{
+    width:100%;
+    max-width:640px;
+    background:var(--white);
+    border-radius:18px;
+    box-shadow:0 12px 34px rgba(11,24,40,0.14);
+    overflow:hidden;
+  }
+  .header{
+    background:var(--navy-dark);
+    padding:22px 26px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .header .brand{
+    color:var(--blue);
+    font-size:11px;
+    letter-spacing:2px;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .header h1{
+    color:var(--white);
+    font-size:20px;
+    margin-top:4px;
+  }
+  .progress-wrap{
+    padding:16px 26px 0;
+  }
+  .progress-outer{
+    height:8px;
+    background:var(--gray);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .progress-inner{
+    height:100%;
+    width:0%;
+    background:var(--blue);
+    transition:width .3s ease;
+  }
+  .progress-label{
+    font-size:12px;
+    color:var(--navy-mid);
+    margin-top:8px;
+    font-weight:700;
+  }
+  .body-content{
+    padding:22px 26px 26px;
+  }
+
+  /* -- INTRO -- */
+  #intro p{
+    font-size:14px;
+    line-height:1.7;
+    color:var(--navy-mid);
+    margin-bottom:16px;
+  }
+  .word-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:22px;
+  }
+  .chip{
+    background:var(--gray);
+    border:1px solid var(--blue);
+    color:var(--navy-dark);
+    font-size:12px;
+    font-weight:700;
+    padding:6px 12px;
+    border-radius:20px;
+  }
+  .btn{
+    display:inline-block;
+    background:var(--red);
+    color:var(--white);
+    border:none;
+    font-size:14px;
+    font-weight:700;
+    padding:13px 24px;
+    border-radius:9px;
+    cursor:pointer;
+    letter-spacing:.5px;
+  }
+  .btn.secondary{ background:var(--blue); }
+  .btn:hover{ opacity:.92; }
+
+  /* -- QUESTION -- */
+  .q-tag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    color:var(--blue);
+    background:#EAF2F8;
+    border-radius:14px;
+    padding:4px 10px;
+    margin-bottom:12px;
+    letter-spacing:1px;
+  }
+  .q-sentence{
+    font-size:17px;
+    font-weight:700;
+    line-height:1.6;
+    color:var(--navy-dark);
+    margin-bottom:20px;
+  }
+  .q-sentence .blank{
+    display:inline-block;
+    min-width:90px;
+    border-bottom:3px solid var(--blue);
+  }
+  .options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .opt{
+    border:2px solid var(--gray);
+    background:var(--white);
+    border-radius:10px;
+    padding:13px 14px;
+    font-size:14px;
+    font-weight:700;
+    color:var(--navy-dark);
+    cursor:pointer;
+    text-align:left;
+    transition:border-color .15s, background .15s;
+  }
+  .opt:hover{ border-color:var(--blue); background:#EAF2F8; }
+  .opt.correct{ border-color:#2fae5c; background:#DFF5E6; color:#1f6b3a; }
+  .opt.incorrect{ border-color:var(--red); background:#FBE1DE; color:var(--red); }
+  .opt[disabled]{ cursor:default; }
+  .feedback{
+    min-height:20px;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:16px;
+  }
+  .feedback.good{ color:#1f6b3a; }
+  .feedback.bad{ color:var(--red); }
+  .nav-row{
+    display:flex;
+    justify-content:flex-end;
+  }
+
+  /* -- RESULTS -- */
+  #results{ display:none; text-align:center; }
+  #results .score{
+    font-size:40px;
+    font-weight:900;
+    color:var(--navy-dark);
+    margin-bottom:6px;
+  }
+  #results .score-sub{
+    color:var(--navy-mid);
+    font-size:14px;
+    margin-bottom:20px;
+  }
+  .recap{
+    text-align:left;
+    background:var(--gray);
+    border-radius:10px;
+    padding:14px 18px;
+    font-size:13px;
+    line-height:1.9;
+    margin-bottom:20px;
+  }
+  .recap .item{ margin-bottom:4px; }
+  .recap .miss{ color:var(--red); font-weight:700; }
+  .recap .hit{ color:#1f6b3a; font-weight:700; }
+
+  @media (max-width:420px){
+    .options{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div>
+      <div class="brand">Approach International Student Center</div>
+      <h1>Vocabulary Check: In Everyday Life</h1>
+    </div>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap" style="display:none;">
+    <div class="progress-outer"><div class="progress-inner" id="progressInner"></div></div>
+    <div class="progress-label" id="progressLabel">Question 1 of 9</div>
+  </div>
+
+  <div class="body-content">
+
+    <div id="intro">
+      <p>Read each everyday-life sentence and choose the word or phrase that fits best. Think about the whole sentence before you choose.</p>
+      <div class="word-chips">
+        <span class="chip">sink in</span>
+        <span class="chip">well-off</span>
+        <span class="chip">barely</span>
+        <span class="chip">reach a goal</span>
+        <span class="chip">wealth</span>
+        <span class="chip">insecurity</span>
+        <span class="chip">fear</span>
+        <span class="chip">therefore</span>
+        <span class="chip">vast</span>
+      </div>
+      <button class="btn" id="startBtn">Start the Check</button>
+    </div>
+
+    <div id="quiz" style="display:none;">
+      <div class="q-tag" id="qTag">QUESTION 1</div>
+      <div class="q-sentence" id="qSentence"></div>
+      <div class="options" id="optionsWrap"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="nav-row">
+        <button class="btn secondary" id="nextBtn" style="display:none;">Next Question</button>
+      </div>
+    </div>
+
+    <div id="results">
+      <div class="score" id="scoreText">0/9</div>
+      <div class="score-sub" id="scoreSub">Great effort!</div>
+      <div class="recap" id="recap"></div>
+      <button class="btn" id="retryBtn">Try Again</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    tag: "sink in",
+    sentence: "After the interview, David sat quietly in his car for ten minutes because the good news hadn't <span class='blank'>______</span> yet.",
+    options: ["sunk in", "worn off", "caught on", "faded away"],
+    correct: "sunk in"
+  },
+  {
+    tag: "well-off",
+    sentence: "Her neighbors seem pretty <span class='blank'>______</span> — they just bought a second car and a vacation home.",
+    options: ["well-off", "broke", "stranded", "humble"],
+    correct: "well-off"
+  },
+  {
+    tag: "barely",
+    sentence: "I was so tired this morning that I could <span class='blank'>______</span> get out of bed.",
+    options: ["barely", "eagerly", "constantly", "gradually"],
+    correct: "barely"
+  },
+  {
+    tag: "reach a goal",
+    sentence: "After months of saving every paycheck, Elena finally <span class='blank'>______</span> of buying her first car.",
+    options: ["reached her goal", "broke her goal", "missed her goal", "delayed her goal"],
+    correct: "reached her goal"
+  },
+  {
+    tag: "wealth",
+    sentence: "Even though he inherited a lot of <span class='blank'>______</span> from his grandfather, he still goes to work every single day.",
+    options: ["wealth", "poverty", "debt", "insecurity"],
+    correct: "wealth"
+  },
+  {
+    tag: "insecurity",
+    sentence: "Losing his job with no warning left him with a real sense of financial <span class='blank'>______</span>.",
+    options: ["insecurity", "stability", "comfort", "confidence"],
+    correct: "insecurity"
+  },
+  {
+    tag: "fear",
+    sentence: "Even confident public speakers can have a small <span class='blank'>______</span> of forgetting their words on stage.",
+    options: ["fear", "love", "talent", "memory"],
+    correct: "fear"
+  },
+  {
+    tag: "therefore",
+    sentence: "Her flight was delayed by six hours; <span class='blank'>______</span>, she missed her connecting train.",
+    options: ["therefore", "however", "meanwhile", "although"],
+    correct: "therefore"
+  },
+  {
+    tag: "vast",
+    sentence: "The old farm covers a <span class='blank'>______</span> area of land, far more than the family actually uses.",
+    options: ["vast", "tiny", "narrow", "limited"],
+    correct: "vast"
+  }
+];
+
+let order = [];
+let current = 0;
+let score = 0;
+let missed = [];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startQuiz(){
+  order = QUESTIONS.slice();
+  current = 0;
+  score = 0;
+  missed = [];
+  document.getElementById('intro').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  document.getElementById('progressWrap').style.display='block';
+  loadQuestion();
+}
+
+function loadQuestion(){
+  const q = order[current];
+  document.getElementById('qTag').textContent = "QUESTION " + (current+1) + " OF " + order.length;
+  document.getElementById('qSentence').innerHTML = q.sentence;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  document.getElementById('progressInner').style.width = ((current)/order.length*100) + '%';
+  document.getElementById('progressLabel').textContent = "Question " + (current+1) + " of " + order.length;
+
+  const opts = shuffle(q.options);
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+  opts.forEach(optText => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = optText;
+    btn.onclick = () => checkAnswer(optText, btn, q);
+    wrap.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected, btnEl, q){
+  const buttons = document.querySelectorAll('.opt');
+  buttons.forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('feedback');
+  if(selected === q.correct){
+    score++;
+    btnEl.classList.add('correct');
+    fb.textContent = "Correct — well done.";
+    fb.className = 'feedback good';
+  } else {
+    missed.push(q.tag);
+    btnEl.classList.add('incorrect');
+    buttons.forEach(b => { if(b.textContent === q.correct) b.classList.add('correct'); });
+    fb.textContent = "Not quite. The correct answer is \"" + q.correct + "\".";
+    fb.className = 'feedback bad';
+  }
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+
+function nextQuestion(){
+  current++;
+  if(current >= order.length){
+    showResults();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResults(){
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('progressWrap').style.display='none';
+  document.getElementById('results').style.display='block';
+  document.getElementById('scoreText').textContent = score + "/" + order.length;
+
+  let msg = "Solid work.";
+  if(score === order.length) msg = "Perfect score — every word is locked in.";
+  else if(score >= order.length - 2) msg = "Almost perfect — just a couple to review.";
+  else if(score <= 4) msg = "Let's review these words together in class.";
+  document.getElementById('scoreSub').textContent = msg;
+
+  const recap = document.getElementById('recap');
+  recap.innerHTML = '';
+  if(missed.length === 0){
+    const d = document.createElement('div');
+    d.className = 'item hit';
+    d.textContent = "No misses — every expression was used correctly.";
+    recap.appendChild(d);
+  } else {
+    const h = document.createElement('div');
+    h.className = 'item';
+    h.innerHTML = "<strong>Words to review:</strong>";
+    recap.appendChild(h);
+    missed.forEach(w => {
+      const d = document.createElement('div');
+      d.className = 'item miss';
+      d.textContent = "• " + w;
+      recap.appendChild(d);
+    });
+  }
+}
+
+document.getElementById('startBtn').addEventListener('click', startQuiz);
+document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+document.getElementById('retryBtn').addEventListener('click', startQuiz);
+</script>
+
+</body>
+</html>
