@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review Match · Vocabulary</title>
+<style>
+  :root{
+    --navy:#1E3A5F;
+    --navy-deep:#122542;
+    --green:#2E7D4F;
+    --red:#C0392B;
+    --gold:#D4A017;
+    --paper:#F7F4EC;
+    --ink:#22314B;
+    --line:#DCD5C4;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Georgia', 'Iowan Old Style', serif;
+    color:var(--ink);
+    padding:32px 16px 80px;
+  }
+
+  header{
+    max-width:760px;
+    margin:0 auto 26px;
+    text-align:center;
+  }
+
+  .kicker{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--red);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+
+  h1{
+    font-size:clamp(26px,4vw,36px);
+    margin:0 0 10px;
+    color:var(--navy-deep);
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+
+  .sub{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14px;
+    color:#5b6577;
+    max-width:520px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+
+  .brand-bar{
+    height:4px;
+    max-width:760px;
+    margin:0 auto 30px;
+    border-radius:3px;
+    background:linear-gradient(90deg, var(--navy) 0 25%, var(--green) 25% 50%, var(--gold) 50% 75%, var(--red) 75% 100%);
+  }
+
+  .board{
+    max-width:760px;
+    margin:0 auto;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:26px 28px;
+    box-shadow:0 1px 2px rgba(18,37,66,.04);
+  }
+
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    align-items:center;
+    margin-bottom:12px;
+  }
+
+  .en-card{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-weight:700;
+    font-size:15px;
+    color:var(--navy-deep);
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-left:5px solid var(--navy);
+    border-radius:6px;
+    padding:12px 14px;
+  }
+
+  .dropzone{
+    min-height:44px;
+    border:2px dashed var(--line);
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px;
+    background:#fdfcf9;
+    transition:.15s;
+  }
+  .dropzone.hover{
+    border-color:var(--gold);
+    background:#FBF3DC;
+  }
+  .dropzone.filled{
+    border-style:solid;
+    border-color:var(--line);
+  }
+  .dropzone.correct{
+    border-color:var(--green);
+    background:#EAF5EE;
+  }
+  .dropzone.incorrect{
+    border-color:var(--red);
+    background:#FBEAE8;
+  }
+
+  .pt-chip{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-weight:700;
+    font-size:14px;
+    color:#fff;
+    background:var(--navy);
+    border-radius:20px;
+    padding:9px 16px;
+    cursor:grab;
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:none;
+    text-align:center;
+    box-shadow:0 1px 2px rgba(18,37,66,.15);
+  }
+  .pt-chip:active{cursor:grabbing;}
+  .pt-chip.dragging{
+    position:fixed;
+    z-index:2000;
+    pointer-events:none;
+    cursor:grabbing;
+    box-shadow:0 8px 18px rgba(18,37,66,.28);
+    transform:scale(1.05);
+  }
+  .dropzone.correct .pt-chip{background:var(--green);}
+  .dropzone.incorrect .pt-chip{background:var(--red);}
+
+  .bank-label{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#8a92a3;
+    margin:22px 0 10px;
+  }
+
+  .bank{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    min-height:44px;
+    padding:12px;
+    background:var(--paper);
+    border:1px dashed var(--line);
+    border-radius:8px;
+  }
+
+  .controls{
+    max-width:760px;
+    margin:20px auto 0;
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .btn{
+    border:none;
+    padding:11px 22px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s;
+    font-family:inherit;
+  }
+  .btn-check{background:var(--navy-deep); color:#fff;}
+  .btn-check:hover{background:var(--navy);}
+  .btn-reset{background:#fff; color:var(--navy-deep); border:1px solid var(--line);}
+  .btn-reset:hover{background:var(--paper);}
+
+  .result{
+    max-width:760px;
+    margin:14px auto 0;
+    text-align:center;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:var(--navy-deep);
+    min-height:20px;
+  }
+
+  footer{
+    max-width:760px;
+    margin:36px auto 0;
+    text-align:center;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    color:#9aa1b0;
+  }
+
+  @media (max-width:560px){
+    .board{padding:18px 16px;}
+    .row{grid-template-columns:1fr 1fr; gap:10px;}
+    .en-card{font-size:13.5px; padding:10px;}
+    .pt-chip{font-size:12.5px; padding:8px 10px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Approach · Review · Weeks 1–4</div>
+  <h1>Match to Portuguese</h1>
+  <p class="sub">Drag each Portuguese word to its English match. Then press "Check Answers."</p>
+</header>
+
+<div class="brand-bar"></div>
+
+<div class="board">
+
+  <div class="row">
+    <div class="en-card">wholesale</div>
+    <div class="dropzone" data-answer="atacado"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">leftovers</div>
+    <div class="dropzone" data-answer="sobras"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">embarrassed</div>
+    <div class="dropzone" data-answer="envergonhado(a)"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">overweight</div>
+    <div class="dropzone" data-answer="acima do peso"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">stereotype</div>
+    <div class="dropzone" data-answer="estereótipo"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">cheap</div>
+    <div class="dropzone" data-answer="barato"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">patriotic</div>
+    <div class="dropzone" data-answer="patriota"></div>
+  </div>
+
+  <div class="row">
+    <div class="en-card">materialistic</div>
+    <div class="dropzone" data-answer="materialista"></div>
+  </div>
+
+  <div class="bank-label">Word Bank — drag from here</div>
+  <div class="bank" id="bank"></div>
+
+</div>
+
+<div class="controls">
+  <button class="btn btn-check" onclick="checkAnswers()">Check Answers</button>
+  <button class="btn btn-reset" onclick="resetBoard()">Reset</button>
+</div>
+
+<div class="result" id="result"></div>
+
+<footer>Approach · English for Real Life</footer>
+
+<script>
+  const words = [
+    "atacado",
+    "sobras",
+    "envergonhado(a)",
+    "acima do peso",
+    "estereótipo",
+    "barato",
+    "patriota",
+    "materialista"
+  ];
+
+  function shuffle(arr){
+    const a = [...arr];
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const bank = document.getElementById('bank');
+  const dropzones = document.querySelectorAll('.dropzone');
+  const resultEl = document.getElementById('result');
+
+  function clearZoneStyles(zone){
+    zone.classList.remove('correct', 'incorrect', 'hover', 'filled');
+  }
+
+  let drag = null;
+
+  function createChip(word){
+    const chip = document.createElement('div');
+    chip.className = 'pt-chip';
+    chip.textContent = word;
+    chip.dataset.word = word;
+    chip.addEventListener('pointerdown', onPointerDown);
+    return chip;
+  }
+
+  function populateBank(){
+    bank.innerHTML = '';
+    shuffle(words).forEach(w => bank.appendChild(createChip(w)));
+  }
+
+  function onPointerDown(e){
+    const chip = e.currentTarget;
+    e.preventDefault();
+
+    const rect = chip.getBoundingClientRect();
+    const originParent = chip.parentElement;
+
+    if(originParent && originParent.classList.contains('dropzone')){
+      clearZoneStyles(originParent);
+    }
+
+    drag = {
+      chip,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+      originParent,
+      originNext: chip.nextSibling
+    };
+
+    chip.style.width = rect.width + 'px';
+    chip.classList.add('dragging');
+    document.body.appendChild(chip);
+    positionChip(e.clientX, e.clientY);
+
+    chip.setPointerCapture(e.pointerId);
+    chip.addEventListener('pointermove', onPointerMove);
+    chip.addEventListener('pointerup', onPointerUp);
+    chip.addEventListener('pointercancel', onPointerUp);
+  }
+
+  function positionChip(clientX, clientY){
+    const chip = drag.chip;
+    chip.style.left = (clientX - drag.offsetX) + 'px';
+    chip.style.top = (clientY - drag.offsetY) + 'px';
+  }
+
+  function onPointerMove(e){
+    if(!drag) return;
+    positionChip(e.clientX, e.clientY);
+
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    dropzones.forEach(z => z.classList.remove('hover'));
+    const zone = under ? under.closest('.dropzone') : null;
+    if(zone) zone.classList.add('hover');
+  }
+
+  function onPointerUp(e){
+    if(!drag) return;
+    const chip = drag.chip;
+
+    chip.releasePointerCapture(e.pointerId);
+    chip.removeEventListener('pointermove', onPointerMove);
+    chip.removeEventListener('pointerup', onPointerUp);
+    chip.removeEventListener('pointercancel', onPointerUp);
+
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    const zoneEl = under ? under.closest('.dropzone') : null;
+    const bankEl = under ? under.closest('#bank') : null;
+
+    chip.classList.remove('dragging');
+    chip.style.position = '';
+    chip.style.left = '';
+    chip.style.top = '';
+    chip.style.width = '';
+
+    dropzones.forEach(z => z.classList.remove('hover'));
+
+    if(zoneEl){
+      const existing = zoneEl.querySelector('.pt-chip');
+      if(existing && existing !== chip) bank.appendChild(existing);
+      clearZoneStyles(zoneEl);
+      zoneEl.classList.add('filled');
+      zoneEl.appendChild(chip);
+    } else if(bankEl){
+      bank.appendChild(chip);
+    } else if(drag.originParent){
+      if(drag.originNext){
+        drag.originParent.insertBefore(chip, drag.originNext);
+      } else {
+        drag.originParent.appendChild(chip);
+      }
+      if(drag.originParent.classList.contains('dropzone')){
+        drag.originParent.classList.add('filled');
+      }
+    } else {
+      bank.appendChild(chip);
+    }
+
+    resultEl.textContent = '';
+    drag = null;
+  }
+
+  function checkAnswers(){
+    let correctCount = 0;
+    let filledCount = 0;
+    dropzones.forEach(zone => {
+      const chip = zone.querySelector('.pt-chip');
+      zone.classList.remove('correct', 'incorrect');
+      if(chip){
+        filledCount++;
+        if(chip.dataset.word === zone.dataset.answer){
+          zone.classList.add('correct');
+          correctCount++;
+        } else {
+          zone.classList.add('incorrect');
+        }
+      }
+    });
+
+    if(filledCount < dropzones.length){
+      resultEl.style.color = 'var(--gold)';
+      resultEl.textContent = `Match all words first (${filledCount}/${dropzones.length} done).`;
+    } else if(correctCount === dropzones.length){
+      resultEl.style.color = 'var(--green)';
+      resultEl.textContent = `Great job! ${correctCount}/${dropzones.length} correct.`;
+    } else {
+      resultEl.style.color = 'var(--red)';
+      resultEl.textContent = `${correctCount}/${dropzones.length} correct. Try again!`;
+    }
+  }
+
+  function resetBoard(){
+    dropzones.forEach(zone => clearZoneStyles(zone));
+    resultEl.textContent = '';
+    populateBank();
+  }
+
+  populateBank();
+</script>
+
+</body>
+</html>
