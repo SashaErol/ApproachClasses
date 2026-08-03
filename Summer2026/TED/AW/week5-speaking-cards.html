@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Speaking Cards — Work & Learning</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+    --gold:#C9A227;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:24px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:480px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(23px,6vw,28px); text-align:center; margin:0 0 14px;
+  }
+
+  .progress-row{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-bottom:18px;
+  }
+  .dot{ width:9px; height:9px; border-radius:50%; background:var(--gray); border:1.5px solid var(--gray); }
+  .dot.done{ background:var(--lightblue); border-color:var(--lightblue); }
+  .dot.active{ border-color:var(--darkblue); }
+
+  .card{
+    border:1.5px solid var(--darkblue);
+    border-radius:20px;
+    padding:34px 26px 28px;
+    min-height:200px;
+    display:flex; flex-direction:column; justify-content:center;
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .card-topic{
+    font-family:'Calibri','Segoe UI',sans-serif; font-weight:700; font-size:11.5px;
+    color:var(--lightblue); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;
+  }
+  .card-question{
+    font-family:'Cambria',Georgia,serif; font-weight:700; font-style:italic;
+    font-size:19px; line-height:1.5; color:var(--darkblue);
+  }
+
+  .challenge-toggle{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:11px; border:1.5px dashed var(--gold); border-radius:12px;
+    background:var(--white); color:var(--gold); font-weight:700; font-size:13px;
+    cursor:pointer; margin-bottom:10px;
+  }
+
+  .challenge-box{
+    display:none;
+    border:1.5px solid var(--gold);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:16px;
+    background:rgba(201,162,39,0.05);
+  }
+  .challenge-box.show{ display:block; }
+  .challenge-label{
+    display:flex; align-items:center; gap:6px;
+    font-family:'Calibri','Segoe UI',sans-serif; font-weight:700; font-size:11px;
+    color:var(--gold); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;
+  }
+  .challenge-question{
+    font-family:'Cambria',Georgia,serif; font-style:italic; font-size:15px;
+    line-height:1.5; color:var(--darkblue);
+  }
+
+  .nav-row{ display:flex; gap:10px; }
+  .nav-btn{
+    flex:1; padding:14px; border:1.5px solid var(--darkblue); background:var(--white);
+    color:var(--darkblue); border-radius:12px; font-weight:700; font-size:14.5px; cursor:pointer;
+  }
+  .nav-btn:disabled{ opacity:0.35; cursor:default; }
+  .nav-btn.primary{ background:var(--darkblue); color:var(--white); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Warm Up · Speaking</div>
+  <h1>Work &amp; Learning</h1>
+
+  <div class="progress-row" id="dots"></div>
+
+  <div class="card">
+    <div class="card-topic" id="cardTopic"></div>
+    <div class="card-question" id="cardQuestion"></div>
+  </div>
+
+  <button class="challenge-toggle" id="challengeToggle"></button>
+
+  <div class="challenge-box" id="challengeBox">
+    <div class="challenge-label" id="challengeLabel"></div>
+    <div class="challenge-question" id="challengeQuestion"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn">&larr; Prev</button>
+    <button class="nav-btn primary" id="nextBtn">Next &rarr;</button>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  {
+    topic: "Parents' Work",
+    question: "What kind of work did your parents do? Did you know a lot about their job when you were a child?",
+    challenge: "Did your parents ever teach you something important about work or life through their job?",
+  },
+  {
+    topic: "Learning New Things",
+    question: "Think of a skill you learned \u2014 cooking, driving, a language. Was it easy or difficult to learn?",
+    challenge: "Why do you think it's important to keep learning new things, even as an adult?",
+  },
+  {
+    topic: "Meeting New People",
+    question: "Have you ever gone to a big event with a lot of people, like a conference or a party? Did you meet someone new and useful there?",
+    challenge: "Do you think meeting new people can help you find a job or improve your career? Why or why not?",
+  },
+  {
+    topic: "College Days",
+    question: "Did you go to college or another school after high school? What do you remember most about it?",
+    challenge: "Looking back, is there anything you would study differently if you could start again?",
+  },
+  {
+    topic: "First Money Earned",
+    question: "Do you remember the first time you earned your own money? What did you do to earn it?",
+    challenge: "What did that first job or task teach you about work?",
+  },
+];
+
+let current = 0;
+const dotsEl = document.getElementById('dots');
+const cardTopic = document.getElementById('cardTopic');
+const cardQuestion = document.getElementById('cardQuestion');
+const challengeToggle = document.getElementById('challengeToggle');
+const challengeBox = document.getElementById('challengeBox');
+const challengeLabel = document.getElementById('challengeLabel');
+const challengeQuestion = document.getElementById('challengeQuestion');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+const STAR_SVG = '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l2.9 6.9L22 9.6l-5.4 4.9L18 22l-6-3.6L6 22l1.4-7.5L2 9.6l7.1-0.7L12 2z" fill="none" stroke="#C9A227" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+const STAR_SVG_FILLED = '<svg viewBox="0 0 24 24" width="13" height="13"><path d="M12 2l2.9 6.9L22 9.6l-5.4 4.9L18 22l-6-3.6L6 22l1.4-7.5L2 9.6l7.1-0.7L12 2z" fill="#C9A227"/></svg>';
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  CARDS.forEach((_, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i < current ? ' done' : '') + (i === current ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+}
+
+function render(){
+  const item = CARDS[current];
+  cardTopic.textContent = item.topic;
+  cardQuestion.textContent = item.question;
+  challengeQuestion.textContent = item.challenge;
+  challengeLabel.innerHTML = STAR_SVG_FILLED + ' For a challenge';
+  challengeBox.classList.remove('show');
+  challengeToggle.innerHTML = STAR_SVG + ' Show challenge question';
+
+  prevBtn.disabled = current === 0;
+  nextBtn.textContent = current === CARDS.length - 1 ? 'Restart \u21ba' : 'Next \u2192';
+
+  buildDots();
+}
+
+challengeToggle.addEventListener('click', () => {
+  const showing = challengeBox.classList.toggle('show');
+  challengeToggle.innerHTML = STAR_SVG + (showing ? ' Hide challenge question' : ' Show challenge question');
+});
+
+prevBtn.addEventListener('click', () => {
+  if (current > 0){ current--; render(); }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (current < CARDS.length - 1){ current++; } else { current = 0; }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
