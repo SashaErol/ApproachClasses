@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Approach Vocabulary Match: Expressions &amp; Synonyms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Rubik', sans-serif;
+    background:var(--gray);
+    color:var(--navy-dark);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .wrap{ width:100%; max-width:680px; }
+
+  .header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:6px;
+  }
+  .logo-mark{
+    width:34px; height:34px;
+    border:1.6px solid var(--navy-dark);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .logo-mark span{
+    font-family:'Rubik', sans-serif;
+    font-weight:900;
+    font-size:15px;
+    color:var(--navy-dark);
+  }
+  .header-text{ text-align:left; }
+  .header-text .brand{
+    color:var(--blue);
+    font-size:10.5px;
+    letter-spacing:2px;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .header-text h1{
+    font-size:19px;
+    margin-top:2px;
+  }
+  .subline{
+    text-align:center;
+    font-size:13px;
+    color:var(--navy-mid);
+    margin-bottom:16px;
+  }
+
+  .dots{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .dot{
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--white);
+    border:2px solid var(--blue);
+    cursor:pointer;
+  }
+  .dot.active{ background:var(--red); border-color:var(--red); }
+  .dot.done{ background:var(--blue); }
+
+  .page{
+    display:none;
+    background:var(--white);
+    border-radius:18px;
+    box-shadow:0 12px 34px rgba(11,24,40,0.14);
+    padding:22px 24px 26px;
+  }
+  .page.visible{ display:block; }
+
+  .page-title{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:2px;
+  }
+  .page-instr{
+    font-size:12.5px;
+    color:var(--navy-mid);
+    margin-bottom:18px;
+  }
+
+  .board{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+  }
+
+  .expr-row{
+    display:flex;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .expr-label{
+    flex:0 0 auto;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--navy-dark);
+    background:var(--gray);
+    border-radius:8px;
+    padding:9px 10px;
+    min-width:112px;
+    text-align:center;
+  }
+  .arrow{
+    font-size:13px;
+    color:var(--blue);
+    margin:0 6px;
+  }
+  .dropzone{
+    flex:1;
+    min-height:38px;
+    border:2px dashed var(--blue);
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12.5px;
+    color:#B9C2CC;
+    padding:4px 8px;
+    transition:background .15s, border-color .15s;
+  }
+  .dropzone.hover{ background:#EAF2F8; }
+  .dropzone.filled{
+    border-style:solid;
+    border-color:#2fae5c;
+    background:#DFF5E6;
+  }
+  .dropzone .placed-chip{
+    font-size:12.5px;
+    font-weight:700;
+    color:#1f6b3a;
+  }
+
+  .pool-title{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--blue);
+    margin-bottom:10px;
+  }
+  .pool{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-content:flex-start;
+  }
+  .chip{
+    background:var(--navy-dark);
+    color:var(--white);
+    font-size:12.5px;
+    font-weight:700;
+    padding:9px 12px;
+    border-radius:20px;
+    cursor:grab;
+    touch-action:none;
+    white-space:nowrap;
+  }
+  .chip.dragging{
+    position:fixed;
+    z-index:50;
+    cursor:grabbing;
+    box-shadow:0 10px 24px rgba(0,0,0,0.3);
+    opacity:0.95;
+  }
+  .chip.shake{
+    animation:shake .35s;
+    background:var(--red);
+  }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-6px); }
+    75%{ transform:translateX(6px); }
+  }
+
+  .page-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:22px;
+  }
+  .nav-btn{
+    background:var(--white);
+    border:2px solid var(--blue);
+    color:var(--navy-dark);
+    font-weight:700;
+    font-size:13px;
+    padding:11px 18px;
+    border-radius:9px;
+    cursor:pointer;
+  }
+  .nav-btn.primary{
+    background:var(--red);
+    border-color:var(--red);
+    color:var(--white);
+  }
+  .nav-btn:hover{ opacity:.92; }
+  .nav-btn:disabled{ opacity:.4; cursor:default; }
+  .progress-text{
+    font-size:12px;
+    font-weight:700;
+    color:var(--navy-mid);
+  }
+
+  @media (max-width:520px){
+    .board{ grid-template-columns:1fr; }
+    .expr-label{ min-width:96px; font-size:12.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="logo-mark"><span>A</span></div>
+    <div class="header-text">
+      <div class="brand">Approach International Student Center</div>
+      <h1>Match It: Expressions &amp; Synonyms</h1>
+    </div>
+  </div>
+  <div class="subline">Drag each simple synonym onto the expression it matches.</div>
+
+  <div class="dots" id="dots"></div>
+
+  <div id="pagesWrap"></div>
+
+  <div class="page-footer">
+    <button class="nav-btn" id="prevBtn">◂ Previous</button>
+    <span class="progress-text" id="progressText">Page 1 of 3</span>
+    <button class="nav-btn primary" id="nextBtn">Next ▸</button>
+  </div>
+</div>
+
+<script>
+const PAGES = [
+  {
+    title: "Set 1",
+    pairs: [
+      { expr: "well-off", syn: "rich" },
+      { expr: "crave", syn: "want strongly" },
+      { expr: "inherit", syn: "receive from family" },
+      { expr: "punch in the gut", syn: "an emotional shock" },
+      { expr: "horny", syn: "sexually excited" },
+      { expr: "ranting", syn: "complaining loudly" }
+    ]
+  },
+  {
+    title: "Set 2",
+    pairs: [
+      { expr: "stumble upon", syn: "find by accident" },
+      { expr: "humongous", syn: "huge" },
+      { expr: "pushy", syn: "too forceful" },
+      { expr: "streak", syn: "days in a row" },
+      { expr: "frivolous", syn: "not serious" },
+      { expr: "awkwardly", syn: "in an uncomfortable way" }
+    ]
+  },
+  {
+    title: "Set 3",
+    pairs: [
+      { expr: "figuratively", syn: "not literally" },
+      { expr: "barely", syn: "almost not" },
+      { expr: "sink in", syn: "become fully understood" },
+      { expr: "therefore", syn: "as a result" },
+      { expr: "realm", syn: "an area of interest" }
+    ]
+  }
+];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+const pagesWrap = document.getElementById('pagesWrap');
+const builtPages = new Set();
+
+PAGES.forEach((pageData, pIdx) => {
+  const pageEl = document.createElement('div');
+  pageEl.className = 'page' + (pIdx === 0 ? ' visible' : '');
+  pageEl.dataset.index = pIdx;
+
+  pageEl.innerHTML = `
+    <div class="page-title">${pageData.title}</div>
+    <div class="page-instr">Drag a synonym chip from the right onto the matching expression on the left.</div>
+    <div class="board">
+      <div class="targets"></div>
+      <div>
+        <div class="pool-title">Synonyms</div>
+        <div class="pool"></div>
+      </div>
+    </div>
+  `;
+  pagesWrap.appendChild(pageEl);
+});
+
+const pages = document.querySelectorAll('.page');
+let current = 0;
+
+function buildPage(pIdx){
+  if(builtPages.has(pIdx)) return;
+  builtPages.add(pIdx);
+
+  const pageData = PAGES[pIdx];
+  const pageEl = pages[pIdx];
+  const targetsWrap = pageEl.querySelector('.targets');
+  const poolWrap = pageEl.querySelector('.pool');
+
+  pageData.pairs.forEach((pair, i) => {
+    const id = 'p' + pIdx + '_i' + i;
+    const row = document.createElement('div');
+    row.className = 'expr-row';
+    row.innerHTML = `
+      <span class="expr-label">${pair.expr}</span>
+      <span class="arrow">▸</span>
+      <div class="dropzone" data-match="${id}"><span class="placeholder">drop here</span></div>
+    `;
+    targetsWrap.appendChild(row);
+  });
+
+  const shuffledPairs = shuffle(pageData.pairs.map((pair, i) => ({ id: 'p'+pIdx+'_i'+i, syn: pair.syn })));
+  shuffledPairs.forEach(item => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = item.syn;
+    chip.dataset.match = item.id;
+    poolWrap.appendChild(chip);
+    attachDrag(chip);
+  });
+}
+
+function attachDrag(chip){
+  let origParent, origNextSibling, offsetX, offsetY;
+
+  chip.addEventListener('pointerdown', (e) => {
+    if(chip.classList.contains('locked')) return;
+    e.preventDefault();
+
+    const rect = chip.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    origParent = chip.parentElement;
+    origNextSibling = chip.nextSibling;
+
+    chip.style.width = rect.width + 'px';
+    chip.classList.add('dragging');
+    chip.style.left = rect.left + 'px';
+    chip.style.top = rect.top + 'px';
+    chip.style.pointerEvents = 'none';
+    document.body.appendChild(chip);
+
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+
+    function onMove(ev){
+      chip.style.left = (ev.clientX - offsetX) + 'px';
+      chip.style.top = (ev.clientY - offsetY) + 'px';
+
+      document.querySelectorAll('.dropzone').forEach(dz => dz.classList.remove('hover'));
+      const el = document.elementFromPoint(ev.clientX, ev.clientY);
+      const dz = el && el.closest('.dropzone');
+      if(dz && !dz.classList.contains('filled')) dz.classList.add('hover');
+    }
+
+    function onUp(ev){
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+      document.querySelectorAll('.dropzone').forEach(dz => dz.classList.remove('hover'));
+
+      const el = document.elementFromPoint(ev.clientX, ev.clientY);
+      const dz = el && el.closest('.dropzone');
+
+      chip.classList.remove('dragging');
+      chip.style.width = '';
+      chip.style.left = '';
+      chip.style.top = '';
+      chip.style.pointerEvents = '';
+
+      if(dz && !dz.classList.contains('filled')){
+        if(dz.dataset.match === chip.dataset.match){
+          dz.classList.add('filled');
+          dz.innerHTML = '<span class="placed-chip">' + chip.textContent + '</span>';
+          chip.remove();
+        } else {
+          origParent.insertBefore(chip, origNextSibling);
+          chip.classList.add('shake');
+          setTimeout(() => chip.classList.remove('shake'), 350);
+        }
+      } else {
+        origParent.insertBefore(chip, origNextSibling);
+      }
+    }
+  });
+}
+
+function updateDots(){
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('active', i === current);
+  });
+}
+
+function goTo(i){
+  current = i;
+  pages.forEach((p, idx) => p.classList.toggle('visible', idx === i));
+  buildPage(i);
+  updateDots();
+  document.getElementById('progressText').textContent = 'Page ' + (i+1) + ' of ' + PAGES.length;
+  document.getElementById('prevBtn').disabled = (i === 0);
+  document.getElementById('nextBtn').textContent = (i === PAGES.length - 1) ? 'Restart ▸' : 'Next ▸';
+}
+
+const dotsWrap = document.getElementById('dots');
+PAGES.forEach((p, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goTo(i));
+  dotsWrap.appendChild(dot);
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if(current > 0) goTo(current - 1);
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if(current < PAGES.length - 1) goTo(current + 1);
+  else goTo(0);
+});
+
+buildPage(0);
+updateDots();
+</script>
+
+</body>
+</html>
