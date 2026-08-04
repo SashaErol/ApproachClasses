@@ -362,11 +362,12 @@ function buildPage(pIdx){
 }
 
 function attachDrag(chip){
-  let startX, startY, origParent, origNextSibling, offsetX, offsetY;
+  let origParent, origNextSibling, offsetX, offsetY;
 
   chip.addEventListener('pointerdown', (e) => {
     if(chip.classList.contains('locked')) return;
-    chip.setPointerCapture(e.pointerId);
+    e.preventDefault();
+
     const rect = chip.getBoundingClientRect();
     offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
@@ -377,7 +378,11 @@ function attachDrag(chip){
     chip.classList.add('dragging');
     chip.style.left = rect.left + 'px';
     chip.style.top = rect.top + 'px';
+    chip.style.pointerEvents = 'none';
     document.body.appendChild(chip);
+
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
 
     function onMove(ev){
       chip.style.left = (ev.clientX - offsetX) + 'px';
@@ -390,8 +395,8 @@ function attachDrag(chip){
     }
 
     function onUp(ev){
-      chip.removeEventListener('pointermove', onMove);
-      chip.removeEventListener('pointerup', onUp);
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
       document.querySelectorAll('.dropzone').forEach(dz => dz.classList.remove('hover'));
 
       const el = document.elementFromPoint(ev.clientX, ev.clientY);
@@ -401,6 +406,7 @@ function attachDrag(chip){
       chip.style.width = '';
       chip.style.left = '';
       chip.style.top = '';
+      chip.style.pointerEvents = '';
 
       if(dz && !dz.classList.contains('filled')){
         if(dz.dataset.match === chip.dataset.match){
@@ -416,9 +422,6 @@ function attachDrag(chip){
         origParent.insertBefore(chip, origNextSibling);
       }
     }
-
-    chip.addEventListener('pointermove', onMove);
-    chip.addEventListener('pointerup', onUp);
   });
 }
 
