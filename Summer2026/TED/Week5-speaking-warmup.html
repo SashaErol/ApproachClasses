@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Approach Speaking Warm-Up: Looking Back, Looking Forward</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Rubik', sans-serif;
+    background:var(--gray);
+    color:var(--navy-dark);
+    min-height:100vh;
+    padding:24px;
+  }
+  .wrap{
+    max-width:660px;
+    margin:0 auto;
+  }
+  .header{
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .header .brand{
+    color:var(--blue);
+    font-size:11px;
+    letter-spacing:2px;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .header h1{
+    font-size:21px;
+    margin-top:6px;
+  }
+  .header .subline{
+    font-size:13px;
+    color:var(--navy-mid);
+    margin-top:6px;
+  }
+
+  .dots{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin:16px 0 20px;
+  }
+  .dot{
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--gray);
+    border:2px solid var(--blue);
+    cursor:pointer;
+  }
+  .dot.active{ background:var(--red); border-color:var(--red); }
+
+  .card{
+    background:var(--white);
+    border-radius:18px;
+    box-shadow:0 12px 34px rgba(11,24,40,0.14);
+    overflow:hidden;
+    display:none;
+  }
+  .card.visible{ display:block; }
+
+  .card-top{
+    background:var(--navy-dark);
+    padding:20px 26px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .card-num{
+    font-size:12px;
+    font-weight:700;
+    color:var(--blue);
+    letter-spacing:1px;
+    background:rgba(66,137,189,0.18);
+    border:1px solid var(--blue);
+    border-radius:20px;
+    padding:4px 12px;
+    white-space:nowrap;
+  }
+  .card-top h2{
+    color:var(--white);
+    font-size:18px;
+    line-height:1.35;
+  }
+
+  .card-body{ padding:26px; }
+  .prompt{
+    font-size:16px;
+    line-height:1.8;
+    color:var(--navy-dark);
+  }
+
+  .vword{
+    position:relative;
+    display:inline-block;
+    color:var(--red);
+    font-weight:700;
+    cursor:pointer;
+    border-bottom:2px dotted var(--red);
+  }
+  .vword .tip{
+    display:none;
+    position:absolute;
+    bottom:135%;
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--navy-dark);
+    color:var(--white);
+    font-size:12.5px;
+    font-weight:500;
+    line-height:1.5;
+    padding:10px 12px;
+    border-radius:8px;
+    width:220px;
+    z-index:5;
+    box-shadow:0 8px 20px rgba(0,0,0,0.25);
+  }
+  .vword .tip::after{
+    content:"";
+    position:absolute;
+    top:100%; left:50%;
+    transform:translateX(-50%);
+    border:6px solid transparent;
+    border-top-color:var(--navy-dark);
+  }
+  .vword.open .tip{ display:block; }
+
+  .talk-tip{
+    margin-top:18px;
+    font-size:12px;
+    color:var(--navy-mid);
+    background:var(--gray);
+    border-radius:8px;
+    padding:10px 14px;
+  }
+
+  .nav-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:20px;
+  }
+  .nav-btn{
+    background:var(--white);
+    border:2px solid var(--blue);
+    color:var(--navy-dark);
+    font-weight:700;
+    font-size:13px;
+    padding:11px 18px;
+    border-radius:9px;
+    cursor:pointer;
+  }
+  .nav-btn:hover{ background:#EAF2F8; }
+  .nav-btn.primary{
+    background:var(--red);
+    border-color:var(--red);
+    color:var(--white);
+  }
+  .nav-btn:disabled{ opacity:.4; cursor:default; }
+  .nav-label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--navy-mid);
+  }
+
+  /* Glossary */
+  .glossary{
+    margin-top:34px;
+    background:var(--white);
+    border-radius:18px;
+    box-shadow:0 12px 34px rgba(11,24,40,0.14);
+    overflow:hidden;
+  }
+  .glossary-top{
+    background:var(--navy-dark);
+    padding:18px 26px;
+  }
+  .glossary-top h2{
+    color:var(--white);
+    font-size:17px;
+  }
+  .glossary-top p{
+    color:var(--blue);
+    font-size:12px;
+    margin-top:4px;
+    letter-spacing:.5px;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  thead th{
+    background:var(--gray);
+    color:var(--navy-mid);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    text-align:left;
+    padding:10px 14px;
+  }
+  tbody td{
+    padding:11px 14px;
+    font-size:13.5px;
+    border-bottom:1px solid var(--gray);
+    color:var(--navy-dark);
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody td.word{ font-weight:700; color:var(--red); white-space:nowrap; }
+
+  @media (max-width:480px){
+    .card-top{ flex-direction:column; align-items:flex-start; gap:8px; }
+    table, thead, tbody, th, td, tr{ display:block; }
+    thead{ display:none; }
+    tbody tr{
+      border-bottom:2px solid var(--gray);
+      padding:10px 14px;
+    }
+    tbody td{ border-bottom:none; padding:4px 0; }
+    tbody td.word{ font-size:14px; }
+    tbody td:not(.word)::before{
+      content:attr(data-lang) ": ";
+      font-weight:700;
+      color:var(--navy-mid);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="brand">Approach International Student Center</div>
+    <h1>Looking Back, Looking Forward</h1>
+    <div class="subline">Warm-up: school days, growing up, and what actually makes people succeed</div>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+  <!-- CARD 1 -->
+  <div class="card visible" data-index="0">
+    <div class="card-top">
+      <span class="card-num">CARD 1</span>
+      <h2>Best of Times</h2>
+    </div>
+    <div class="card-body">
+      <p class="prompt">
+        Let's start easy. Think back to middle or high school — what's one memory that really
+        <span class="vword">struck you<span class="tip">"What struck you" = what surprised or affected you strongly, in a way you still remember.</span></span>,
+        something that's honestly stuck with you all these years? And what was your favorite stretch of that whole period?
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card" data-index="1">
+    <div class="card-top">
+      <span class="card-num">CARD 2</span>
+      <h2>Worst of Times</h2>
+    </div>
+    <div class="card-body">
+      <p class="prompt">
+        Now the flip side. Was there anything about school back then that felt genuinely
+        <span class="vword">tough<span class="tip">Tough = difficult or hard to deal with.</span></span>
+        to deal with? Be honest — did you ever daydream about just becoming a
+        <span class="vword">drop-out<span class="tip">A drop-out = someone who quits school or a program before finishing it.</span></span>
+        and skipping the whole thing?
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card" data-index="2">
+    <div class="card-top">
+      <span class="card-num">CARD 3</span>
+      <h2>What the Next Generation Needs</h2>
+    </div>
+    <div class="card-body">
+      <p class="prompt">
+        Bigger question now. What do you think kids growing up today actually need to learn to be happy and handle adult life well? And here's the real debate:
+        do you think
+        <span class="vword">grit<span class="tip">Grit = passion and perseverance to keep working toward long-term goals, even when it's hard.</span></span>
+        matters more than having a
+        <span class="vword">stratospheric IQ<span class="tip">Stratospheric IQ = an extremely high intelligence score.</span></span>?
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="card" data-index="3">
+    <div class="card-top">
+      <span class="card-num">CARD 4</span>
+      <h2>What Your Parents Told You</h2>
+    </div>
+    <div class="card-body">
+      <p class="prompt">
+        What's the one piece of advice your parents gave you about college or your first job? Was it more like "just show up
+        <span class="vword">day in day out<span class="tip">Day in day out = every single day, without exception, over a long time.</span></span>
+        and don't complain," or something totally different? And what would you tell a total
+        <span class="vword">rookie<span class="tip">A rookie = someone brand new and inexperienced at a job.</span></span>
+        starting their very first job today?
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="card" data-index="4">
+    <div class="card-top">
+      <span class="card-num">CARD 5</span>
+      <h2>Who Actually Succeeds</h2>
+    </div>
+    <div class="card-body">
+      <p class="prompt">
+        In your experience, what kind of personality usually
+        <span class="vword">emerged as<span class="tip">"Emerged as" = became clear or recognized as, over time.</span></span>
+        the most successful among people you've known — the loud, confident type, the quiet, steady type, or something else entirely?
+      </p>
+    </div>
+  </div>
+
+  <!-- CARD 6 -->
+  <div class="card" data-index="5">
+    <div class="card-top">
+      <span class="card-num">CARD 6</span>
+      <h2>Building Your Own Toolkit</h2>
+    </div>
+    <div class="card-body">
+      <p class="prompt">
+        Last one. Which qualities do you think you already have, and which ones do you wish you could train more? And honestly — do you care more about the
+        <span class="vword">outcomes<span class="tip">Outcomes = the results you get from something you did.</span></span>
+        you achieve, or about becoming a more resilient person along the way?
+      </p>
+      <div class="talk-tip">Tip: try to use at least two highlighted expressions from today's cards while you answer.</div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn">◂ Previous</button>
+    <span class="nav-label" id="navLabel">Card 1 of 6</span>
+    <button class="nav-btn primary" id="nextBtn">Next ▸</button>
+  </div>
+
+  <!-- GLOSSARY -->
+  <div class="glossary">
+    <div class="glossary-top">
+      <h2>Vocabulary Reference</h2>
+      <p>Today's expressions with translations</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Expression</th>
+          <th>Portuguese</th>
+          <th>Turkish</th>
+          <th>Russian</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="word">what struck you</td>
+          <td data-lang="Portuguese">o que te impressionou</td>
+          <td data-lang="Turkish">seni ne etkiledi</td>
+          <td data-lang="Russian">что тебя поразило</td>
+        </tr>
+        <tr>
+          <td class="word">tough</td>
+          <td data-lang="Portuguese">difícil, duro</td>
+          <td data-lang="Turkish">zor</td>
+          <td data-lang="Russian">тяжёлый, трудный</td>
+        </tr>
+        <tr>
+          <td class="word">drop-out</td>
+          <td data-lang="Portuguese">desistente (de estudos)</td>
+          <td data-lang="Turkish">okulu bırakan kişi</td>
+          <td data-lang="Russian">бросивший учёбу</td>
+        </tr>
+        <tr>
+          <td class="word">grit</td>
+          <td data-lang="Portuguese">determinação, persistência</td>
+          <td data-lang="Turkish">azim</td>
+          <td data-lang="Russian">стойкость, упорство</td>
+        </tr>
+        <tr>
+          <td class="word">stratospheric IQ</td>
+          <td data-lang="Portuguese">QI estratosférico</td>
+          <td data-lang="Turkish">stratosferik IQ</td>
+          <td data-lang="Russian">заоблачный IQ</td>
+        </tr>
+        <tr>
+          <td class="word">day in day out</td>
+          <td data-lang="Portuguese">dia após dia</td>
+          <td data-lang="Turkish">gün be gün</td>
+          <td data-lang="Russian">изо дня в день</td>
+        </tr>
+        <tr>
+          <td class="word">rookie</td>
+          <td data-lang="Portuguese">novato</td>
+          <td data-lang="Turkish">acemi</td>
+          <td data-lang="Russian">новичок</td>
+        </tr>
+        <tr>
+          <td class="word">emerged as</td>
+          <td data-lang="Portuguese">surgiu como</td>
+          <td data-lang="Turkish">olarak ortaya çıktı</td>
+          <td data-lang="Russian">проявился как</td>
+        </tr>
+        <tr>
+          <td class="word">outcomes</td>
+          <td data-lang="Portuguese">resultados</td>
+          <td data-lang="Turkish">sonuçlar</td>
+          <td data-lang="Russian">результаты</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const cards = document.querySelectorAll('.card');
+const dotsWrap = document.getElementById('dots');
+
+cards.forEach((c, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i===0 ? ' active' : '');
+  dot.addEventListener('click', () => goTo(i));
+  dotsWrap.appendChild(dot);
+});
+const dots = document.querySelectorAll('.dot');
+let current = 0;
+
+function goTo(i){
+  current = i;
+  cards.forEach((c, idx) => c.classList.toggle('visible', idx === i));
+  dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
+  document.getElementById('navLabel').textContent = 'Card ' + (i+1) + ' of ' + cards.length;
+  document.getElementById('prevBtn').disabled = (i === 0);
+  document.getElementById('nextBtn').textContent = (i === cards.length - 1) ? 'Restart ▸' : 'Next ▸';
+  document.querySelectorAll('.vword.open').forEach(v => v.classList.remove('open'));
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if(current > 0) goTo(current - 1);
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if(current < cards.length - 1) goTo(current + 1);
+  else goTo(0);
+});
+
+document.querySelectorAll('.vword').forEach(v => {
+  v.addEventListener('click', (e) => {
+    const wasOpen = v.classList.contains('open');
+    document.querySelectorAll('.vword.open').forEach(o => o.classList.remove('open'));
+    if(!wasOpen) v.classList.add('open');
+    e.stopPropagation();
+  });
+});
+document.addEventListener('click', () => {
+  document.querySelectorAll('.vword.open').forEach(o => o.classList.remove('open'));
+});
+
+goTo(0);
+</script>
+
+</body>
+</html>
