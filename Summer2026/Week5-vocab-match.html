@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Match — Weeks 1–4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1B2E;
+    --red:#A82C1F;
+    --blue:#4A89B8;
+    --gray:#E8E8E8;
+    --ink:#0B1B2E;
+    --muted:#5b6a78;
+    --green:#2E9457;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    background:linear-gradient(180deg,#F4F6F8,#E9EDF1);
+    min-height:100vh;
+    padding:20px 14px 60px;
+  }
+  .wrap{ max-width:760px; margin:0 auto; }
+
+  header{ text-align:center; margin-bottom:6px; }
+  h1{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:clamp(22px,5vw,32px);
+    color:var(--navy); margin:2px 0 4px;
+  }
+  .subtitle{ color:var(--muted); font-weight:700; font-size:14px; max-width:520px; margin:0 auto 16px; }
+
+  .status-bar{
+    display:flex; justify-content:center; align-items:center; gap:18px;
+    margin-bottom:22px; flex-wrap:wrap;
+  }
+  .status-chip{
+    background:var(--white); border-radius:12px; padding:8px 16px;
+    box-shadow:0 3px 8px rgba(11,27,46,0.12); font-weight:800; font-size:14px; color:var(--navy);
+  }
+  .status-chip span{ color:var(--red); }
+  .btn-reset{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px;
+    color:var(--white); background:var(--blue); border:none; padding:9px 18px;
+    border-radius:20px; cursor:pointer; box-shadow:0 3px 0 #356a8f;
+    transition:transform 0.1s ease;
+  }
+  .btn-reset:hover{ transform:translateY(-1px); }
+  .btn-reset:active{ transform:translateY(2px); box-shadow:0 1px 0 #356a8f; }
+
+  .board{
+    display:grid; grid-template-columns:1fr 1fr; gap:22px;
+    background:var(--white); border-radius:18px; padding:20px;
+    box-shadow:0 10px 24px rgba(11,27,46,0.12);
+  }
+  @media (max-width:560px){ .board{ grid-template-columns:1fr; } }
+
+  .col h2{
+    font-family:'Baloo 2', sans-serif; font-size:16px; text-align:center;
+    color:var(--navy); margin:0 0 12px; letter-spacing:0.5px;
+    text-transform:uppercase; border-bottom:2px solid var(--gray); padding-bottom:8px;
+  }
+
+  .pool{
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+    min-height:60px;
+  }
+
+  .card{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:15px;
+    background:var(--blue); color:var(--white);
+    padding:11px 16px; border-radius:12px;
+    box-shadow:0 3px 0 #356a8f, 0 4px 8px rgba(0,0,0,0.15);
+    cursor:grab; user-select:none; touch-action:none;
+    transition:box-shadow 0.15s ease, opacity 0.2s ease;
+  }
+  .card:active{ cursor:grabbing; }
+  .card.dragging{
+    position:fixed; z-index:50; box-shadow:0 10px 20px rgba(0,0,0,0.3);
+    pointer-events:none;
+  }
+  .card.selected{
+    outline:3px solid var(--red); outline-offset:2px;
+  }
+  .card.matched{
+    background:var(--green); box-shadow:0 3px 0 #1f7a44, 0 4px 8px rgba(0,0,0,0.15);
+    cursor:default;
+  }
+
+  .targets{ display:flex; flex-direction:column; gap:10px; }
+  .target-row{
+    display:flex; align-items:center; gap:8px;
+    background:var(--gray); border-radius:12px; padding:8px 10px;
+    transition:background 0.2s ease;
+  }
+  .target-row.wrong-flash{ background:#F6C6BE; }
+  .target-row.filled{ background:#DCEFE1; }
+  .pt-label{
+    font-weight:800; font-size:14px; color:var(--navy); flex:1;
+  }
+  .slot{
+    min-width:96px; min-height:40px; border:2px dashed #9aa7b2; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; color:#9aa7b2; font-weight:700;
+    transition:border-color 0.2s ease;
+  }
+  .slot.over{ border-color:var(--blue); background:rgba(74,137,184,0.08); }
+  .slot .card{ box-shadow:none; }
+
+  .win-message{
+    display:none; text-align:center; margin-top:20px; background:var(--white);
+    border-radius:16px; padding:20px; box-shadow:0 10px 24px rgba(11,27,46,0.12);
+  }
+  .win-message.show{ display:block; }
+  .win-message h2{
+    font-family:'Baloo 2', sans-serif; font-size:22px; color:var(--green); margin:0 0 6px;
+  }
+  .win-message p{ color:var(--muted); font-weight:700; margin:0; }
+
+  .instructions{
+    text-align:center; font-size:13px; color:var(--muted); font-weight:700; margin:14px 0 6px;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .card{ transition:none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🔤 Vocabulary Match</h1>
+    <p class="subtitle">Drag each English word to its Portuguese translation. Words from Weeks 1–4!</p>
+  </header>
+
+  <div class="status-bar">
+    <div class="status-chip">Matched: <span id="matchedCount">0</span> / 6</div>
+    <button class="btn-reset" id="resetBtn">🔄 Shuffle again</button>
+  </div>
+
+  <div class="board">
+    <div class="col">
+      <h2>English</h2>
+      <div class="pool" id="pool"></div>
+    </div>
+    <div class="col">
+      <h2>Português</h2>
+      <div class="targets" id="targets"></div>
+    </div>
+  </div>
+
+  <p class="instructions">💡 On a computer: click and drag. On a phone or tablet: tap and drag with your finger.</p>
+
+  <div class="win-message" id="winMessage">
+    <h2>🎉 Great job! All matched!</h2>
+    <p>You matched all 6 words correctly. Click "Shuffle again" to practice more.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const PAIRS = [
+    { id: "delivery", en: "delivery", pt: "entrega" },
+    { id: "warranty", en: "warranty", pt: "garantia" },
+    { id: "lease",    en: "lease",    pt: "contrato de aluguel" },
+    { id: "leak",     en: "leak",     pt: "vazamento" },
+    { id: "refund",   en: "refund",   pt: "reembolso" },
+    { id: "receipt",  en: "receipt",  pt: "recibo" },
+  ];
+
+  const pool = document.getElementById('pool');
+  const targetsEl = document.getElementById('targets');
+  const matchedCountEl = document.getElementById('matchedCount');
+  const winMessage = document.getElementById('winMessage');
+  const resetBtn = document.getElementById('resetBtn');
+
+  let matchedCount = 0;
+  let selectedCard = null; // for click/tap-to-select fallback
+  let dragState = null;
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function buildBoard(){
+    pool.innerHTML = '';
+    targetsEl.innerHTML = '';
+    matchedCount = 0;
+    matchedCountEl.textContent = '0';
+    winMessage.classList.remove('show');
+
+    const englishShuffled = shuffle(PAIRS);
+    const portugueseShuffled = shuffle(PAIRS);
+
+    englishShuffled.forEach(pair => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.textContent = pair.en;
+      card.dataset.id = pair.id;
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', 'English word: ' + pair.en);
+      attachDragHandlers(card);
+      attachClickHandlers(card);
+      pool.appendChild(card);
+    });
+
+    portugueseShuffled.forEach(pair => {
+      const row = document.createElement('div');
+      row.className = 'target-row';
+      row.dataset.id = pair.id;
+
+      const label = document.createElement('div');
+      label.className = 'pt-label';
+      label.textContent = pair.pt;
+
+      const slot = document.createElement('div');
+      slot.className = 'slot';
+      slot.dataset.accept = pair.id;
+      slot.textContent = 'drop here';
+
+      row.appendChild(label);
+      row.appendChild(slot);
+      targetsEl.appendChild(row);
+    });
+  }
+
+  // ---------- Click/tap-to-select fallback (accessible, reliable on all devices) ----------
+  function attachClickHandlers(card){
+    card.addEventListener('click', () => {
+      if(card.classList.contains('matched')) return;
+      if(selectedCard === card){
+        card.classList.remove('selected');
+        selectedCard = null;
+        return;
+      }
+      if(selectedCard){ selectedCard.classList.remove('selected'); }
+      selectedCard = card;
+      card.classList.add('selected');
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    const slot = e.target.closest ? e.target.closest('.slot') : null;
+    if(slot && selectedCard){
+      tryMatch(selectedCard, slot);
+      selectedCard.classList.remove('selected');
+      selectedCard = null;
+    }
+  });
+
+  // ---------- Pointer-based dragging (mouse + touch) ----------
+  function attachDragHandlers(card){
+    card.addEventListener('pointerdown', (e) => {
+      if(card.classList.contains('matched')) return;
+      e.preventDefault();
+      const rect = card.getBoundingClientRect();
+      dragState = {
+        card,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+        width: rect.width,
+      };
+      card.classList.add('dragging');
+      card.style.width = rect.width + 'px';
+      card.style.left = rect.left + 'px';
+      card.style.top = rect.top + 'px';
+      card.setPointerCapture && card.setPointerCapture(e.pointerId);
+    });
+
+    card.addEventListener('pointermove', (e) => {
+      if(!dragState || dragState.card !== card) return;
+      card.style.left = (e.clientX - dragState.offsetX) + 'px';
+      card.style.top = (e.clientY - dragState.offsetY) + 'px';
+
+      document.querySelectorAll('.slot.over').forEach(s => s.classList.remove('over'));
+      card.style.pointerEvents = 'none';
+      const under = document.elementFromPoint(e.clientX, e.clientY);
+      card.style.pointerEvents = '';
+      const slot = under && under.closest ? under.closest('.slot') : null;
+      if(slot) slot.classList.add('over');
+    });
+
+    card.addEventListener('pointerup', (e) => {
+      if(!dragState || dragState.card !== card) return;
+      card.classList.remove('dragging');
+      card.style.position = '';
+      card.style.left = '';
+      card.style.top = '';
+      card.style.width = '';
+
+      card.style.pointerEvents = 'none';
+      const under = document.elementFromPoint(e.clientX, e.clientY);
+      card.style.pointerEvents = '';
+      document.querySelectorAll('.slot.over').forEach(s => s.classList.remove('over'));
+
+      const slot = under && under.closest ? under.closest('.slot') : null;
+      dragState = null;
+      if(slot){
+        tryMatch(card, slot);
+      }
+    });
+  }
+
+  function tryMatch(card, slot){
+    const cardId = card.dataset.id;
+    const acceptId = slot.dataset.accept;
+    const row = slot.closest('.target-row');
+
+    if(cardId === acceptId){
+      slot.innerHTML = '';
+      slot.appendChild(card);
+      card.classList.add('matched');
+      card.classList.remove('selected');
+      card.style.cursor = 'default';
+      row.classList.add('filled');
+      matchedCount++;
+      matchedCountEl.textContent = String(matchedCount);
+      if(matchedCount >= PAIRS.length){
+        winMessage.classList.add('show');
+      }
+    } else {
+      row.classList.add('wrong-flash');
+      setTimeout(() => row.classList.remove('wrong-flash'), 450);
+      pool.appendChild(card);
+    }
+  }
+
+  resetBtn.addEventListener('click', buildBoard);
+
+  buildBoard();
+})();
+</script>
+</body>
+</html>
