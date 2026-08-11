@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warm-Up Speaking Cards: Growing Up & Success</title>
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+    background:var(--gray);
+    color:var(--navy-dark);
+    padding:24px 16px 60px;
+  }
+  header{
+    max-width:1000px;
+    margin:0 auto 28px;
+    text-align:center;
+  }
+  header h1{
+    color:var(--navy-dark);
+    font-size:1.7rem;
+    margin-bottom:6px;
+    letter-spacing:0.3px;
+  }
+  header p{
+    color:var(--navy-mid);
+    font-size:0.98rem;
+    max-width:640px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+  .instructions{
+    max-width:620px;
+    margin:0 auto 28px;
+    background:var(--white);
+    border-left:5px solid var(--blue);
+    padding:14px 18px;
+    border-radius:6px;
+    font-size:0.92rem;
+    color:var(--navy-mid);
+  }
+  .deck{
+    max-width:620px;
+    margin:0 auto;
+    position:relative;
+    min-height:420px;
+  }
+  .card{
+    background:var(--white);
+    border-radius:10px;
+    padding:24px 26px 22px;
+    box-shadow:0 2px 6px rgba(11,24,40,0.12);
+    display:none;
+    flex-direction:column;
+    border-top:6px solid var(--navy-mid);
+    animation:fadeIn 0.25s ease;
+  }
+  .card.active{display:flex;}
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .card:nth-of-type(3n+1){border-top-color:var(--red);}
+  .card:nth-of-type(3n+2){border-top-color:var(--blue);}
+  .card:nth-of-type(3n){border-top-color:var(--navy-mid);}
+  .card-number{
+    font-size:0.75rem;
+    font-weight:700;
+    color:var(--blue);
+    letter-spacing:1px;
+    margin-bottom:4px;
+  }
+  .card h2{
+    font-size:1.15rem;
+    color:var(--navy-dark);
+    margin:0 0 12px;
+    line-height:1.3;
+  }
+  .card ul{
+    margin:0 0 14px;
+    padding-left:18px;
+    flex-grow:1;
+  }
+  .card li{
+    margin-bottom:10px;
+    line-height:1.5;
+    font-size:0.95rem;
+  }
+  .vocab{
+    color:var(--red);
+    font-weight:700;
+    cursor:pointer;
+    border-bottom:2px dotted var(--red);
+    white-space:nowrap;
+    position:relative;
+  }
+  .vocab:hover{color:var(--navy-mid);border-bottom-color:var(--navy-mid);}
+  .word-bank{
+    border-top:1px solid var(--gray);
+    padding-top:10px;
+    margin-top:auto;
+  }
+  .word-bank-label{
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--navy-mid);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .chip{
+    font-size:0.78rem;
+    background:var(--navy-dark);
+    color:var(--white);
+    padding:4px 10px;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .chip:hover{background:var(--red);}
+
+  /* Tooltip */
+  #tooltip{
+    position:fixed;
+    max-width:260px;
+    background:var(--navy-dark);
+    color:var(--white);
+    padding:12px 14px;
+    border-radius:8px;
+    font-size:0.85rem;
+    line-height:1.45;
+    box-shadow:0 4px 14px rgba(0,0,0,0.3);
+    z-index:999;
+    display:none;
+  }
+  #tooltip .tt-word{
+    color:var(--blue);
+    font-weight:700;
+    display:block;
+    margin-bottom:4px;
+    font-size:0.9rem;
+  }
+  #tooltip .tt-syn{
+    color:var(--gray);
+    font-style:italic;
+    font-size:0.8rem;
+  }
+  #tooltip .tt-close{
+    position:absolute;
+    top:4px;
+    right:8px;
+    cursor:pointer;
+    color:var(--gray);
+    font-size:0.9rem;
+  }
+
+  /* Nav controls */
+  .nav-wrap{
+    max-width:620px;
+    margin:22px auto 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+  }
+  .nav-btn{
+    background:var(--navy-dark);
+    color:var(--white);
+    border:none;
+    padding:12px 22px;
+    border-radius:8px;
+    font-size:0.95rem;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:0.3px;
+    transition:background 0.15s;
+  }
+  .nav-btn:hover{background:var(--red);}
+  .nav-btn:disabled{
+    background:var(--gray);
+    color:#a9a9a9;
+    cursor:not-allowed;
+  }
+  .progress{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--gray);
+    cursor:pointer;
+    border:2px solid var(--gray);
+    transition:background 0.15s, border 0.15s;
+  }
+  .dot.done{background:var(--blue); border-color:var(--blue);}
+  .dot.current{background:var(--red); border-color:var(--red);}
+  .progress-label{
+    text-align:center;
+    font-size:0.85rem;
+    color:var(--navy-mid);
+    margin-top:10px;
+    letter-spacing:0.3px;
+  }
+
+  @media (max-width:600px){
+    header h1{font-size:1.4rem;}
+    .nav-btn{padding:11px 16px; font-size:0.88rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Warm-Up Speaking Cards</h1>
+  <p>Growing Up, Coping, and What Success Really Means</p>
+</header>
+
+<div class="instructions">
+  Work in trios. Pick 2–3 questions from your card and discuss them out loud. Try to use at least two of the highlighted words in your answers — click any word (or the chips at the bottom) to check its meaning.
+</div>
+
+<div class="deck">
+
+  <div class="card active" id="card-1">
+    <div class="card-number">CARD 1</div>
+    <h2>Upbringing: Strict or Relaxed?</h2>
+    <ul>
+      <li>Was your childhood <span class="vocab" data-word="steeped in" data-def="completely surrounded by; full of something" data-syn="full of">steeped in</span> rules, or did your parents let you make your own choices — even the wrong ones?</li>
+      <li>Would you describe your <span class="vocab" data-word="upbringing" data-def="the way a child is raised and taught by their family" data-syn="how you were raised">upbringing</span> as more strict or more relaxed? Give a real example.</li>
+      <li>Looking back, do you think your parents handled discipline <span class="vocab" data-word="wisely" data-def="in a smart, sensible way" data-syn="sensibly">wisely</span>? What would you do the same or differently?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="steeped in" data-def="completely surrounded by; full of something" data-syn="full of">steeped in</span>
+        <span class="chip" data-word="upbringing" data-def="the way a child is raised and taught by their family" data-syn="how you were raised">upbringing</span>
+        <span class="chip" data-word="wisely" data-def="in a smart, sensible way" data-syn="sensibly">wisely</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-2">
+    <div class="card-number">CARD 2</div>
+    <h2>Coping with Failure</h2>
+    <ul>
+      <li>Think of a time you really <span class="vocab" data-word="failure" data-def="not succeeding at something you tried to do" data-syn="a flop, not making it">failed</span> — a test, an interview, a plan. How did you <span class="vocab" data-word="cope with" data-def="to deal with a difficult situation or feeling" data-syn="handle, deal with">cope with</span> it?</li>
+      <li>Do you believe failure actually helps a person <span class="vocab" data-word="growth" data-def="the process of developing or improving over time" data-syn="development, improvement">grow</span>, or is it just something painful you have to survive?</li>
+      <li>What's the difference between someone who bounces back from failure and someone who gives up?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="failure" data-def="not succeeding at something you tried to do" data-syn="a flop, not making it">failure</span>
+        <span class="chip" data-word="cope with" data-def="to deal with a difficult situation or feeling" data-syn="handle, deal with">cope with</span>
+        <span class="chip" data-word="growth" data-def="the process of developing or improving over time" data-syn="development, improvement">growth</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-3">
+    <div class="card-number">CARD 3</div>
+    <h2>Talking About the Hard Stuff</h2>
+    <ul>
+      <li>When something painful happens — a breakup, losing a job — do you talk about it out loud, or keep it to yourself?</li>
+      <li>Has a breakup or a hard goodbye ever <span class="vocab" data-word="to grip" data-def="to hold on tightly; to affect someone strongly and emotionally" data-syn="to hold onto, to strongly affect">gripped</span> you for a long time? How did you finally move on?</li>
+      <li>Do you use humor or <span class="vocab" data-word="wit" data-def="the ability to say clever, funny things quickly" data-syn="cleverness, quick humor">wit</span> to deal with hard situations, or does that feel fake to you?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="to grip" data-def="to hold on tightly; to affect someone strongly and emotionally" data-syn="to hold onto, to strongly affect">to grip</span>
+        <span class="chip" data-word="wit" data-def="the ability to say clever, funny things quickly" data-syn="cleverness, quick humor">wit</span>
+        <span class="chip" data-word="deeply" data-def="in a very strong, intense way" data-syn="intensely, strongly">deeply</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-4">
+    <div class="card-number">CARD 4</div>
+    <h2>Entitled Behavior & Reality TV</h2>
+    <ul>
+      <li>Reality shows are full of people who act <span class="vocab" data-word="entitled" data-def="believing you deserve special treatment without earning it" data-syn="spoiled, self-important">entitled</span>, like the world owes them something. Do you see that in real life too?</li>
+      <li>Have you ever met someone <span class="vocab" data-word="luxuriating" data-def="enjoying comfort or pleasure fully, without worry" data-syn="enjoying to the fullest">luxuriating</span> in privilege, who barely notices people who have less?</li>
+      <li>Would you ever quit a job or end a relationship <span class="vocab" data-word="on a whim" data-def="based on a sudden idea, without planning" data-syn="spontaneously, on impulse">on a whim</span>, the way people do on TV?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="entitled" data-def="believing you deserve special treatment without earning it" data-syn="spoiled, self-important">entitled</span>
+        <span class="chip" data-word="luxuriating" data-def="enjoying comfort or pleasure fully, without worry" data-syn="enjoying to the fullest">luxuriating</span>
+        <span class="chip" data-word="on a whim" data-def="based on a sudden idea, without planning" data-syn="spontaneously, on impulse">on a whim</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-5">
+    <div class="card-number">CARD 5</div>
+    <h2>Rewards, Praise & Validation</h2>
+    <ul>
+      <li>How do you <span class="vocab" data-word="award" data-def="to give someone something as recognition for what they did" data-syn="give a prize, reward">award</span> yourself when you succeed at something?</li>
+      <li>How do you <span class="vocab" data-word="praise" data-def="to say something or someone is good; express approval" data-syn="compliment, express approval">praise</span> the people close to you when they do well?</li>
+      <li>Do we really need external <span class="vocab" data-word="validation" data-def="the feeling that others approve of or accept you" data-syn="approval, recognition">validation</span> — a prize, a compliment, likes on social media — or should success be enough on its own?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="award" data-def="to give someone something as recognition for what they did" data-syn="give a prize, reward">award</span>
+        <span class="chip" data-word="praise" data-def="to say something or someone is good; express approval" data-syn="compliment, express approval">praise</span>
+        <span class="chip" data-word="validation" data-def="the feeling that others approve of or accept you" data-syn="approval, recognition">validation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-6">
+    <div class="card-number">CARD 6</div>
+    <h2>Private Schools vs. Public Schools</h2>
+    <ul>
+      <li>Have you noticed real differences between people who went to private schools and those who went to public schools?</li>
+      <li>Do you think kids from <span class="vocab" data-word="affluent" data-def="having a lot of money; wealthy" data-syn="wealthy, well-off">affluent</span> families have an easier path to success just because of money, or is it more about attitude?</li>
+      <li><span class="vocab" data-word="instead of" data-def="in place of something; rather than" data-syn="rather than">Instead of</span> judging a school by its price, what should people actually look at?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="affluent" data-def="having a lot of money; wealthy" data-syn="wealthy, well-off">affluent</span>
+        <span class="chip" data-word="instead of" data-def="in place of something; rather than" data-syn="rather than">instead of</span>
+        <span class="chip" data-word="waste" data-def="to use something poorly, without real benefit" data-syn="not use well, throw away">waste</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-7">
+    <div class="card-number">CARD 7</div>
+    <h2>Can a No-Name University Still Get You There?</h2>
+    <ul>
+      <li>Can a small, no-name university still help someone succeed, or does the name of the school really matter?</li>
+      <li>Do some people <span class="vocab" data-word="cheat" data-def="to act dishonestly, or lose a chance unfairly (as in 'cheat yourself out of')" data-syn="trick, lose out unfairly">cheat</span> themselves out of good opportunities by only trusting famous universities?</li>
+      <li><span class="vocab" data-word="instead of" data-def="in place of something; rather than" data-syn="rather than">Instead of</span> focusing on rankings, should students focus more on personal <span class="vocab" data-word="growth" data-def="the process of developing or improving over time" data-syn="development, improvement">growth</span>?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="cheat" data-def="to act dishonestly, or lose a chance unfairly (as in 'cheat yourself out of')" data-syn="trick, lose out unfairly">cheat</span>
+        <span class="chip" data-word="instead of" data-def="in place of something; rather than" data-syn="rather than">instead of</span>
+        <span class="chip" data-word="growth" data-def="the process of developing or improving over time" data-syn="development, improvement">growth</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-wrap">
+  <button class="nav-btn" id="backBtn">← Back</button>
+  <div class="progress" id="progressDots"></div>
+  <button class="nav-btn" id="nextBtn">Next →</button>
+</div>
+<div class="progress-label" id="progressLabel">Card 1 of 7</div>
+
+<div id="tooltip">
+  <span class="tt-close" id="ttClose">✕</span>
+  <span class="tt-word" id="ttWord"></span>
+  <span id="ttDef"></span><br>
+  <span class="tt-syn" id="ttSyn"></span>
+</div>
+
+<script>
+  const tooltip = document.getElementById('tooltip');
+  const ttWord = document.getElementById('ttWord');
+  const ttDef = document.getElementById('ttDef');
+  const ttSyn = document.getElementById('ttSyn');
+  const ttClose = document.getElementById('ttClose');
+
+  function showTooltip(el){
+    const word = el.getAttribute('data-word');
+    const def = el.getAttribute('data-def');
+    const syn = el.getAttribute('data-syn');
+    ttWord.textContent = word;
+    ttDef.textContent = def;
+    ttSyn.textContent = 'Similar to: ' + syn;
+
+    tooltip.style.display = 'block';
+    const rect = el.getBoundingClientRect();
+    let top = rect.bottom + 8;
+    let left = rect.left;
+
+    const ttWidth = 260;
+    if (left + ttWidth > window.innerWidth - 10) {
+      left = window.innerWidth - ttWidth - 16;
+    }
+    if (top + 120 > window.innerHeight) {
+      top = rect.top - 130;
+    }
+    tooltip.style.top = top + 'px';
+    tooltip.style.left = left + 'px';
+  }
+
+  document.querySelectorAll('.vocab, .chip').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showTooltip(el);
+    });
+  });
+
+  ttClose.addEventListener('click', () => tooltip.style.display = 'none');
+  document.addEventListener('click', () => tooltip.style.display = 'none');
+  tooltip.addEventListener('click', (e) => e.stopPropagation());
+
+  // ---- Card navigation ----
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const total = cards.length;
+  let current = 0;
+
+  const backBtn = document.getElementById('backBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressDots = document.getElementById('progressDots');
+  const progressLabel = document.getElementById('progressLabel');
+
+  // build dots
+  cards.forEach((_, i) => {
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    dot.addEventListener('click', () => goTo(i));
+    progressDots.appendChild(dot);
+  });
+  const dots = Array.from(progressDots.children);
+
+  function render(){
+    cards.forEach((c, i) => c.classList.toggle('active', i === current));
+    dots.forEach((d, i) => {
+      d.classList.toggle('current', i === current);
+      d.classList.toggle('done', i < current);
+    });
+    backBtn.disabled = current === 0;
+    nextBtn.textContent = current === total - 1 ? 'Done ✓' : 'Next →';
+    progressLabel.textContent = `Card ${current + 1} of ${total}`;
+    tooltip.style.display = 'none';
+  }
+
+  function goTo(i){
+    current = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+
+  backBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => {
+    if (current < total - 1) goTo(current + 1);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+  render();
+</script>
+
+</body>
+</html>
