@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Speaking Warm-Up — Studying &amp; Working in the US</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:24px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:480px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(21px,5.5vw,26px); text-align:center; margin:0 0 6px;
+  }
+  .sub{
+    text-align:center; font-size:13px; color:var(--muted);
+    margin:0 0 18px; line-height:1.4;
+  }
+
+  .progress-row{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-bottom:18px;
+  }
+  .dot{ width:9px; height:9px; border-radius:50%; background:var(--gray); border:1.5px solid var(--gray); }
+  .dot.done{ background:var(--lightblue); border-color:var(--lightblue); }
+  .dot.active{ border-color:var(--darkblue); }
+
+  .card{
+    border:1.5px solid var(--darkblue);
+    border-radius:20px;
+    padding:36px 26px;
+    min-height:190px;
+    display:flex; flex-direction:column; justify-content:center;
+    text-align:center;
+    margin-bottom:20px;
+  }
+  .card-topic{
+    font-family:'Calibri','Segoe UI',sans-serif; font-weight:700; font-size:11.5px;
+    color:var(--lightblue); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;
+  }
+  .card-question{
+    font-family:'Cambria',Georgia,serif; font-weight:700; font-style:italic;
+    font-size:19px; line-height:1.55; color:var(--darkblue);
+  }
+
+  .nav-row{ display:flex; gap:10px; }
+  .nav-btn{
+    flex:1; padding:14px; border:1.5px solid var(--darkblue); background:var(--white);
+    color:var(--darkblue); border-radius:12px; font-weight:700; font-size:14.5px; cursor:pointer;
+  }
+  .nav-btn:disabled{ opacity:0.35; cursor:default; }
+  .nav-btn.primary{ background:var(--darkblue); color:var(--white); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Week 7 · Warm-Up</div>
+  <h1>Studying &amp; Working in the US</h1>
+  <p class="sub">Talk with a partner. No new words yet &mdash; just share your own experience.</p>
+
+  <div class="progress-row" id="dots"></div>
+
+  <div class="card">
+    <div class="card-topic" id="cardTopic"></div>
+    <div class="card-question" id="cardQuestion"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn">&larr; Prev</button>
+    <button class="nav-btn primary" id="nextBtn">Next &rarr;</button>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  {
+    topic: "Your Studies",
+    question: "What did you study in your home country? Did you finish that program?",
+  },
+  {
+    topic: "Making It Count",
+    question: "Have you ever tried to make your papers or certificates from another country count here in the US? What happened?",
+  },
+  {
+    topic: "Classes & Hours",
+    question: "Schools in the US count how many classes or hours you need to finish a level. Do you know how many you need for your goal?",
+  },
+  {
+    topic: "Meeting People",
+    question: "Have you ever gone to an event to meet people who could help your career, like a job fair? What was it like?",
+  },
+  {
+    topic: "Jobs Around You",
+    question: "What jobs do you think companies need more workers for right now, especially here on the East Coast?",
+  },
+  {
+    topic: "Never Stop Learning",
+    question: "Why do you think it's important to keep studying, even after you already have a job?",
+  },
+];
+
+let current = 0;
+const dotsEl = document.getElementById('dots');
+const cardTopic = document.getElementById('cardTopic');
+const cardQuestion = document.getElementById('cardQuestion');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  CARDS.forEach((_, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i < current ? ' done' : '') + (i === current ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+}
+
+function render(){
+  const item = CARDS[current];
+  cardTopic.textContent = item.topic;
+  cardQuestion.textContent = item.question;
+  prevBtn.disabled = current === 0;
+  nextBtn.textContent = current === CARDS.length - 1 ? 'Restart \u21ba' : 'Next \u2192';
+  buildDots();
+}
+
+prevBtn.addEventListener('click', () => {
+  if (current > 0){ current--; render(); }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (current < CARDS.length - 1){ current++; } else { current = 0; }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
