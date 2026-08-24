@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Speaking Cards — Work & the Future</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:24px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:480px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(22px,6vw,27px); text-align:center; margin:0 0 6px;
+  }
+  .sub{
+    text-align:center; font-size:13px; color:var(--muted);
+    margin:0 0 16px; line-height:1.4;
+  }
+
+  .progress-row{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-bottom:18px;
+  }
+  .dot{ width:9px; height:9px; border-radius:50%; background:var(--gray); border:1.5px solid var(--gray); }
+  .dot.done{ background:var(--lightblue); border-color:var(--lightblue); }
+  .dot.active{ border-color:var(--darkblue); }
+
+  .card{
+    border:1.5px solid var(--darkblue);
+    border-radius:20px;
+    padding:34px 26px;
+    min-height:190px;
+    display:flex; flex-direction:column; justify-content:center;
+    text-align:center;
+    margin-bottom:14px;
+  }
+  .card-topic{
+    font-family:'Calibri','Segoe UI',sans-serif; font-weight:700; font-size:11.5px;
+    color:var(--lightblue); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;
+  }
+  .card-question{
+    font-family:'Cambria',Georgia,serif; font-weight:700; font-style:italic;
+    font-size:19px; line-height:1.55; color:var(--darkblue);
+  }
+  .vocab-word{
+    color:var(--lightblue);
+    font-weight:700;
+    font-style:normal;
+    cursor:pointer;
+    border-bottom:1.5px dotted var(--lightblue);
+    padding-bottom:1px;
+  }
+  .vocab-word:hover{ opacity:0.8; }
+
+  .def-popup{
+    display:none;
+    border:1.5px solid var(--lightblue);
+    border-radius:12px;
+    padding:10px 14px;
+    margin-bottom:14px;
+    background:rgba(56,140,202,0.06);
+    font-size:13.5px;
+    color:var(--darkblue);
+    text-align:left;
+  }
+  .def-popup.show{ display:block; }
+  .def-popup b{ color:var(--lightblue); }
+
+  .nav-row{ display:flex; gap:10px; }
+  .nav-btn{
+    flex:1; padding:14px; border:1.5px solid var(--darkblue); background:var(--white);
+    color:var(--darkblue); border-radius:12px; font-weight:700; font-size:14.5px; cursor:pointer;
+  }
+  .nav-btn:disabled{ opacity:0.35; cursor:default; }
+  .nav-btn.primary{ background:var(--darkblue); color:var(--white); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Week 8 · Speaking</div>
+  <h1>Work &amp; the Future</h1>
+  <p class="sub">Tap any blue word for a simple definition.</p>
+
+  <div class="progress-row" id="dots"></div>
+
+  <div class="card">
+    <div class="card-topic" id="cardTopic"></div>
+    <div class="card-question" id="cardQuestion"></div>
+  </div>
+
+  <div class="def-popup" id="defPopup"></div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn">&larr; Prev</button>
+    <button class="nav-btn primary" id="nextBtn">Next &rarr;</button>
+  </div>
+</div>
+
+<script>
+const VOCAB = {
+  accredited: "officially approved and recognized",
+  "hands-on experience": "real, practical experience doing the work",
+  "entry-level": "a first job that needs little experience",
+  eligible: "allowed to apply or qualify for something",
+  competitive: "many people want it; hard to get",
+};
+
+const CARDS = [
+  {
+    topic: "Education Back Home",
+    question: "Was your education back home from an **accredited** school? Do you think it prepared you well for work?",
+  },
+  {
+    topic: "Jobs That Are Disappearing",
+    question: "Long ago, many jobs needed **hands-on experience** with tools or machines. Can you think of one old job like this?",
+  },
+  {
+    topic: "Getting Your First Job",
+    question: "Was it easier or harder to get an **entry-level** job in your country than here in the US?",
+  },
+  {
+    topic: "Company Ethics",
+    question: "Do you think all workers are **eligible** for fair treatment at a company, no matter their job title?",
+  },
+  {
+    topic: "The Future Job Market",
+    question: "In 10 years, do you think jobs will be more or less **competitive** than today? Why?",
+  },
+];
+
+let current = 0;
+const dotsEl = document.getElementById('dots');
+const cardTopic = document.getElementById('cardTopic');
+const cardQuestion = document.getElementById('cardQuestion');
+const defPopup = document.getElementById('defPopup');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function linkify(text){
+  return text.replace(/\*\*(.+?)\*\*/g, (match, word) => {
+    const def = VOCAB[word.toLowerCase()] || '';
+    return `<span class="vocab-word" data-word="${word}" data-def="${def}">${word}</span>`;
+  });
+}
+
+function attachVocabHandlers(container){
+  container.querySelectorAll('.vocab-word').forEach(span => {
+    span.addEventListener('click', () => {
+      const word = span.dataset.word;
+      const def = span.dataset.def;
+      const alreadyShowing = defPopup.classList.contains('show') && defPopup.dataset.word === word;
+      if (alreadyShowing){
+        defPopup.classList.remove('show');
+        defPopup.dataset.word = '';
+      } else {
+        defPopup.innerHTML = `<b>${word}</b> \u2014 ${def}`;
+        defPopup.dataset.word = word;
+        defPopup.classList.add('show');
+      }
+    });
+  });
+}
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  CARDS.forEach((_, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i < current ? ' done' : '') + (i === current ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+}
+
+function render(){
+  const item = CARDS[current];
+  cardTopic.textContent = item.topic;
+  cardQuestion.innerHTML = linkify(item.question);
+  attachVocabHandlers(cardQuestion);
+
+  defPopup.classList.remove('show');
+  defPopup.dataset.word = '';
+
+  prevBtn.disabled = current === 0;
+  nextBtn.textContent = current === CARDS.length - 1 ? 'Restart \u21ba' : 'Next \u2192';
+
+  buildDots();
+}
+
+prevBtn.addEventListener('click', () => {
+  if (current > 0){ current--; render(); }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (current < CARDS.length - 1){ current++; } else { current = 0; }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
