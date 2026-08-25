@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Activity: Adult Life & New Beginnings</title>
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --green:#2E7D4F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+    background:var(--gray);
+    color:var(--navy-dark);
+    padding:24px 16px 60px;
+  }
+  header{
+    max-width:760px;
+    margin:0 auto 20px;
+    text-align:center;
+  }
+  header h1{
+    font-size:1.6rem;
+    margin-bottom:6px;
+  }
+  header p{
+    color:var(--navy-mid);
+    font-size:0.98rem;
+    max-width:620px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+  .instructions{
+    max-width:760px;
+    margin:0 auto 20px;
+    background:var(--white);
+    border-left:5px solid var(--blue);
+    padding:14px 18px;
+    border-radius:6px;
+    font-size:0.93rem;
+    color:var(--navy-mid);
+    line-height:1.5;
+  }
+
+  /* Word bank */
+  .word-bank-wrap{
+    max-width:760px;
+    margin:0 auto 26px;
+    background:var(--navy-dark);
+    border-radius:10px;
+    padding:16px 20px;
+  }
+  .word-bank-title{
+    color:var(--white);
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    font-weight:700;
+    margin-bottom:10px;
+    text-align:center;
+  }
+  .bank-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+  }
+  .bank-chip{
+    background:var(--white);
+    color:var(--navy-dark);
+    font-weight:700;
+    font-size:0.92rem;
+    padding:8px 16px;
+    border-radius:20px;
+    border:2px solid var(--blue);
+    letter-spacing:0.2px;
+  }
+  .bank-note{
+    text-align:center;
+    color:var(--gray);
+    font-size:0.8rem;
+    font-style:italic;
+    margin-top:10px;
+  }
+
+  /* Sentences */
+  .activity{
+    max-width:760px;
+    margin:0 auto;
+  }
+  .sentence-card{
+    background:var(--white);
+    border-radius:8px;
+    padding:16px 20px;
+    margin-bottom:14px;
+    box-shadow:0 1px 4px rgba(11,24,40,0.1);
+    border-left:5px solid var(--navy-mid);
+    transition:border-color 0.2s;
+  }
+  .sentence-card.correct{border-left-color:var(--green);}
+  .sentence-card.incorrect{border-left-color:var(--red);}
+  .sentence-number{
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--blue);
+    letter-spacing:1px;
+    margin-bottom:6px;
+  }
+  .sentence-text{
+    font-size:1.02rem;
+    line-height:1.7;
+    color:var(--navy-dark);
+  }
+  .blank-input{
+    border:none;
+    border-bottom:2.5px solid var(--navy-mid);
+    background:var(--gray);
+    font-size:0.98rem;
+    font-family:inherit;
+    padding:4px 8px;
+    width:180px;
+    text-align:center;
+    color:var(--navy-dark);
+    font-weight:600;
+    border-radius:4px 4px 0 0;
+  }
+  .blank-input:focus{
+    outline:none;
+    border-bottom-color:var(--blue);
+    background:#dfeaf3;
+  }
+  .sentence-card.correct .blank-input{
+    border-bottom-color:var(--green);
+    background:#e3f3e9;
+    color:var(--green);
+  }
+  .sentence-card.incorrect .blank-input{
+    border-bottom-color:var(--red);
+    background:#fbe6e3;
+    color:var(--red);
+  }
+  .feedback-line{
+    margin-top:8px;
+    font-size:0.85rem;
+    font-style:italic;
+    min-height:18px;
+  }
+  .feedback-line.correct{color:var(--green);}
+  .feedback-line.incorrect{color:var(--red);}
+
+  /* Controls */
+  .controls{
+    max-width:760px;
+    margin:22px auto 0;
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    background:var(--navy-dark);
+    color:var(--white);
+    border:none;
+    padding:12px 26px;
+    border-radius:8px;
+    font-size:0.95rem;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:0.3px;
+    transition:background 0.15s;
+  }
+  .btn:hover{background:var(--red);}
+  .btn.secondary{
+    background:var(--white);
+    color:var(--navy-dark);
+    border:2px solid var(--navy-mid);
+  }
+  .btn.secondary:hover{
+    background:var(--gray);
+    color:var(--navy-dark);
+  }
+
+  .score-box{
+    max-width:760px;
+    margin:18px auto 0;
+    text-align:center;
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--navy-dark);
+    min-height:26px;
+  }
+
+  @media (max-width:600px){
+    header h1{font-size:1.35rem;}
+    .blank-input{width:140px;}
+    .sentence-text{font-size:0.96rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Starting Over: Vocabulary in Context</h1>
+  <p>Fill in each blank with the correct word from the word bank below — but be careful, you'll need to change the grammar (tense or form) to match each sentence.</p>
+</header>
+
+<div class="instructions">
+  Read each sentence carefully. Choose the correct word from the bank and type it into the blank using the <b>correct grammatical form</b> (for example: past tense, third person -s, or negative form). Each word is used only once. Click <b>Check Answers</b> when you're done.
+</div>
+
+<div class="word-bank-wrap">
+  <div class="word-bank-title">Word Bank</div>
+  <div class="bank-chips">
+    <span class="bank-chip">sink in</span>
+    <span class="bank-chip">be brought up by</span>
+    <span class="bank-chip">not add up</span>
+    <span class="bank-chip">screw up</span>
+    <span class="bank-chip">keep at it</span>
+    <span class="bank-chip">rant about</span>
+  </div>
+  <div class="bank-note">Each word is used exactly once — change the form to fit the sentence.</div>
+</div>
+
+<div class="activity" id="activity"></div>
+
+<div class="controls">
+  <button class="btn" id="checkBtn">Check Answers</button>
+  <button class="btn secondary" id="resetBtn">Reset</button>
+</div>
+
+<div class="score-box" id="scoreBox"></div>
+
+<script>
+  // Each item: sentence split into [before, after] around the blank,
+  // and an array of acceptable correct answers (lowercase).
+  const items = [
+    {
+      before: "A close friend of mine was so nervous during her first job interview in English that she ",
+      after: " a simple question about her own work experience — and she couldn't stop replaying it in her head that night.",
+      answers: ["screwed up"]
+    },
+    {
+      before: "My downstairs neighbor ",
+      after: " his grandparents in a small mountain town, and he always says that's exactly where he learned to work hard no matter what.",
+      answers: ["was brought up by"]
+    },
+    {
+      before: "When a classmate from my English class finally opened her transcript evaluation report, the number of credits listed by the agency simply ",
+      after: " with what her university had actually granted her.",
+      answers: ["didn't add up", "did not add up"]
+    },
+    {
+      before: "It took an old colleague of mine from Brazil almost a full year after relocating to the US for the reality of starting completely over to really ",
+      after: ".",
+      answers: ["sink in"]
+    },
+    {
+      before: "Learning a new language as an adult can be draining, but my former professor always insisted that if you ",
+      after: ", your confidence eventually catches up with your knowledge.",
+      answers: ["keep at it"]
+    },
+    {
+      before: "Whenever we run into each other in the hallway, my landlord ",
+      after: " how long it's taking the agency to process his residency paperwork.",
+      answers: ["rants about", "rant about"]
+    }
+  ];
+
+  const activity = document.getElementById('activity');
+
+  items.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'sentence-card';
+    card.id = `card-${i}`;
+
+    const num = document.createElement('div');
+    num.className = 'sentence-number';
+    num.textContent = `SENTENCE ${i + 1}`;
+    card.appendChild(num);
+
+    const textWrap = document.createElement('div');
+    textWrap.className = 'sentence-text';
+
+    const beforeSpan = document.createElement('span');
+    beforeSpan.textContent = item.before;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'blank-input';
+    input.id = `blank-${i}`;
+    input.autocomplete = 'off';
+    input.spellcheck = false;
+
+    const afterSpan = document.createElement('span');
+    afterSpan.textContent = item.after;
+
+    textWrap.appendChild(beforeSpan);
+    textWrap.appendChild(input);
+    textWrap.appendChild(afterSpan);
+    card.appendChild(textWrap);
+
+    const feedback = document.createElement('div');
+    feedback.className = 'feedback-line';
+    feedback.id = `feedback-${i}`;
+    card.appendChild(feedback);
+
+    activity.appendChild(card);
+  });
+
+  function normalize(str){
+    return str.trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.,!?]/g, '');
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', () => {
+    let correctCount = 0;
+
+    items.forEach((item, i) => {
+      const input = document.getElementById(`blank-${i}`);
+      const card = document.getElementById(`card-${i}`);
+      const feedback = document.getElementById(`feedback-${i}`);
+      const userAnswer = normalize(input.value);
+      const isCorrect = item.answers.some(a => normalize(a) === userAnswer);
+
+      card.classList.remove('correct', 'incorrect');
+      if (isCorrect) {
+        card.classList.add('correct');
+        feedback.textContent = 'Correct!';
+        feedback.className = 'feedback-line correct';
+        correctCount++;
+      } else {
+        card.classList.add('incorrect');
+        feedback.textContent = `Not quite. Correct answer: "${item.answers[0]}"`;
+        feedback.className = 'feedback-line incorrect';
+      }
+    });
+
+    document.getElementById('scoreBox').textContent = `Score: ${correctCount} / ${items.length}`;
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    items.forEach((item, i) => {
+      const input = document.getElementById(`blank-${i}`);
+      const card = document.getElementById(`card-${i}`);
+      const feedback = document.getElementById(`feedback-${i}`);
+      input.value = '';
+      card.classList.remove('correct', 'incorrect');
+      feedback.textContent = '';
+    });
+    document.getElementById('scoreBox').textContent = '';
+  });
+</script>
+
+</body>
+</html>
