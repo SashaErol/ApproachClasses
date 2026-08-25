@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matching Activity: Word Meanings</title>
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --green:#2E7D4F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+    background:var(--gray);
+    color:var(--navy-dark);
+    padding:24px 16px 60px;
+  }
+  header{
+    max-width:720px;
+    margin:0 auto 20px;
+    text-align:center;
+  }
+  header h1{
+    font-size:1.55rem;
+    margin-bottom:6px;
+  }
+  header p{
+    color:var(--navy-mid);
+    font-size:0.96rem;
+    max-width:560px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+  .instructions{
+    max-width:720px;
+    margin:0 auto 24px;
+    background:var(--white);
+    border-left:5px solid var(--blue);
+    padding:14px 18px;
+    border-radius:6px;
+    font-size:0.92rem;
+    color:var(--navy-mid);
+    line-height:1.5;
+  }
+
+  .board{
+    max-width:720px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+  }
+  .column-title{
+    text-align:center;
+    font-size:0.75rem;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--navy-mid);
+    margin-bottom:10px;
+  }
+  .column{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .tile{
+    background:var(--white);
+    border:2px solid var(--navy-mid);
+    border-radius:8px;
+    padding:13px 16px;
+    font-size:0.95rem;
+    cursor:pointer;
+    text-align:left;
+    line-height:1.4;
+    transition:all 0.15s;
+    user-select:none;
+  }
+  .tile.word-tile{
+    font-weight:700;
+    color:var(--navy-dark);
+    text-align:center;
+  }
+  .tile.def-tile{
+    color:var(--navy-mid);
+    font-size:0.88rem;
+  }
+  .tile:hover{
+    border-color:var(--blue);
+    box-shadow:0 2px 6px rgba(66,137,189,0.25);
+  }
+  .tile.selected{
+    background:var(--navy-dark);
+    color:var(--white);
+    border-color:var(--navy-dark);
+  }
+  .tile.selected.def-tile{color:var(--gray);}
+  .tile.matched{
+    background:#e3f3e9;
+    border-color:var(--green);
+    color:var(--green);
+    cursor:default;
+    font-weight:700;
+  }
+  .tile.matched.def-tile{
+    color:var(--green);
+    font-weight:400;
+  }
+  .tile.wrong{
+    background:#fbe6e3;
+    border-color:var(--red);
+    animation:shake 0.35s;
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    75%{transform:translateX(5px);}
+  }
+  .tile.disabled{
+    pointer-events:none;
+  }
+
+  .controls{
+    max-width:720px;
+    margin:26px auto 0;
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    background:var(--navy-dark);
+    color:var(--white);
+    border:none;
+    padding:12px 26px;
+    border-radius:8px;
+    font-size:0.95rem;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:0.3px;
+    transition:background 0.15s;
+  }
+  .btn:hover{background:var(--red);}
+  .btn.secondary{
+    background:var(--white);
+    color:var(--navy-dark);
+    border:2px solid var(--navy-mid);
+  }
+  .btn.secondary:hover{background:var(--gray);}
+
+  .status-box{
+    max-width:720px;
+    margin:18px auto 0;
+    text-align:center;
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--navy-dark);
+    min-height:26px;
+  }
+  .status-box.done{color:var(--green);}
+
+  @media (max-width:600px){
+    header h1{font-size:1.3rem;}
+    .board{grid-template-columns:1fr; gap:16px;}
+    .column-title{margin-top:6px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Match the Word to Its Meaning</h1>
+  <p>Click a word on the left, then click the definition that matches it on the right.</p>
+</header>
+
+<div class="instructions">
+  Click a word, then click its correct definition. A correct pair turns green and locks in place. A wrong pair flashes red — try again. Match all six to finish.
+</div>
+
+<div class="board">
+  <div>
+    <div class="column-title">Words</div>
+    <div class="column" id="wordColumn"></div>
+  </div>
+  <div>
+    <div class="column-title">Definitions</div>
+    <div class="column" id="defColumn"></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn secondary" id="resetBtn">Reset</button>
+</div>
+
+<div class="status-box" id="statusBox"></div>
+
+<script>
+  const pairs = [
+    { id: 1, word: "yell",       def: "to shout loudly, often because you're angry, excited, or scared" },
+    { id: 2, word: "regularly",  def: "happening often, at fairly consistent times" },
+    { id: 3, word: "con",        def: "a trick used to cheat or deceive someone, often for money" },
+    { id: 4, word: "hint",       def: "a small clue that helps someone understand something without saying it directly" },
+    { id: 5, word: "well-off",   def: "having enough money to live comfortably; financially secure" },
+    { id: 6, word: "humongous",  def: "extremely large; enormous" },
+  ];
+
+  function shuffle(arr){
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const wordColumn = document.getElementById('wordColumn');
+  const defColumn = document.getElementById('defColumn');
+  const statusBox = document.getElementById('statusBox');
+  const resetBtn = document.getElementById('resetBtn');
+
+  let selectedWord = null;
+  let selectedDef = null;
+  let matchedCount = 0;
+
+  function renderBoard(){
+    wordColumn.innerHTML = '';
+    defColumn.innerHTML = '';
+    matchedCount = 0;
+    selectedWord = null;
+    selectedDef = null;
+    statusBox.textContent = '';
+    statusBox.classList.remove('done');
+
+    const shuffledWords = shuffle(pairs);
+    const shuffledDefs = shuffle(pairs);
+
+    shuffledWords.forEach(p => {
+      const tile = document.createElement('div');
+      tile.className = 'tile word-tile';
+      tile.textContent = p.word;
+      tile.dataset.id = p.id;
+      tile.addEventListener('click', () => selectWord(tile, p.id));
+      wordColumn.appendChild(tile);
+    });
+
+    shuffledDefs.forEach(p => {
+      const tile = document.createElement('div');
+      tile.className = 'tile def-tile';
+      tile.textContent = p.def;
+      tile.dataset.id = p.id;
+      tile.addEventListener('click', () => selectDef(tile, p.id));
+      defColumn.appendChild(tile);
+    });
+  }
+
+  function selectWord(tile, id){
+    if (tile.classList.contains('matched')) return;
+    if (selectedWord) selectedWord.tile.classList.remove('selected');
+    selectedWord = { tile, id };
+    tile.classList.add('selected');
+    tryMatch();
+  }
+
+  function selectDef(tile, id){
+    if (tile.classList.contains('matched')) return;
+    if (selectedDef) selectedDef.tile.classList.remove('selected');
+    selectedDef = { tile, id };
+    tile.classList.add('selected');
+    tryMatch();
+  }
+
+  function tryMatch(){
+    if (!selectedWord || !selectedDef) return;
+
+    if (selectedWord.id === selectedDef.id) {
+      selectedWord.tile.classList.remove('selected');
+      selectedDef.tile.classList.remove('selected');
+      selectedWord.tile.classList.add('matched');
+      selectedDef.tile.classList.add('matched');
+      matchedCount++;
+      selectedWord = null;
+      selectedDef = null;
+
+      if (matchedCount === pairs.length) {
+        statusBox.textContent = 'All matched! Great work.';
+        statusBox.classList.add('done');
+      }
+    } else {
+      const wTile = selectedWord.tile;
+      const dTile = selectedDef.tile;
+      wTile.classList.add('wrong');
+      dTile.classList.add('wrong');
+      setTimeout(() => {
+        wTile.classList.remove('selected', 'wrong');
+        dTile.classList.remove('selected', 'wrong');
+      }, 450);
+      selectedWord = null;
+      selectedDef = null;
+    }
+  }
+
+  resetBtn.addEventListener('click', renderBoard);
+
+  renderBoard();
+</script>
+
+</body>
+</html>
