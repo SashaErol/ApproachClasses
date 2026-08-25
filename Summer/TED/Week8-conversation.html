@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conversation Cards: Setbacks, Support & Backup Plans</title>
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+    background:var(--gray);
+    color:var(--navy-dark);
+    padding:24px 16px 60px;
+  }
+  header{
+    max-width:620px;
+    margin:0 auto 22px;
+    text-align:center;
+  }
+  header h1{
+    color:var(--navy-dark);
+    font-size:1.6rem;
+    margin-bottom:6px;
+    letter-spacing:0.3px;
+  }
+  header p{
+    color:var(--navy-mid);
+    font-size:0.98rem;
+    max-width:560px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+  .instructions{
+    max-width:620px;
+    margin:0 auto 24px;
+    background:var(--white);
+    border-left:5px solid var(--blue);
+    padding:14px 18px;
+    border-radius:6px;
+    font-size:0.92rem;
+    color:var(--navy-mid);
+  }
+  .deck{
+    max-width:620px;
+    margin:0 auto;
+    position:relative;
+    min-height:400px;
+  }
+  .card{
+    background:var(--white);
+    border-radius:10px;
+    padding:24px 26px 22px;
+    box-shadow:0 2px 6px rgba(11,24,40,0.12);
+    display:none;
+    flex-direction:column;
+    border-top:6px solid var(--navy-mid);
+    animation:fadeIn 0.25s ease;
+  }
+  .card.active{display:flex;}
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .card:nth-of-type(3n+1){border-top-color:var(--red);}
+  .card:nth-of-type(3n+2){border-top-color:var(--blue);}
+  .card:nth-of-type(3n){border-top-color:var(--navy-mid);}
+  .card-number{
+    font-size:0.75rem;
+    font-weight:700;
+    color:var(--blue);
+    letter-spacing:1px;
+    margin-bottom:4px;
+  }
+  .card h2{
+    font-size:1.15rem;
+    color:var(--navy-dark);
+    margin:0 0 12px;
+    line-height:1.3;
+  }
+  .card ul{
+    margin:0 0 14px;
+    padding-left:18px;
+    flex-grow:1;
+  }
+  .card li{
+    margin-bottom:11px;
+    line-height:1.5;
+    font-size:0.95rem;
+  }
+  .vocab{
+    color:var(--red);
+    font-weight:700;
+    cursor:pointer;
+    border-bottom:2px dotted var(--red);
+    white-space:nowrap;
+    position:relative;
+  }
+  .vocab:hover{color:var(--navy-mid);border-bottom-color:var(--navy-mid);}
+  .word-bank{
+    border-top:1px solid var(--gray);
+    padding-top:10px;
+    margin-top:auto;
+    min-height:34px;
+  }
+  .word-bank-label{
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--navy-mid);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .chip{
+    font-size:0.78rem;
+    background:var(--navy-dark);
+    color:var(--white);
+    padding:4px 10px;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .chip:hover{background:var(--red);}
+
+  /* Nav controls */
+  .nav-wrap{
+    max-width:620px;
+    margin:22px auto 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+  }
+  .nav-btn{
+    background:var(--navy-dark);
+    color:var(--white);
+    border:none;
+    padding:12px 22px;
+    border-radius:8px;
+    font-size:0.95rem;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:0.3px;
+    transition:background 0.15s;
+  }
+  .nav-btn:hover{background:var(--red);}
+  .nav-btn:disabled{
+    background:var(--gray);
+    color:#a9a9a9;
+    cursor:not-allowed;
+  }
+  .progress{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--gray);
+    cursor:pointer;
+    border:2px solid var(--gray);
+    transition:background 0.15s, border 0.15s;
+  }
+  .dot.done{background:var(--blue); border-color:var(--blue);}
+  .dot.current{background:var(--red); border-color:var(--red);}
+  .progress-label{
+    text-align:center;
+    font-size:0.85rem;
+    color:var(--navy-mid);
+    margin-top:10px;
+    letter-spacing:0.3px;
+  }
+
+  /* Tooltip */
+  #tooltip{
+    position:fixed;
+    max-width:260px;
+    background:var(--navy-dark);
+    color:var(--white);
+    padding:12px 14px;
+    border-radius:8px;
+    font-size:0.85rem;
+    line-height:1.45;
+    box-shadow:0 4px 14px rgba(0,0,0,0.3);
+    z-index:999;
+    display:none;
+  }
+  #tooltip .tt-word{
+    color:var(--blue);
+    font-weight:700;
+    display:block;
+    margin-bottom:4px;
+    font-size:0.9rem;
+  }
+  #tooltip .tt-syn{
+    color:var(--gray);
+    font-style:italic;
+    font-size:0.8rem;
+  }
+  #tooltip .tt-close{
+    position:absolute;
+    top:4px;
+    right:8px;
+    cursor:pointer;
+    color:var(--gray);
+    font-size:0.9rem;
+  }
+
+  @media (max-width:600px){
+    header h1{font-size:1.35rem;}
+    .nav-btn{padding:11px 16px; font-size:0.88rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Conversation Cards</h1>
+  <p>Life Experience, Backup Plans, and Bouncing Back</p>
+</header>
+
+<div class="instructions">
+  Work in trios. Pick 2–3 questions per card and share real stories, not just opinions. Click any highlighted word to check its meaning.
+</div>
+
+<div class="deck">
+
+  <div class="card" id="card-1">
+    <div class="card-number">CARD 1</div>
+    <h2>Life Experiences That Shaped You</h2>
+    <ul>
+      <li>Think about a life experience that really changed how you see things. What happened, and how did it change you?</li>
+      <li>Were you <span class="vocab" data-word="brought up by" data-def="raised as a child by a particular person or in a particular way" data-syn="raised by">brought up by</span> someone who taught you an important lesson early in life? What was it?</li>
+      <li>Is there something you learned as a kid that took years to really <span class="vocab" data-word="sink in" data-def="to become fully understood or realized, often slowly" data-syn="fully register, become clear">sink in</span>?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="brought up by" data-def="raised as a child by a particular person or in a particular way" data-syn="raised by">brought up by</span>
+        <span class="chip" data-word="sink in" data-def="to become fully understood or realized, often slowly" data-syn="fully register, become clear">sink in</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-2">
+    <div class="card-number">CARD 2</div>
+    <h2>Backup Plans: When Things Go South</h2>
+    <ul>
+      <li>Do you usually make a backup plan in case something <span class="vocab" data-word="goes south" data-def="to go badly or get much worse, often suddenly" data-syn="go wrong, fail">goes south</span>, or do you prefer to deal with problems as they come?</li>
+      <li>Have you ever been part of a plan where the details just <span class="vocab" data-word="didn't add up" data-def="didn't make sense; wasn't logical or consistent" data-syn="didn't make sense">didn't add up</span> — the timing, the numbers, or the whole idea?</li>
+      <li>If your current plan for the future fell apart tomorrow, what would your next move be?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="goes south" data-def="to go badly or get much worse, often suddenly" data-syn="go wrong, fail">go south</span>
+        <span class="chip" data-word="didn't add up" data-def="didn't make sense; wasn't logical or consistent" data-syn="didn't make sense">didn't add up</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-3">
+    <div class="card-number">CARD 3</div>
+    <h2>The Role of Family Support</h2>
+    <ul>
+      <li>How important is it to have family you can call when things go wrong, even if you don't talk to them <span class="vocab" data-word="regularly" data-def="happening often, at fairly consistent times" data-syn="often, frequently">regularly</span>?</li>
+      <li>Has your family ever helped you avoid getting caught in a <span class="vocab" data-word="con" data-def="a trick used to cheat or deceive someone, often for money" data-syn="a scam, a trick">con</span> or a bad deal, just by giving you good advice?</li>
+      <li>Do you ever <span class="vocab" data-word="rant about" data-def="to complain loudly and at length about something" data-syn="complain a lot about">rant about</span> a problem to a family member, just to feel better — even if you don't expect them to fix it?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="regularly" data-def="happening often, at fairly consistent times" data-syn="often, frequently">regularly</span>
+        <span class="chip" data-word="con" data-def="a trick used to cheat or deceive someone, often for money" data-syn="a scam, a trick">con</span>
+        <span class="chip" data-word="rant about" data-def="to complain loudly and at length about something" data-syn="complain a lot about">rant about</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-4">
+    <div class="card-number">CARD 4</div>
+    <h2>Dealing with Setbacks</h2>
+    <ul>
+      <li>When you <span class="vocab" data-word="screw up" data-def="to make a mistake; to fail at doing something correctly" data-syn="mess up, make a mistake">screw up</span> at work or in life, how do you usually bounce back?</li>
+      <li>Have you ever wanted to <span class="vocab" data-word="yell" data-def="to shout loudly, often out of anger, excitement, or fear" data-syn="shout">yell</span> out of pure frustration after something went wrong? What helped you calm down?</li>
+      <li>What keeps you motivated to <span class="vocab" data-word="keep at it" data-def="to keep trying, without giving up" data-syn="keep trying, persist">keep at it</span>, even when a setback makes you want to quit?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="screw up" data-def="to make a mistake; to fail at doing something correctly" data-syn="mess up, make a mistake">screw up</span>
+        <span class="chip" data-word="yell" data-def="to shout loudly, often out of anger, excitement, or fear" data-syn="shout">yell</span>
+        <span class="chip" data-word="keep at it" data-def="to keep trying, without giving up" data-syn="keep trying, persist">keep at it</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-5">
+    <div class="card-number">CARD 5</div>
+    <h2>Looking Back, Moving Forward</h2>
+    <ul>
+      <li>Some people spend their whole lives trying to become <span class="vocab" data-word="well-off" data-def="having enough money to live comfortably; financially secure" data-syn="wealthy, financially comfortable">well-off</span>, while others just want stability. What matters more to you?</li>
+      <li>Has anyone ever given you a <span class="vocab" data-word="hint" data-def="a small clue that helps you understand something without saying it directly" data-syn="a clue">hint</span> that a big change was coming, before you actually realized it yourself?</li>
+      <li>If you had to describe one <span class="vocab" data-word="humongous" data-def="extremely large; enormous" data-syn="huge, enormous">humongous</span> challenge you've overcome, what would it be — and what got you through it?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="well-off" data-def="having enough money to live comfortably; financially secure" data-syn="wealthy, financially comfortable">well-off</span>
+        <span class="chip" data-word="hint" data-def="a small clue that helps you understand something without saying it directly" data-syn="a clue">hint</span>
+        <span class="chip" data-word="humongous" data-def="extremely large; enormous" data-syn="huge, enormous">humongous</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-wrap">
+  <button class="nav-btn" id="backBtn">← Back</button>
+  <div class="progress" id="progressDots"></div>
+  <button class="nav-btn" id="nextBtn">Next →</button>
+</div>
+<div class="progress-label" id="progressLabel">Card 1 of 5</div>
+
+<div id="tooltip">
+  <span class="tt-close" id="ttClose">✕</span>
+  <span class="tt-word" id="ttWord"></span>
+  <span id="ttDef"></span><br>
+  <span class="tt-syn" id="ttSyn"></span>
+</div>
+
+<script>
+  const tooltip = document.getElementById('tooltip');
+  const ttWord = document.getElementById('ttWord');
+  const ttDef = document.getElementById('ttDef');
+  const ttSyn = document.getElementById('ttSyn');
+  const ttClose = document.getElementById('ttClose');
+
+  function showTooltip(el){
+    const word = el.getAttribute('data-word');
+    const def = el.getAttribute('data-def');
+    const syn = el.getAttribute('data-syn');
+    ttWord.textContent = word;
+    ttDef.textContent = def;
+    ttSyn.textContent = 'Similar to: ' + syn;
+
+    tooltip.style.display = 'block';
+    const rect = el.getBoundingClientRect();
+    let top = rect.bottom + 8;
+    let left = rect.left;
+
+    const ttWidth = 260;
+    if (left + ttWidth > window.innerWidth - 10) {
+      left = window.innerWidth - ttWidth - 16;
+    }
+    if (top + 120 > window.innerHeight) {
+      top = rect.top - 130;
+    }
+    tooltip.style.top = top + 'px';
+    tooltip.style.left = left + 'px';
+  }
+
+  document.querySelectorAll('.vocab, .chip').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showTooltip(el);
+    });
+  });
+
+  ttClose.addEventListener('click', () => tooltip.style.display = 'none');
+  document.addEventListener('click', () => tooltip.style.display = 'none');
+  tooltip.addEventListener('click', (e) => e.stopPropagation());
+
+  // ---- Card navigation ----
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const total = cards.length;
+  let current = 0;
+
+  const backBtn = document.getElementById('backBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressDots = document.getElementById('progressDots');
+  const progressLabel = document.getElementById('progressLabel');
+
+  cards.forEach((_, i) => {
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    dot.addEventListener('click', () => goTo(i));
+    progressDots.appendChild(dot);
+  });
+  const dots = Array.from(progressDots.children);
+
+  function render(){
+    cards.forEach((c, i) => c.classList.toggle('active', i === current));
+    dots.forEach((d, i) => {
+      d.classList.toggle('current', i === current);
+      d.classList.toggle('done', i < current);
+    });
+    backBtn.disabled = current === 0;
+    nextBtn.textContent = current === total - 1 ? 'Done ✓' : 'Next →';
+    progressLabel.textContent = `Card ${current + 1} of ${total}`;
+    tooltip.style.display = 'none';
+  }
+
+  function goTo(i){
+    current = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+
+  backBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => {
+    if (current < total - 1) goTo(current + 1);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+  render();
+</script>
+
+</body>
+</html>
