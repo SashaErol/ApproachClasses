@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speaking Cards · Sports: MA vs. My Country</title>
+<style>
+  :root{
+    --navy:#1E3A5F;
+    --navy-deep:#122542;
+    --green:#2E7D4F;
+    --red:#C0392B;
+    --gold:#D4A017;
+    --paper:#F7F4EC;
+    --ink:#22314B;
+    --line:#DCD5C4;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Georgia', 'Iowan Old Style', serif;
+    color:var(--ink);
+    padding:32px 16px 80px;
+  }
+
+  header{
+    max-width:640px;
+    margin:0 auto 30px;
+    text-align:center;
+  }
+
+  .kicker{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--red);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+
+  h1{
+    font-size:clamp(26px,4vw,36px);
+    margin:0 0 10px;
+    color:var(--navy-deep);
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+
+  .sub{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14px;
+    color:#5b6577;
+    max-width:520px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+
+  .lang-toggle{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-top:18px;
+  }
+  .lang-toggle span{
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:#5b6577;
+  }
+  .lang-btns{
+    display:inline-flex;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:3px;
+  }
+  .lang-btns button{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    border:none;
+    background:transparent;
+    padding:6px 16px;
+    font-size:13px;
+    font-weight:700;
+    border-radius:999px;
+    cursor:pointer;
+    color:#5b6577;
+    transition:.15s;
+  }
+  .lang-btns button.active{
+    background:var(--navy);
+    color:#fff;
+  }
+
+  .brand-bar{
+    height:4px;
+    max-width:640px;
+    margin:0 auto 30px;
+    border-radius:3px;
+    background:linear-gradient(90deg, var(--navy) 0 25%, var(--green) 25% 50%, var(--gold) 50% 75%, var(--red) 75% 100%);
+  }
+
+  .deck{
+    max-width:640px;
+    margin:0 auto;
+    position:relative;
+    min-height:440px;
+  }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:6px solid var(--navy);
+    border-radius:6px;
+    padding:26px 28px 24px;
+    position:relative;
+    box-shadow:0 1px 2px rgba(18,37,66,.04);
+    display:none;
+    animation:fadeIn .35s ease;
+  }
+  .card.active{display:block;}
+  .card:nth-child(2){border-left-color:var(--green);}
+  .card:nth-child(3){border-left-color:var(--gold);}
+  .card:nth-child(4){border-left-color:var(--red);}
+  .card:nth-child(5){border-left-color:var(--navy);}
+
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion:reduce){ .card{animation:none;} }
+
+  .card-head{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    margin-bottom:14px;
+  }
+
+  .num{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-weight:700;
+    font-size:12px;
+    color:#fff;
+    background:var(--navy-deep);
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    margin-top:3px;
+  }
+  .card:nth-child(2) .num{background:var(--green);}
+  .card:nth-child(3) .num{background:var(--gold);}
+  .card:nth-child(4) .num{background:var(--red);}
+  .card:nth-child(5) .num{background:var(--navy);}
+
+  .card-title-wrap{flex:1;}
+
+  .topic-eyebrow{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#8a92a3;
+    margin-bottom:3px;
+  }
+
+  h2{
+    margin:0;
+    font-size:21px;
+    color:var(--navy-deep);
+    font-weight:700;
+  }
+
+  .warmup{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    background:var(--paper);
+    border:1px dashed var(--line);
+    border-radius:6px;
+    padding:10px 14px;
+    font-size:14px;
+    font-style:italic;
+    color:var(--navy-deep);
+    margin-bottom:12px;
+  }
+
+  .fact{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:13.5px;
+    color:#5b6577;
+    background:#FBF3DC;
+    border-left:3px solid var(--gold);
+    padding:8px 12px;
+    border-radius:4px;
+    margin-bottom:16px;
+  }
+
+  ol.questions{ margin:0 0 16px; padding-left:20px; }
+  ol.questions li{ font-size:17px; line-height:1.6; margin-bottom:10px; }
+
+  .vocab-label{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:10.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:#8a92a3;
+    margin:14px 0 8px;
+  }
+
+  .vocab-row{ display:flex; flex-wrap:wrap; gap:8px; }
+
+  .gloss{
+    position:relative;
+    border-bottom:2px dotted var(--gold);
+    cursor:pointer;
+    font-weight:600;
+    color:var(--navy-deep);
+    padding:0 1px;
+  }
+  .gloss:hover{background:#FBF3DC;}
+
+  .tooltip{
+    display:none;
+    position:absolute;
+    bottom:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--navy-deep);
+    color:#fff;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:13px;
+    font-weight:400;
+    padding:7px 12px;
+    border-radius:5px;
+    white-space:nowrap;
+    z-index:5;
+    box-shadow:0 4px 10px rgba(0,0,0,.18);
+  }
+  .tooltip::after{
+    content:"";
+    position:absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%);
+    border:5px solid transparent;
+    border-top-color:var(--navy-deep);
+  }
+  .gloss.open .tooltip{display:block;}
+
+  .nav{
+    max-width:640px;
+    margin:24px auto 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+  }
+  .nav-btn{
+    display:flex; align-items:center; gap:6px;
+    background:var(--navy-deep); color:#fff; border:none;
+    padding:11px 20px; border-radius:999px; font-size:14px; font-weight:700;
+    cursor:pointer; transition:.15s; font-family:inherit;
+  }
+  .nav-btn:hover{background:var(--navy);}
+  .nav-btn:disabled{ background:#d9dce3; color:#9aa1b0; cursor:not-allowed; }
+  .nav-btn.prev{ background:#fff; color:var(--navy-deep); border:1px solid var(--line); }
+  .nav-btn.prev:hover{background:var(--paper);}
+  .nav-btn.prev:disabled{ background:#fff; color:#c7ccd6; border-color:var(--line); }
+
+  .progress{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .dots{ display:flex; gap:7px; }
+  .dot{ width:8px; height:8px; border-radius:50%; background:var(--line); cursor:pointer; transition:.15s; }
+  .dot.active{ background:var(--gold); transform:scale(1.3); }
+  .counter{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:#8a92a3; }
+
+  @media (max-width:520px){
+    .nav-btn span.label{display:none;}
+    .nav-btn{padding:11px 16px;}
+    .card{padding:20px 18px;}
+    h2{font-size:19px;}
+    ol.questions li{font-size:16px;}
+  }
+
+  footer{
+    max-width:640px;
+    margin:40px auto 0;
+    text-align:center;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    color:#9aa1b0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Approach · Speaking Warm-Up · Level A1</div>
+  <h1>Sports: Massachusetts vs. My Country</h1>
+  <p class="sub">Look at the card. Click underlined words for help. Talk with a partner about the differences.</p>
+  <div class="lang-toggle">
+    <span>Translate to:</span>
+    <div class="lang-btns">
+      <button id="btn-pt" class="active" onclick="setLang('pt')">Português</button>
+      <button id="btn-es" onclick="setLang('es')">Español</button>
+    </div>
+  </div>
+</header>
+
+<div class="brand-bar"></div>
+
+<div class="deck">
+
+  <!-- CARD 1 -->
+  <div class="card active">
+    <div class="card-head">
+      <div class="num">1</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Local Teams</div>
+        <h2>Popular Teams in Massachusetts</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: What is a popular sports team in your country?</div>
+    <div class="fact">Fact: In Massachusetts, popular <span class="gloss" data-word="teams" data-pt="times" data-es="equipos">teams<span class="tooltip"></span></span> are the Patriots (football), the Red Sox (baseball), the Celtics (basketball), and the Bruins (hockey).</div>
+    <ol class="questions">
+      <li>What is your <span class="gloss" data-word="favorite" data-pt="favorito" data-es="favorito">favorite<span class="tooltip"></span></span> sport?</li>
+      <li>Do you have a favorite team?</li>
+      <li>Is soccer popular in your country?</li>
+      <li>Do people wear team shirts in your country?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="hockey" data-pt="hóquei" data-es="hockey">hockey<span class="tooltip"></span></span>
+      <span class="gloss" data-word="basketball" data-pt="basquete" data-es="baloncesto">basketball<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">2</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Where They Play</div>
+        <h2>Stadiums and Arenas to Visit</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: Do you have a big stadium in your city?</div>
+    <div class="fact">Fact: The Patriots play at Gillette <span class="gloss" data-word="stadium" data-pt="estádio" data-es="estadio">Stadium<span class="tooltip"></span></span>. The Red Sox play at Fenway Park. The Celtics and Bruins play at TD Garden, an indoor <span class="gloss" data-word="arena" data-pt="arena / ginásio" data-es="arena / recinto">arena<span class="tooltip"></span></span>.</div>
+    <ol class="questions">
+      <li>What is the name of a stadium in your country?</li>
+      <li>Have you ever watched a game inside a stadium?</li>
+      <li>Would you like to visit Fenway Park one day?</li>
+      <li>Do you prefer an outdoor stadium or an indoor arena?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="indoor" data-pt="coberto / interno" data-es="cubierto / interior">indoor<span class="tooltip"></span></span>
+      <span class="gloss" data-word="outdoor" data-pt="ao ar livre" data-es="al aire libre">outdoor<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">3</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Money</div>
+        <h2>How Much Are the Tickets?</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: Is it expensive to watch a live game in your country?</div>
+    <div class="fact">Fact: A baseball <span class="gloss" data-word="ticket" data-pt="ingresso" data-es="entrada / boleto">ticket<span class="tooltip"></span></span> can cost about $50. A football ticket can cost $150 or more.</div>
+    <ol class="questions">
+      <li>How much does a game ticket usually cost in your country?</li>
+      <li>Do you think American tickets are <span class="gloss" data-word="expensive" data-pt="caro" data-es="caro">expensive<span class="tooltip"></span></span>?</li>
+      <li>Do you prefer to watch a game at the stadium or on TV?</li>
+      <li>Is it cheaper to watch a game at home?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="cheap" data-pt="barato" data-es="barato">cheap<span class="tooltip"></span></span>
+      <span class="gloss" data-word="seat" data-pt="assento" data-es="asiento">seat<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">4</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Rules</div>
+        <h2>Rules at the Stadium</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: Do stadiums in your country have special rules?</div>
+    <div class="fact">Fact: Many US stadiums only allow small, clear bags. You cannot bring outside food or drinks. There is a <span class="gloss" data-word="security" data-pt="segurança" data-es="seguridad">security<span class="tooltip"></span></span> check at the door.</div>
+    <ol class="questions">
+      <li>What <span class="gloss" data-word="rules" data-pt="regras" data-es="reglas">rules<span class="tooltip"></span></span> do stadiums have in your country?</li>
+      <li>Can you bring your own food to a game in your country?</li>
+      <li>Do you think these rules are good or bad? Why?</li>
+      <li>Is there a security check at games in your country?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="allowed" data-pt="permitido" data-es="permitido">allowed<span class="tooltip"></span></span>
+      <span class="gloss" data-word="clear bag" data-pt="bolsa transparente" data-es="bolsa transparente">clear bag<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">5</div>
+      <div class="card-title-wrap">
+        <div class="topic-eyebrow">Game Day</div>
+        <h2>Game Day Traditions</h2>
+      </div>
+    </div>
+    <div class="warmup">Warm-up: What do fans do before a game in your country?</div>
+    <div class="fact">Fact: Many Americans <span class="gloss" data-word="tailgate" data-pt="fazer churrasco no estacionamento" data-es="hacer una parrillada en el estacionamiento">tailgate<span class="tooltip"></span></span> before a game — they cook food in the parking lot. <span class="gloss" data-word="Fans" data-pt="torcedores / fãs" data-es="aficionados / fans">Fans<span class="tooltip"></span></span> wear team colors and cheer loudly.</div>
+    <ol class="questions">
+      <li>Do people cook food before a game in your country?</li>
+      <li>Do fans wear their team's colors?</li>
+      <li>What food do people eat at games in your country?</li>
+      <li>Do you like a loud, exciting atmosphere at games?</li>
+    </ol>
+    <div class="vocab-label">Key words</div>
+    <div class="vocab-row">
+      <span class="gloss" data-word="cheer" data-pt="torcer / gritar de torcida" data-es="animar / alentar">cheer<span class="tooltip"></span></span>
+      <span class="gloss" data-word="parking lot" data-pt="estacionamento" data-es="estacionamiento">parking lot<span class="tooltip"></span></span>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nav-btn prev" id="prevBtn" onclick="goTo(currentIndex - 1)">
+    <span>&larr;</span><span class="label">Back</span>
+  </button>
+
+  <div class="progress">
+    <div class="dots" id="dots"></div>
+    <div class="counter" id="counter">Card 1 of 5</div>
+  </div>
+
+  <button class="nav-btn next" id="nextBtn" onclick="goTo(currentIndex + 1)">
+    <span class="label">Next</span><span>&rarr;</span>
+  </button>
+</div>
+
+<footer>Approach · English for Real Life</footer>
+
+<script>
+  const cards = document.querySelectorAll('.card');
+  const total = cards.length;
+  let currentIndex = 0;
+
+  const dotsWrap = document.getElementById('dots');
+  cards.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(d);
+  });
+  const dots = document.querySelectorAll('.dot');
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function goTo(index){
+    if(index < 0 || index >= total) return;
+    cards[currentIndex].classList.remove('active');
+    dots[currentIndex].classList.remove('active');
+    currentIndex = index;
+    cards[currentIndex].classList.add('active');
+    dots[currentIndex].classList.add('active');
+    counter.textContent = 'Card ' + (currentIndex + 1) + ' of ' + total;
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex === total - 1;
+    document.querySelectorAll('.gloss.open').forEach(g => g.classList.remove('open'));
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowRight') goTo(currentIndex + 1);
+    if(e.key === 'ArrowLeft') goTo(currentIndex - 1);
+  });
+
+  goTo(0);
+
+  let currentLang = 'pt';
+
+  function setLang(lang){
+    currentLang = lang;
+    document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    document.querySelectorAll('.gloss.open').forEach(g => renderTooltip(g));
+  }
+
+  function renderTooltip(el){
+    const text = currentLang === 'pt' ? el.dataset.pt : el.dataset.es;
+    el.querySelector('.tooltip').textContent = text;
+  }
+
+  document.querySelectorAll('.gloss').forEach(el => {
+    el.addEventListener('click', (e) => {
+      const wasOpen = el.classList.contains('open');
+      document.querySelectorAll('.gloss.open').forEach(g => g.classList.remove('open'));
+      if(!wasOpen){
+        renderTooltip(el);
+        el.classList.add('open');
+      }
+      e.stopPropagation();
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.gloss.open').forEach(g => g.classList.remove('open'));
+  });
+</script>
+
+</body>
+</html>
