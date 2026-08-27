@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>True or False? School, Sports &amp; September</title>
+<style>
+  :root{
+    --navy:#1E3A5F;
+    --navy-deep:#122542;
+    --green:#2E7D4F;
+    --green-dark:#245F3F;
+    --red:#C0392B;
+    --red-dark:#9E2E22;
+    --gold:#D4A017;
+    --paper:#F7F4EC;
+    --ink:#22314B;
+    --line:#DCD5C4;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Georgia', 'Iowan Old Style', serif;
+    color:var(--ink);
+    padding:28px 16px 60px;
+  }
+
+  header{
+    max-width:640px;
+    margin:0 auto 22px;
+    text-align:center;
+  }
+
+  .kicker{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--red);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+
+  h1{
+    font-size:clamp(23px,4vw,31px);
+    margin:0 0 8px;
+    color:var(--navy-deep);
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+
+  .sub{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14px;
+    color:#5b6577;
+    max-width:480px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+
+  .brand-bar{
+    height:4px;
+    max-width:640px;
+    margin:0 auto 24px;
+    border-radius:3px;
+    background:linear-gradient(90deg, var(--navy) 0 25%, var(--green) 25% 50%, var(--gold) 50% 75%, var(--red) 75% 100%);
+  }
+
+  .status-row{
+    max-width:640px;
+    margin:0 auto 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .counter{
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:#8a92a3;
+    font-weight:700;
+  }
+
+  .tag{
+    font-size:10.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:#fff;
+    padding:4px 11px;
+    border-radius:999px;
+    display:inline-block;
+  }
+
+  .score{
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy-deep);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:5px 14px;
+  }
+
+  .progress-track{
+    max-width:640px;
+    margin:0 auto 22px;
+    height:6px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--gold);
+    width:0%;
+    transition:width .3s ease;
+  }
+
+  .game-card{
+    max-width:640px;
+    margin:0 auto;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:34px 30px;
+    box-shadow:0 1px 3px rgba(18,37,66,.06);
+    text-align:center;
+    min-height:260px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:14px;
+  }
+
+  .statement{
+    font-size:clamp(20px,4.2vw,26px);
+    font-weight:700;
+    color:var(--navy-deep);
+    line-height:1.4;
+  }
+
+  .feedback{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14.5px;
+    line-height:1.5;
+    margin-top:10px;
+    padding:12px 16px;
+    border-radius:8px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.correct{
+    background:#EAF5EE;
+    color:var(--green-dark);
+    border:1px solid var(--green);
+  }
+  .feedback.incorrect{
+    background:#FBEAE8;
+    color:var(--red-dark);
+    border:1px solid var(--red);
+  }
+  .feedback strong{ display:block; font-size:15.5px; margin-bottom:4px; }
+
+  .btn-row{
+    max-width:640px;
+    margin:22px auto 0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+
+  .tf-btn{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:clamp(20px,4vw,26px);
+    font-weight:800;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    border:none;
+    border-radius:14px;
+    padding:26px 10px;
+    cursor:pointer;
+    color:#fff;
+    transition:transform .1s ease, opacity .15s ease;
+    box-shadow:0 3px 0 rgba(0,0,0,.15);
+  }
+  .tf-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.15); }
+  .tf-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+
+  .btn-true{ background:var(--green); }
+  .btn-true:not(:disabled):hover{ background:var(--green-dark); }
+  .btn-false{ background:var(--red); }
+  .btn-false:not(:disabled):hover{ background:var(--red-dark); }
+
+  .tf-btn.dim{ opacity:.35; }
+  .tf-btn.picked{ outline:4px solid var(--gold); outline-offset:2px; }
+
+  .next-row{
+    max-width:640px;
+    margin:20px auto 0;
+    text-align:center;
+  }
+
+  .btn-next{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    background:var(--navy-deep);
+    color:#fff;
+    border:none;
+    padding:13px 32px;
+    border-radius:999px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .btn-next:hover{ background:var(--navy); }
+
+  .end-screen{
+    max-width:640px;
+    margin:0 auto;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:44px 30px;
+    text-align:center;
+    display:none;
+  }
+  .end-screen.show{ display:block; }
+  .end-emoji{ font-size:44px; margin-bottom:6px; }
+  .end-title{
+    font-size:26px;
+    font-weight:700;
+    color:var(--navy-deep);
+    margin-bottom:6px;
+  }
+  .end-score{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:16px;
+    color:#5b6577;
+    margin-bottom:22px;
+  }
+  .end-score b{ color:var(--navy-deep); font-size:20px; }
+
+  footer{
+    max-width:640px;
+    margin:34px auto 0;
+    text-align:center;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:12px;
+    color:#9aa1b0;
+  }
+
+  @media (max-width:480px){
+    .game-card{padding:26px 18px;}
+    .tf-btn{padding:22px 8px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Approach · Speaking Game · Level A1</div>
+  <h1>True or False? School, Sports &amp; September</h1>
+  <p class="sub">Read the sentence. Is it TRUE or FALSE? Press the button, then talk about it with the class.</p>
+</header>
+
+<div class="brand-bar"></div>
+
+<div id="playArea">
+  <div class="status-row">
+    <div class="counter" id="counter">Question 1 of 12</div>
+    <div class="score" id="score">Score: 0</div>
+  </div>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <div class="game-card">
+    <span class="tag" id="tag">School</span>
+    <div class="statement" id="statement"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <div class="btn-row" id="btnRow">
+    <button class="tf-btn btn-true" id="trueBtn" onclick="answer(true)">True</button>
+    <button class="tf-btn btn-false" id="falseBtn" onclick="answer(false)">False</button>
+  </div>
+
+  <div class="next-row" id="nextRow" style="display:none;">
+    <button class="btn-next" onclick="nextQuestion()">Next Question →</button>
+  </div>
+</div>
+
+<div class="end-screen" id="endScreen">
+  <div class="end-emoji" id="endEmoji">🎉</div>
+  <div class="end-title" id="endTitle">Great job!</div>
+  <div class="end-score">You scored <b id="finalScore">0</b> out of 12</div>
+  <button class="btn-next" onclick="restartGame()">Play Again</button>
+</div>
+
+<footer>Approach · English for Real Life</footer>
+
+<script>
+  const NAVY = "1E3A5F", GREEN = "2E7D4F", GOLD = "D4A017", RED = "C0392B";
+
+  const questions = [
+    // ---- SCHOOL (review, reworded) ----
+    { text: "Most public school students in the US wear the same uniform every day.", answer: false,
+      explain: "Most American public schools don't require uniforms — students usually wear their own clothes.",
+      tag: "School", color: GREEN },
+    { text: "Lunch at school is usually eaten in a room called the cafeteria.", answer: true,
+      explain: "The cafeteria is a common part of American schools.",
+      tag: "School", color: GREEN },
+    { text: "American students usually keep the exact same teacher every single year.", answer: false,
+      explain: "Most US students get a new, different teacher each school year.",
+      tag: "School", color: GREEN },
+    { text: "A typical American classroom has about 20 to 30 students.", answer: true,
+      explain: "Class sizes in the US are often in this range.",
+      tag: "School", color: GREEN },
+
+    // ---- SPORTS ----
+    { text: "High schools in the US often have their own football and basketball teams.", answer: true,
+      explain: "School sports teams are a big part of American high school life.",
+      tag: "Sports", color: NAVY },
+    { text: "Playing a sport is something every single US student must do.", answer: false,
+      explain: "Sports are usually optional, not required.",
+      tag: "Sports", color: NAVY },
+    { text: "A talented college athlete can sometimes study for free through a scholarship.", answer: true,
+      explain: "This is called an athletic scholarship — it helps pay for college.",
+      tag: "Sports", color: NAVY },
+    { text: "Baseball has an old nickname: people call it America's favorite pastime.", answer: true,
+      explain: 'Baseball is often called "America\'s pastime" because it is such an old tradition.',
+      tag: "Sports", color: NAVY },
+
+    // ---- SEPTEMBER TRADITIONS (not only sports) ----
+    { text: "Labor Day is a US holiday that happens in September.", answer: true,
+      explain: "Labor Day is always on the first Monday of September.",
+      tag: "September", color: GOLD },
+    { text: "Labor Day always falls on July 4th.", answer: false,
+      explain: "July 4th is Independence Day, a completely different holiday.",
+      tag: "September", color: GOLD },
+    { text: "In mid-September, the US begins a few weeks celebrating Hispanic Heritage Month.", answer: true,
+      explain: "Hispanic Heritage Month runs from mid-September to mid-October in the US.",
+      tag: "September", color: GOLD },
+    { text: "The weather in September is always hot everywhere in the US.", answer: false,
+      explain: "In many parts of the US, like the Northeast, September starts to feel cooler as fall begins.",
+      tag: "September", color: GOLD },
+  ];
+
+  let order = [];
+  let current = 0;
+  let score = 0;
+  let answered = false;
+
+  const statementEl = document.getElementById('statement');
+  const feedbackEl = document.getElementById('feedback');
+  const counterEl = document.getElementById('counter');
+  const scoreEl = document.getElementById('score');
+  const progressFill = document.getElementById('progressFill');
+  const trueBtn = document.getElementById('trueBtn');
+  const falseBtn = document.getElementById('falseBtn');
+  const nextRow = document.getElementById('nextRow');
+  const playArea = document.getElementById('playArea');
+  const endScreen = document.getElementById('endScreen');
+  const finalScoreEl = document.getElementById('finalScore');
+  const endTitle = document.getElementById('endTitle');
+  const endEmoji = document.getElementById('endEmoji');
+  const tagEl = document.getElementById('tag');
+
+  function shuffle(arr){
+    const a = [...arr];
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function loadQuestion(){
+    answered = false;
+    const q = questions[order[current]];
+    statementEl.textContent = q.text;
+    tagEl.textContent = q.tag;
+    tagEl.style.background = "#" + q.color;
+    feedbackEl.className = 'feedback';
+    feedbackEl.textContent = '';
+    trueBtn.disabled = false;
+    falseBtn.disabled = false;
+    trueBtn.classList.remove('dim', 'picked');
+    falseBtn.classList.remove('dim', 'picked');
+    nextRow.style.display = 'none';
+    counterEl.textContent = `Question ${current + 1} of ${questions.length}`;
+    scoreEl.textContent = `Score: ${score}`;
+    progressFill.style.width = (current / questions.length * 100) + '%';
+  }
+
+  function answer(choice){
+    if(answered) return;
+    answered = true;
+
+    const q = questions[order[current]];
+    const correct = choice === q.answer;
+
+    if(correct) score++;
+
+    trueBtn.disabled = true;
+    falseBtn.disabled = true;
+
+    const pickedBtn = choice ? trueBtn : falseBtn;
+    const otherBtn = choice ? falseBtn : trueBtn;
+    pickedBtn.classList.add('picked');
+    otherBtn.classList.add('dim');
+
+    feedbackEl.classList.add('show', correct ? 'correct' : 'incorrect');
+    feedbackEl.innerHTML = `<strong>${correct ? 'Correct! ✓' : 'Not quite. ✗'}</strong> This is <u>${q.answer ? 'TRUE' : 'FALSE'}</u>. ${q.explain}`;
+
+    scoreEl.textContent = `Score: ${score}`;
+    nextRow.style.display = 'block';
+  }
+
+  function nextQuestion(){
+    current++;
+    if(current >= questions.length){
+      showEndScreen();
+    } else {
+      loadQuestion();
+    }
+  }
+
+  function showEndScreen(){
+    progressFill.style.width = '100%';
+    playArea.style.display = 'none';
+    endScreen.classList.add('show');
+    finalScoreEl.textContent = score;
+
+    if(score >= 10){
+      endEmoji.textContent = '🏆';
+      endTitle.textContent = 'Amazing! You really know this!';
+    } else if(score >= 7){
+      endEmoji.textContent = '🎉';
+      endTitle.textContent = 'Great job!';
+    } else if(score >= 4){
+      endEmoji.textContent = '🙂';
+      endTitle.textContent = 'Good try!';
+    } else {
+      endEmoji.textContent = '💬';
+      endTitle.textContent = "Let's talk about these!";
+    }
+  }
+
+  function restartGame(){
+    order = shuffle(questions.map((_, i) => i));
+    current = 0;
+    score = 0;
+    playArea.style.display = 'block';
+    endScreen.classList.remove('show');
+    loadQuestion();
+  }
+
+  restartGame();
+</script>
+
+</body>
+</html>
