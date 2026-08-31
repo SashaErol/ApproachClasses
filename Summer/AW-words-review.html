@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>True or False? — Toughest Words Check</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+    --good:#2F7D5C;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:24px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:460px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(22px,6vw,27px); text-align:center; margin:0 0 6px;
+  }
+  .sub{ text-align:center; font-size:13px; color:var(--muted); margin:0 0 16px; line-height:1.4; }
+
+  .progress-row{ display:flex; justify-content:center; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+
+  .hud{ display:flex; justify-content:space-between; margin-bottom:10px; }
+  .hud-item{ text-align:center; flex:1; }
+  .hud-label{ font-family:'Cambria',Georgia,serif; font-style:italic; font-size:10.5px; color:var(--muted); display:block; }
+  .hud-value{ font-family:'Cambria',Georgia,serif; font-weight:700; font-size:19px; color:var(--darkblue); }
+
+  .timer-shell{ height:8px; border-radius:999px; background:var(--gray); overflow:hidden; margin-bottom:16px; }
+  .timer-fill{ height:100%; width:100%; background:var(--lightblue); transition:width 0.15s linear, background 0.2s ease; }
+  .timer-fill.warn{ background:var(--red); }
+  .dot{ width:9px; height:9px; border-radius:50%; background:var(--gray); border:1.5px solid var(--gray); }
+  .dot.correct{ background:var(--good); border-color:var(--good); }
+  .dot.wrong{ background:var(--red); border-color:var(--red); }
+  .dot.active{ border-color:var(--darkblue); }
+
+  .card{
+    border:1.5px solid var(--darkblue); border-radius:18px;
+    padding:32px 24px; min-height:170px;
+    display:flex; flex-direction:column; justify-content:center; text-align:center;
+    margin-bottom:16px; transition:border-color .2s ease, background .2s ease;
+  }
+  .card.correct{ border-color:var(--good); background:rgba(47,125,92,0.05); }
+  .card.wrong{ border-color:var(--red); background:rgba(159,36,28,0.05); }
+  .card-word{ font-family:'Cambria',Georgia,serif; font-weight:700; font-size:24px; margin-bottom:14px; }
+  .card-statement{ font-size:15.5px; line-height:1.5; color:var(--darkblue); }
+  .card-statement b{ color:var(--lightblue); }
+
+  .choices{ display:flex; gap:14px; margin-bottom:14px; }
+  .choice-btn{
+    flex:1; padding:16px; border:2px solid var(--darkblue); background:var(--white);
+    color:var(--darkblue); border-radius:14px; font-weight:700; font-size:16px; cursor:pointer;
+  }
+  .choice-btn[data-val="true"]{ border-color:var(--good); color:var(--good); }
+  .choice-btn[data-val="false"]{ border-color:var(--red); color:var(--red); }
+  .choice-btn:disabled{ opacity:0.4; cursor:default; }
+  .choice-btn.picked-right{ background:var(--good); border-color:var(--good); color:var(--white); opacity:1; }
+  .choice-btn.picked-wrong{ background:var(--red); border-color:var(--red); color:var(--white); opacity:1; }
+  .choice-btn.reveal-correct{ background:var(--good); border-color:var(--good); color:var(--white); opacity:1; }
+
+  .feedback{ text-align:center; font-size:14px; line-height:1.5; min-height:40px; margin-bottom:8px; color:var(--muted); }
+  .feedback b{ color:var(--good); }
+  .feedback.bad b{ color:var(--red); }
+
+  .next-btn{
+    display:none; width:100%; padding:14px; border:none; border-radius:12px;
+    background:var(--darkblue); color:var(--white); font-weight:700; font-size:16px; cursor:pointer;
+  }
+  .next-btn.show{ display:block; }
+
+  #endScreen{ display:none; text-align:center; padding-top:10px; }
+  #endScreen h2{ font-family:'Cambria',Georgia,serif; font-size:26px; margin:8px 0 6px; }
+  .final-score{ font-family:'Cambria',Georgia,serif; font-size:38px; font-weight:700; color:var(--lightblue); margin:4px 0 16px; }
+  .restart-btn{
+    padding:12px 24px; border:none; border-radius:12px;
+    background:var(--lightblue); color:var(--white); font-weight:600; font-size:15px; cursor:pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Weeks 1&ndash;8 · Vocabulary Check</div>
+  <h1>True or False?</h1>
+  <p class="sub">The 10 toughest words so far. You have 20 seconds per word &mdash; faster answers earn more points.</p>
+
+  <div class="hud">
+    <div class="hud-item"><span class="hud-label">SCORE</span><span class="hud-value" id="scoreVal">0</span></div>
+    <div class="hud-item"><span class="hud-label">WORD</span><span class="hud-value" id="wordNum">1/10</span></div>
+  </div>
+  <div class="timer-shell"><div class="timer-fill" id="timerFill"></div></div>
+
+  <div class="progress-row" id="dots"></div>
+
+  <div id="game">
+    <div class="card" id="card">
+      <div class="card-word" id="cardWord"></div>
+      <div class="card-statement" id="cardStatement"></div>
+    </div>
+
+    <div class="choices">
+      <button class="choice-btn" data-val="true" id="trueBtn">TRUE</button>
+      <button class="choice-btn" data-val="false" id="falseBtn">FALSE</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">Next &rarr;</button>
+  </div>
+
+  <div id="endScreen">
+    <h2 id="endTitle"></h2>
+    <div class="final-score" id="finalScoreVal"></div>
+    <button class="restart-btn" id="restartBtn">Try Again</button>
+  </div>
+</div>
+
+<script>
+const WORDS = [
+  { word: "down-to-earth", statement: "This means <b>practical and honest, not acting superior</b>.", isTrue: true,
+    reason: "Down-to-earth describes someone humble and grounded." },
+  { word: "worthwhile", statement: "This means <b>a complete waste of time</b>.", isTrue: false,
+    reason: "Actually, worthwhile means good enough to be worth the time or effort — the opposite of a waste." },
+  { word: "outgoing", statement: "This means <b>friendly and enjoys meeting new people</b>.", isTrue: true,
+    reason: "An outgoing person is sociable and enjoys being around others." },
+  { word: "thoughtful", statement: "This means <b>careless about other people's feelings</b>.", isTrue: false,
+    reason: "Actually, thoughtful means careful and considerate about other people's feelings." },
+  { word: "stubborn", statement: "This means <b>refuses to change their mind easily</b>.", isTrue: true,
+    reason: "A stubborn person holds firmly to their own ideas or plans." },
+  { word: "hands-on experience", statement: "This means <b>learning only from books, without any practice</b>.", isTrue: false,
+    reason: "Actually, hands-on experience means real, practical experience actually doing the work." },
+  { word: "sibling", statement: "This means <b>a brother or a sister</b>.", isTrue: true,
+    reason: "Sibling is a formal word for brother or sister." },
+  { word: "borrow", statement: "This means <b>to give something away and never expect it back</b>.", isTrue: false,
+    reason: "Actually, borrow means to use something temporarily and then give it back." },
+  { word: "field", statement: "This means <b>an area of work or study</b>.", isTrue: true,
+    reason: "In this context, field means a professional or academic area." },
+  { word: "overall", statement: "This means <b>only one small, unimportant detail</b>.", isTrue: false,
+    reason: "Actually, overall means considering everything together, not just one detail." },
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+let timeLeft = 20;
+let timerId = null;
+const TIME_LIMIT = 20;
+const MAX_POINTS = 100;
+const results = [];
+
+const dotsEl = document.getElementById('dots');
+const scoreVal = document.getElementById('scoreVal');
+const wordNum = document.getElementById('wordNum');
+const timerFill = document.getElementById('timerFill');
+const card = document.getElementById('card');
+const cardWord = document.getElementById('cardWord');
+const cardStatement = document.getElementById('cardStatement');
+const trueBtn = document.getElementById('trueBtn');
+const falseBtn = document.getElementById('falseBtn');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const gameEl = document.getElementById('game');
+const endEl = document.getElementById('endScreen');
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  WORDS.forEach((_, i) => {
+    const d = document.createElement('span');
+    let cls = 'dot';
+    if (results[i] === 'correct') cls += ' correct';
+    else if (results[i] === 'wrong') cls += ' wrong';
+    if (i === current) cls += ' active';
+    d.className = cls;
+    dotsEl.appendChild(d);
+  });
+}
+
+function renderWord(){
+  const item = WORDS[current];
+  answered = false;
+  timeLeft = TIME_LIMIT;
+  wordNum.textContent = `${current + 1}/${WORDS.length}`;
+  scoreVal.textContent = score;
+  timerFill.style.width = '100%';
+  timerFill.classList.remove('warn');
+  card.className = 'card';
+  cardWord.textContent = item.word;
+  cardStatement.innerHTML = item.statement;
+  feedback.className = 'feedback';
+  feedback.textContent = '';
+  nextBtn.classList.remove('show');
+
+  [trueBtn, falseBtn].forEach(b => {
+    b.disabled = false;
+    b.classList.remove('picked-right', 'picked-wrong', 'reveal-correct');
+  });
+
+  buildDots();
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerId);
+  timerId = setInterval(() => {
+    timeLeft -= 0.1;
+    if (timeLeft <= 0){
+      timeLeft = 0;
+      updateTimerUI();
+      clearInterval(timerId);
+      if (!answered) selectAnswer(null);
+      return;
+    }
+    updateTimerUI();
+  }, 100);
+}
+
+function updateTimerUI(){
+  const pct = (timeLeft / TIME_LIMIT) * 100;
+  timerFill.style.width = pct + '%';
+  timerFill.classList.toggle('warn', timeLeft <= 4);
+}
+
+function selectAnswer(val){
+  if (answered) return;
+  answered = true;
+  clearInterval(timerId);
+  const item = WORDS[current];
+  const correctBtn = item.isTrue ? trueBtn : falseBtn;
+  const chosenBtn = val === true ? trueBtn : val === false ? falseBtn : null;
+  const isCorrect = val === item.isTrue;
+
+  trueBtn.disabled = true;
+  falseBtn.disabled = true;
+
+  if (isCorrect){
+    const pts = Math.max(10, Math.round(MAX_POINTS * (timeLeft / TIME_LIMIT)));
+    score += pts;
+    results[current] = 'correct';
+    card.classList.add('correct');
+    chosenBtn.classList.add('picked-right');
+    feedback.innerHTML = `<b>Correct! +${pts} points</b><br>${item.reason}`;
+  } else {
+    results[current] = 'wrong';
+    card.classList.add('wrong');
+    if (chosenBtn) chosenBtn.classList.add('picked-wrong');
+    correctBtn.classList.add('reveal-correct');
+    feedback.className = 'feedback bad';
+    feedback.innerHTML = val === null
+      ? `<b>Time's up.</b> ${item.reason}`
+      : `<b>Not quite.</b> ${item.reason}`;
+  }
+
+  scoreVal.textContent = score;
+  buildDots();
+  nextBtn.classList.add('show');
+  nextBtn.textContent = current < WORDS.length - 1 ? 'Next \u2192' : 'See results';
+}
+
+trueBtn.addEventListener('click', () => selectAnswer(true));
+falseBtn.addEventListener('click', () => selectAnswer(false));
+
+nextBtn.addEventListener('click', () => {
+  current++;
+  if (current < WORDS.length){
+    renderWord();
+  } else {
+    showEnd();
+  }
+});
+
+function showEnd(){
+  gameEl.style.display = 'none';
+  endEl.style.display = 'block';
+  document.getElementById('finalScoreVal').textContent = score;
+  const maxPossible = WORDS.length * MAX_POINTS;
+  const pct = score / maxPossible;
+  const title = document.getElementById('endTitle');
+  if (pct >= 0.8) title.textContent = 'Perfect Recall!';
+  else if (pct >= 0.5) title.textContent = 'Strong Understanding!';
+  else title.textContent = "Let's Review These Together.";
+}
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+  current = 0; score = 0; results.length = 0;
+  gameEl.style.display = 'block';
+  endEl.style.display = 'none';
+  renderWord();
+});
+
+renderWord();
+</script>
+</body>
+</html>
