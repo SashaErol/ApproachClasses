@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Fill in the Sentences — Toughest Words</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:22px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:580px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(22px,6vw,27px); text-align:center; margin:0 0 6px;
+  }
+  .sub{ text-align:center; font-size:13px; color:var(--muted); margin:0 0 16px; line-height:1.4; }
+  .progress{ text-align:center; font-family:'Cambria',Georgia,serif; font-style:italic; font-size:13px; color:var(--darkblue); margin-bottom:16px; }
+
+  .bank-label{
+    font-family:'Cambria',Georgia,serif; font-weight:700; font-size:12.5px;
+    color:var(--muted); text-align:center; margin-bottom:8px; letter-spacing:0.04em;
+  }
+  .bank{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:22px; }
+  .chip{
+    border:1.5px solid var(--lightblue); background:var(--white); color:var(--darkblue);
+    border-radius:999px; padding:9px 16px; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  .chip:disabled{ opacity:0.25; pointer-events:none; }
+
+  .sentence-list{ display:flex; flex-direction:column; gap:12px; margin-bottom:16px; }
+  .sentence{
+    border:1.5px solid var(--darkblue); border-radius:12px;
+    padding:12px 14px; font-size:15px; line-height:1.6;
+  }
+  .sentence .num{ font-weight:700; margin-right:2px; }
+  .blank{
+    display:inline-block; min-width:130px; text-align:center;
+    border-bottom:2px solid var(--gray); padding:2px 6px; margin:0 2px;
+    font-weight:700; color:var(--muted); cursor:pointer;
+  }
+  .blank.filled{
+    border-bottom-color:var(--darkblue); color:var(--darkblue); cursor:pointer;
+    background:var(--gray); border-radius:6px;
+  }
+
+  .check-btn{
+    display:none; width:100%; padding:14px; border:none; border-radius:12px;
+    background:var(--darkblue); color:var(--white); font-weight:700; font-size:16px; cursor:pointer;
+    margin-bottom:10px;
+  }
+  .check-btn.show{ display:block; }
+
+  .answer-key{ display:none; margin-top:10px; }
+  .answer-key.show{ display:block; }
+  .key-title{ font-family:'Cambria',Georgia,serif; font-weight:700; font-size:19px; margin-bottom:4px; text-align:center; }
+  .key-sub{ font-size:12.5px; color:var(--muted); text-align:center; margin-bottom:16px; }
+  .key-sentence{
+    font-size:14.5px; line-height:1.6; margin-bottom:10px; padding-bottom:10px;
+    border-bottom:1px solid var(--gray);
+  }
+  .key-sentence b{ color:var(--darkblue); text-decoration:underline; text-decoration-color:var(--lightblue); }
+
+  .glossary-title{ font-family:'Cambria',Georgia,serif; font-weight:700; font-size:18px; margin:20px 0 4px; text-align:center; }
+  .glossary-sub{ font-size:12.5px; color:var(--muted); text-align:center; margin-bottom:12px; }
+  .gloss-row{
+    display:grid; grid-template-columns:1.1fr 1fr 1fr 1fr; gap:6px;
+    border-bottom:1px solid var(--gray); padding:8px 2px; text-align:left; font-size:12px;
+  }
+  .gloss-row.header{ font-weight:700; color:var(--muted); font-size:10.5px; text-transform:uppercase; }
+  .gloss-en{ font-weight:700; color:var(--darkblue); }
+  .gloss-ar{ direction:rtl; text-align:right; }
+
+  .restart-btn{
+    display:none; margin:20px auto 0; padding:12px 24px; border:none; border-radius:12px;
+    background:var(--lightblue); color:var(--white); font-weight:600; font-size:15px; cursor:pointer;
+  }
+  .restart-btn.show{ display:block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Weeks 1&ndash;8 · Vocabulary Practice</div>
+  <h1>Fill in the Sentences</h1>
+  <p class="sub">Tap a word, then tap the blank where it belongs. Answers and translations appear at the end.</p>
+  <div class="progress" id="progress">0 / 10 placed</div>
+
+  <div class="bank-label">WORD BANK</div>
+  <div class="bank" id="bank"></div>
+
+  <div class="sentence-list" id="sentenceList"></div>
+
+  <button class="check-btn" id="checkBtn">Check Answers</button>
+
+  <div class="answer-key" id="answerKey">
+    <div class="key-title">Answer Key</div>
+    <div class="key-sub">Here is each sentence completed correctly.</div>
+    <div id="keyList"></div>
+
+    <div class="glossary-title">Word Glossary</div>
+    <div class="glossary-sub">Portuguese, Spanish, and Arabic translations.</div>
+    <div class="gloss-row header">
+      <div>Word</div><div>Portugu&ecirc;s</div><div>Espa&ntilde;ol</div><div style="text-align:right;">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</div>
+    </div>
+    <div id="glossaryList"></div>
+  </div>
+
+  <button class="restart-btn" id="restartBtn">Shuffle &amp; Try Again</button>
+</div>
+
+<script>
+const ITEMS = [
+  {
+    word: "down-to-earth",
+    before: "My new landlord is very ",
+    after: "; he always talks to us like normal neighbors, not like a boss.",
+    pt: "humilde", es: "humilde", ar: "\u0645\u062a\u0648\u0627\u0636\u0639",
+  },
+  {
+    word: "worthwhile",
+    before: "Learning to drive in a new country was hard, but it was ",
+    after: " in the end.",
+    pt: "que vale a pena", es: "que vale la pena", ar: "\u064a\u0633\u062a\u062d\u0642 \u0627\u0644\u0639\u0646\u0627\u0621",
+  },
+  {
+    word: "outgoing",
+    before: "My roommate is very ",
+    after: "; she already knows everyone in our building.",
+    pt: "extrovertido", es: "extrovertido", ar: "\u0627\u062c\u062a\u0645\u0627\u0639\u064a",
+  },
+  {
+    word: "thoughtful",
+    before: "It was very ",
+    after: " of my coworker to bring me lunch on my first day.",
+    pt: "atencioso", es: "considerado", ar: "\u0645\u0631\u0627\u0639\u064d \u0644\u0644\u0622\u062e\u0631\u064a\u0646",
+  },
+  {
+    word: "stubborn",
+    before: "My father refuses to use a smartphone; he is too ",
+    after: " to try new things.",
+    pt: "teimoso", es: "terco", ar: "\u0639\u0646\u064a\u062f",
+  },
+  {
+    word: "hands-on experience",
+    before: "Before I got this job, I needed some ",
+    after: " with the machines.",
+    pt: "experi\u00eancia pr\u00e1tica", es: "experiencia pr\u00e1ctica", ar: "\u062e\u0628\u0631\u0629 \u0639\u0645\u0644\u064a\u0629",
+  },
+  {
+    word: "sibling",
+    before: "My only ",
+    after: " still lives in my home country, so we talk on video calls every week.",
+    pt: "irm\u00e3o ou irm\u00e3", es: "hermano o hermana", ar: "\u0623\u062e \u0623\u0648 \u0623\u062e\u062a",
+  },
+  {
+    word: "borrow",
+    before: "I had to ",
+    after: " money from a friend during my first month here.",
+    pt: "pedir emprestado", es: "pedir prestado", ar: "\u064a\u0633\u062a\u0639\u064a\u0631",
+  },
+  {
+    word: "field",
+    before: "Nursing is a very different ",
+    after: " from the one I studied back home.",
+    pt: "\u00e1rea", es: "\u00e1rea", ar: "\u0645\u062c\u0627\u0644",
+  },
+  {
+    word: "overall",
+    before: "",
+    after: ", moving abroad was difficult, but I don't regret it.",
+    pt: "no geral", es: "en general", ar: "\u0628\u0634\u0643\u0644 \u0639\u0627\u0645",
+    capitalizeFirst: true,
+  },
+];
+
+function shuffle(arr){
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let poolWords = [];
+let sentenceOrder = [];
+let placed = new Array(ITEMS.length).fill(null); // index into poolWords, or null
+let selectedChip = null;
+
+const bankEl = document.getElementById('bank');
+const sentenceListEl = document.getElementById('sentenceList');
+const progressEl = document.getElementById('progress');
+const checkBtn = document.getElementById('checkBtn');
+const answerKey = document.getElementById('answerKey');
+const restartBtn = document.getElementById('restartBtn');
+
+function buildBoard(){
+  placed = new Array(ITEMS.length).fill(null);
+  selectedChip = null;
+  answerKey.classList.remove('show');
+  checkBtn.classList.remove('show');
+  restartBtn.classList.remove('show');
+  progressEl.textContent = `0 / ${ITEMS.length} placed`;
+
+  poolWords = shuffle(ITEMS.map(it => it.word));
+  sentenceOrder = shuffle(ITEMS.map((_, i) => i));
+  renderBank();
+  renderSentences();
+}
+
+function renderBank(){
+  bankEl.innerHTML = '';
+  poolWords.forEach((word, idx) => {
+    const used = placed.includes(idx);
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.disabled = used;
+    chip.addEventListener('click', () => selectChip(idx, chip));
+    bankEl.appendChild(chip);
+  });
+}
+
+function renderSentences(){
+  sentenceListEl.innerHTML = '';
+  sentenceOrder.forEach((itemIdx, displayIdx) => {
+    const item = ITEMS[itemIdx];
+    const p = document.createElement('div');
+    p.className = 'sentence';
+    p.innerHTML = `<span class="num">${displayIdx + 1}.</span>${item.before}`;
+    const blank = document.createElement('span');
+    blank.className = 'blank' + (placed[displayIdx] !== null ? ' filled' : '');
+    blank.textContent = placed[displayIdx] !== null ? poolWords[placed[displayIdx]] : '__________';
+    blank.addEventListener('click', () => handleBlankClick(displayIdx));
+    p.appendChild(blank);
+    p.appendChild(document.createTextNode(item.after));
+    sentenceListEl.appendChild(p);
+  });
+}
+
+function selectChip(idx, chipEl){
+  if (chipEl.disabled) return;
+  selectedChip = selectedChip === idx ? null : idx;
+  renderBank();
+  markSelectedChip();
+}
+
+function markSelectedChip(){
+  Array.from(bankEl.children).forEach((chip, idx) => {
+    chip.style.background = (idx === selectedChip) ? '#E8E8E8' : '';
+  });
+}
+
+function handleBlankClick(sentenceIdx){
+  if (placed[sentenceIdx] !== null){
+    // remove it, send word back to pool
+    placed[sentenceIdx] = null;
+    updateProgress();
+    renderBank();
+    renderSentences();
+    return;
+  }
+  if (selectedChip === null) return;
+  placed[sentenceIdx] = selectedChip;
+  selectedChip = null;
+  updateProgress();
+  renderBank();
+  renderSentences();
+}
+
+function updateProgress(){
+  const count = placed.filter(p => p !== null).length;
+  progressEl.textContent = `${count} / ${ITEMS.length} placed`;
+  checkBtn.classList.toggle('show', count === ITEMS.length);
+}
+
+checkBtn.addEventListener('click', () => {
+  showAnswerKey();
+});
+
+function showAnswerKey(){
+  answerKey.classList.add('show');
+  restartBtn.classList.add('show');
+  checkBtn.classList.remove('show');
+
+  const keyList = document.getElementById('keyList');
+  keyList.innerHTML = '';
+  sentenceOrder.forEach((itemIdx, displayIdx) => {
+    const item = ITEMS[itemIdx];
+    const displayWord = item.capitalizeFirst
+      ? item.word.charAt(0).toUpperCase() + item.word.slice(1)
+      : item.word;
+    const div = document.createElement('div');
+    div.className = 'key-sentence';
+    div.innerHTML = `${displayIdx + 1}. ${item.before}<b>${displayWord}</b>${item.after}`;
+    keyList.appendChild(div);
+  });
+
+  const glossList = document.getElementById('glossaryList');
+  glossList.innerHTML = '';
+  ITEMS.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'gloss-row';
+    row.innerHTML = `
+      <div class="gloss-en">${item.word}</div>
+      <div>${item.pt}</div>
+      <div>${item.es}</div>
+      <div class="gloss-ar">${item.ar}</div>
+    `;
+    glossList.appendChild(row);
+  });
+}
+
+restartBtn.addEventListener('click', buildBoard);
+
+buildBoard();
+</script>
+</body>
+</html>
