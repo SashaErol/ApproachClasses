@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Speaking Warm-Up — Health & Work-Life Balance</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+    --gold:#C9A227;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:24px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:480px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(21px,5.5vw,26px); text-align:center; margin:0 0 14px;
+  }
+
+  .progress-row{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-bottom:18px;
+  }
+  .dot{ width:9px; height:9px; border-radius:50%; background:var(--gray); border:1.5px solid var(--gray); }
+  .dot.done{ background:var(--lightblue); border-color:var(--lightblue); }
+  .dot.active{ border-color:var(--darkblue); }
+
+  .card{
+    border:1.5px solid var(--darkblue);
+    border-radius:20px;
+    padding:32px 26px;
+    min-height:200px;
+    display:flex; flex-direction:column; justify-content:center;
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .card-topic{
+    font-family:'Calibri','Segoe UI',sans-serif; font-weight:700; font-size:11.5px;
+    color:var(--lightblue); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;
+  }
+  .card-question{
+    font-family:'Cambria',Georgia,serif; font-weight:700; font-style:italic;
+    font-size:18.5px; line-height:1.55; color:var(--darkblue);
+  }
+  .card-question b{ color:var(--lightblue); font-style:normal; }
+
+  .challenge-toggle{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:11px; border:1.5px dashed var(--gold); border-radius:12px;
+    background:var(--white); color:var(--gold); font-weight:700; font-size:13px;
+    cursor:pointer; margin-bottom:10px;
+  }
+
+  .challenge-box{
+    display:none;
+    border:1.5px solid var(--gold);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:16px;
+    background:rgba(201,162,39,0.05);
+  }
+  .challenge-box.show{ display:block; }
+  .challenge-label{
+    display:flex; align-items:center; gap:6px;
+    font-family:'Calibri','Segoe UI',sans-serif; font-weight:700; font-size:11px;
+    color:var(--gold); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;
+  }
+  .challenge-question{
+    font-family:'Cambria',Georgia,serif; font-style:italic; font-size:15px;
+    line-height:1.5; color:var(--darkblue);
+  }
+  .challenge-question b{ color:var(--lightblue); font-style:normal; }
+
+  .nav-row{ display:flex; gap:10px; }
+  .nav-btn{
+    flex:1; padding:14px; border:1.5px solid var(--darkblue); background:var(--white);
+    color:var(--darkblue); border-radius:12px; font-weight:700; font-size:14.5px; cursor:pointer;
+  }
+  .nav-btn:disabled{ opacity:0.35; cursor:default; }
+  .nav-btn.primary{ background:var(--darkblue); color:var(--white); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Week 9 · Speaking Warm-Up</div>
+  <h1>Health &amp; Work-Life Balance</h1>
+
+  <div class="progress-row" id="dots"></div>
+
+  <div class="card">
+    <div class="card-topic" id="cardTopic"></div>
+    <div class="card-question" id="cardQuestion"></div>
+  </div>
+
+  <button class="challenge-toggle" id="challengeToggle"></button>
+
+  <div class="challenge-box" id="challengeBox">
+    <div class="challenge-label" id="challengeLabel"></div>
+    <div class="challenge-question" id="challengeQuestion"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn">&larr; Prev</button>
+    <button class="nav-btn primary" id="nextBtn">Next &rarr;</button>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  {
+    topic: "Health & Unwinding",
+    question: "Why is health important to you? Do you <b>work out</b>, or do you <b>unwind</b> in other ways after a stressful day?",
+    challenge: "Compare how you unwind now to how you did back home. Are they similar, or completely different?",
+  },
+  {
+    topic: "Sleep & Screens",
+    question: "How many hours do you usually sleep? Do you use your phone right before bed or right after waking up?",
+    challenge: "Do you think screen time affects your <b>deep sleep</b>? Could it be connected to feeling <b>exhausted</b> the next day?",
+  },
+  {
+    topic: "Nutrition Habits",
+    question: "What does a normal day of eating look like for you? Would you say you have a <b>balanced diet</b>?",
+    challenge: "What's one eating <b>habit</b> you'd like to change, and why?",
+  },
+  {
+    topic: "Health Benefits at Work",
+    question: "In your country, do most companies provide healthcare? Is it easy to get a <b>checkup</b> when you need one?",
+    challenge: "How is this similar to, or different from, healthcare here in the US?",
+  },
+  {
+    topic: "Time Off & Family Leave",
+    question: "Do workers in your country get paid time off for personal issues? Is there maternity or paternity leave?",
+    challenge: "Do you think companies here offer enough time off, compared to your home country?",
+  },
+  {
+    topic: "Dealing with Stress",
+    question: "What do you usually do when you feel <b>stressed</b>? Have you ever tried to <b>cut down on</b> something, like caffeine or screen time, to feel better?",
+    challenge: "What's one healthy <b>habit</b> you've built since moving here to deal with stress?",
+  },
+];
+
+let current = 0;
+const dotsEl = document.getElementById('dots');
+const cardTopic = document.getElementById('cardTopic');
+const cardQuestion = document.getElementById('cardQuestion');
+const challengeToggle = document.getElementById('challengeToggle');
+const challengeBox = document.getElementById('challengeBox');
+const challengeLabel = document.getElementById('challengeLabel');
+const challengeQuestion = document.getElementById('challengeQuestion');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+const STAR_SVG = '<svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l2.9 6.9L22 9.6l-5.4 4.9L18 22l-6-3.6L6 22l1.4-7.5L2 9.6l7.1-0.7L12 2z" fill="none" stroke="#C9A227" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+const STAR_SVG_FILLED = '<svg viewBox="0 0 24 24" width="13" height="13"><path d="M12 2l2.9 6.9L22 9.6l-5.4 4.9L18 22l-6-3.6L6 22l1.4-7.5L2 9.6l7.1-0.7L12 2z" fill="#C9A227"/></svg>';
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  CARDS.forEach((_, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i < current ? ' done' : '') + (i === current ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+}
+
+function render(){
+  const item = CARDS[current];
+  cardTopic.textContent = item.topic;
+  cardQuestion.innerHTML = item.question;
+  challengeQuestion.innerHTML = item.challenge;
+  challengeLabel.innerHTML = STAR_SVG_FILLED + ' For a challenge';
+  challengeBox.classList.remove('show');
+  challengeToggle.innerHTML = STAR_SVG + ' Show challenge question';
+
+  prevBtn.disabled = current === 0;
+  nextBtn.textContent = current === CARDS.length - 1 ? 'Restart \u21ba' : 'Next \u2192';
+
+  buildDots();
+}
+
+challengeToggle.addEventListener('click', () => {
+  const showing = challengeBox.classList.toggle('show');
+  challengeToggle.innerHTML = STAR_SVG + (showing ? ' Hide challenge question' : ' Show challenge question');
+});
+
+prevBtn.addEventListener('click', () => {
+  if (current > 0){ current--; render(); }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (current < CARDS.length - 1){ current++; } else { current = 0; }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
