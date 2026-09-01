@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Right or Wrong? Vocabulary Speed Game</title>
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --green:#2E7D4F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+    background:var(--navy-dark);
+    color:var(--white);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+  }
+  .app{
+    max-width:520px;
+    width:100%;
+  }
+
+  /* ---- Start screen ---- */
+  .screen{
+    background:var(--white);
+    color:var(--navy-dark);
+    border-radius:14px;
+    padding:32px 26px;
+    text-align:center;
+    box-shadow:0 8px 28px rgba(0,0,0,0.35);
+  }
+  .screen h1{
+    font-size:1.5rem;
+    margin-bottom:10px;
+    color:var(--navy-dark);
+  }
+  .screen p{
+    font-size:0.95rem;
+    color:var(--navy-mid);
+    line-height:1.55;
+    margin-bottom:22px;
+  }
+  .rules{
+    text-align:left;
+    background:var(--gray);
+    border-radius:8px;
+    padding:14px 18px;
+    font-size:0.87rem;
+    color:var(--navy-mid);
+    margin-bottom:22px;
+    line-height:1.6;
+  }
+  .rules b{color:var(--navy-dark);}
+
+  .btn-big{
+    background:var(--red);
+    color:var(--white);
+    border:none;
+    padding:15px 36px;
+    border-radius:10px;
+    font-size:1.05rem;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:0.3px;
+    transition:background 0.15s, transform 0.1s;
+  }
+  .btn-big:hover{background:#7d1e15; transform:translateY(-1px);}
+
+  /* ---- Game HUD ---- */
+  .hud{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+    font-size:0.85rem;
+    color:var(--gray);
+    letter-spacing:0.3px;
+  }
+  .hud .score{
+    font-weight:700;
+    color:var(--white);
+    font-size:1.1rem;
+  }
+  .timer-bar-wrap{
+    width:100%;
+    height:10px;
+    background:rgba(255,255,255,0.15);
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:20px;
+  }
+  .timer-bar{
+    height:100%;
+    background:var(--blue);
+    width:100%;
+    transition:width 1s linear, background 0.3s;
+  }
+  .timer-bar.urgent{background:var(--red);}
+
+  .game-card{
+    background:var(--white);
+    color:var(--navy-dark);
+    border-radius:14px;
+    padding:30px 26px;
+    text-align:center;
+    box-shadow:0 8px 28px rgba(0,0,0,0.35);
+  }
+  .word-display{
+    font-size:2rem;
+    font-weight:800;
+    color:var(--navy-dark);
+    margin-bottom:6px;
+    letter-spacing:0.3px;
+  }
+  .word-tag{
+    font-size:0.72rem;
+    color:var(--blue);
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    font-weight:700;
+    margin-bottom:18px;
+  }
+  .meaning-box{
+    background:var(--gray);
+    border-radius:10px;
+    padding:18px 20px;
+    font-size:1.02rem;
+    color:var(--navy-mid);
+    line-height:1.5;
+    margin-bottom:24px;
+    min-height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .answer-btns{
+    display:flex;
+    gap:14px;
+  }
+  .answer-btn{
+    flex:1;
+    padding:18px 10px;
+    border-radius:10px;
+    border:none;
+    font-size:1.05rem;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:0.3px;
+    transition:transform 0.1s, opacity 0.15s;
+  }
+  .answer-btn:active{transform:scale(0.97);}
+  .answer-btn.right-btn{background:var(--green); color:var(--white);}
+  .answer-btn.wrong-btn{background:var(--red); color:var(--white);}
+  .answer-btn:disabled{opacity:0.5; cursor:default;}
+
+  .feedback{
+    margin-top:18px;
+    font-size:0.95rem;
+    font-weight:700;
+    min-height:50px;
+  }
+  .feedback.correct{color:var(--green);}
+  .feedback.incorrect{color:var(--red);}
+  .feedback .points{
+    display:block;
+    font-size:1.3rem;
+    margin-top:4px;
+  }
+  .feedback .real-def{
+    display:block;
+    font-weight:400;
+    font-size:0.85rem;
+    color:var(--navy-mid);
+    margin-top:6px;
+  }
+
+  .progress-label{
+    text-align:center;
+    font-size:0.8rem;
+    color:var(--gray);
+    margin-top:14px;
+  }
+
+  /* ---- Results screen ---- */
+  .results-list{
+    text-align:left;
+    max-height:280px;
+    overflow-y:auto;
+    margin-bottom:20px;
+    border-top:1px solid var(--gray);
+    padding-top:10px;
+  }
+  .result-row{
+    display:flex;
+    justify-content:space-between;
+    padding:6px 4px;
+    font-size:0.85rem;
+    border-bottom:1px solid var(--gray);
+  }
+  .result-row.correct-row{color:var(--green);}
+  .result-row.incorrect-row{color:var(--red);}
+
+  .hidden{display:none;}
+
+  @media (max-width:480px){
+    .word-display{font-size:1.6rem;}
+    .answer-btns{gap:10px;}
+    .answer-btn{padding:15px 6px; font-size:0.95rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- START SCREEN -->
+  <div class="screen" id="startScreen">
+    <h1>Right or Wrong?</h1>
+    <p>A fast vocabulary game. You'll see a word and one possible meaning — decide if it's <b>Right</b> or <b>Wrong</b> before time runs out.</p>
+    <div class="rules">
+      <b>How to play:</b><br>
+      • You have <b>25 seconds</b> per word.<br>
+      • Answer faster to earn <b>more points</b> — even correct answers earn less if you're slow.<br>
+      • Wrong answers or running out of time earn <b>0 points</b>.<br>
+      • 15 words total. Good luck!
+    </div>
+    <button class="btn-big" id="startBtn">Start Game</button>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="hidden" id="gameScreen">
+    <div class="hud">
+      <span id="progressText">Word 1 / 15</span>
+      <span class="score" id="scoreText">Score: 0</span>
+    </div>
+    <div class="timer-bar-wrap">
+      <div class="timer-bar" id="timerBar"></div>
+    </div>
+    <div class="game-card">
+      <div class="word-tag">Is this meaning...</div>
+      <div class="word-display" id="wordDisplay">word</div>
+      <div class="meaning-box" id="meaningBox">meaning goes here</div>
+      <div class="answer-btns" id="answerBtns">
+        <button class="answer-btn right-btn" id="rightBtn">✓ RIGHT</button>
+        <button class="answer-btn wrong-btn" id="wrongBtn">✗ WRONG</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="hidden screen" id="resultsScreen">
+    <h1>Game Over!</h1>
+    <p id="finalScoreText" style="font-size:1.3rem; font-weight:700; color:var(--navy-dark);"></p>
+    <div class="results-list" id="resultsList"></div>
+    <button class="btn-big" id="playAgainBtn">Play Again</button>
+  </div>
+
+</div>
+
+<script>
+  const ROUND_TIME = 25; // seconds per word
+
+  // Each item: word, the meaning shown, whether that shown meaning is correct,
+  // and the real correct definition (always shown as feedback so students learn).
+  const items = [
+    {
+      word: "gloat",
+      shown: "To feel or show great satisfaction about your own success, often in an annoying way.",
+      isCorrect: true,
+      realDef: "To feel or express great pleasure about your own success (or someone else's failure) in a way that annoys other people."
+    },
+    {
+      word: "asylum",
+      shown: "An official document required for university admission.",
+      isCorrect: false,
+      realDef: "Protection given by a country to someone escaping danger in their own country."
+    },
+    {
+      word: "hoard",
+      shown: "To collect and store a large amount of something, often secretly, more than you actually need.",
+      isCorrect: true,
+      realDef: "To collect and keep a large supply of something, often secretly, out of fear of not having enough."
+    },
+    {
+      word: "frivolous",
+      shown: "Not serious or important; silly.",
+      isCorrect: true,
+      realDef: "Not serious or sensible; treating something important as unimportant."
+    },
+    {
+      word: "innate",
+      shown: "A skill learned slowly over many years of hard practice.",
+      isCorrect: false,
+      realDef: "A quality or ability you are born with, not learned."
+    },
+    {
+      word: "juicy",
+      shown: "(Informal) Boring, dull, and uninteresting.",
+      isCorrect: false,
+      realDef: "(Informal) Very interesting or exciting, especially gossip or a story."
+    },
+    {
+      word: "mediate",
+      shown: "To help two sides in a conflict reach an agreement.",
+      isCorrect: true,
+      realDef: "To help two people or groups in a disagreement find a solution together."
+    },
+    {
+      word: "meaninglessness",
+      shown: "The state of having no purpose or importance.",
+      isCorrect: true,
+      realDef: "The quality of having no real purpose, value, or importance."
+    },
+    {
+      word: "monetize",
+      shown: "To find a way to earn money from something.",
+      isCorrect: true,
+      realDef: "To find a way to make money from something you own or create."
+    },
+    {
+      word: "primed (for)",
+      shown: "Completely unprepared, confused, and caught off guard.",
+      isCorrect: false,
+      realDef: "Fully ready and prepared for something that's about to happen."
+    },
+    {
+      word: "put out (a fire)",
+      shown: "To make a fire bigger and help it spread faster.",
+      isCorrect: false,
+      realDef: "To stop a fire from burning; to extinguish it."
+    },
+    {
+      word: "wealth",
+      shown: "A total lack of money or valuable possessions.",
+      isCorrect: false,
+      realDef: "A large amount of money, property, or valuable possessions; riches."
+    },
+    {
+      word: "figuratively",
+      shown: "Describing something exactly as it literally happened, with no exaggeration.",
+      isCorrect: false,
+      realDef: "Describing something in a symbolic or non-literal way, used for effect (the opposite of \"literally\")."
+    },
+    {
+      word: "pillar",
+      shown: "An important person or thing that supports or is central to something.",
+      isCorrect: true,
+      realDef: "A central, essential part of something; a main support — either a literal column or a key person or idea."
+    },
+    {
+      word: "vast",
+      shown: "Extremely small and limited in size.",
+      isCorrect: false,
+      realDef: "Extremely large in size, area, or amount."
+    }
+  ];
+
+  let currentIndex = 0;
+  let score = 0;
+  let timeLeft = ROUND_TIME;
+  let timerInterval = null;
+  let answered = false;
+  const results = [];
+
+  const startScreen = document.getElementById('startScreen');
+  const gameScreen = document.getElementById('gameScreen');
+  const resultsScreen = document.getElementById('resultsScreen');
+
+  const wordDisplay = document.getElementById('wordDisplay');
+  const meaningBox = document.getElementById('meaningBox');
+  const timerBar = document.getElementById('timerBar');
+  const progressText = document.getElementById('progressText');
+  const scoreText = document.getElementById('scoreText');
+  const feedback = document.getElementById('feedback');
+  const rightBtn = document.getElementById('rightBtn');
+  const wrongBtn = document.getElementById('wrongBtn');
+
+  document.getElementById('startBtn').addEventListener('click', startGame);
+  document.getElementById('playAgainBtn').addEventListener('click', () => {
+    currentIndex = 0;
+    score = 0;
+    results.length = 0;
+    resultsScreen.classList.add('hidden');
+    startGame();
+  });
+
+  function startGame(){
+    startScreen.classList.add('hidden');
+    resultsScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    loadQuestion();
+  }
+
+  function loadQuestion(){
+    answered = false;
+    timeLeft = ROUND_TIME;
+    feedback.textContent = '';
+    feedback.className = 'feedback';
+    rightBtn.disabled = false;
+    wrongBtn.disabled = false;
+    timerBar.style.width = '100%';
+    timerBar.classList.remove('urgent');
+
+    const item = items[currentIndex];
+    wordDisplay.textContent = item.word;
+    meaningBox.textContent = item.shown;
+    progressText.textContent = `Word ${currentIndex + 1} / ${items.length}`;
+    scoreText.textContent = `Score: ${score}`;
+
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timeLeft -= 0.1;
+      const pct = Math.max(0, (timeLeft / ROUND_TIME) * 100);
+      timerBar.style.width = pct + '%';
+      if (timeLeft <= 7) timerBar.classList.add('urgent');
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        timeLeft = 0;
+        handleAnswer(null); // timeout
+      }
+    }, 100);
+  }
+
+  rightBtn.addEventListener('click', () => handleAnswer(true));
+  wrongBtn.addEventListener('click', () => handleAnswer(false));
+
+  function handleAnswer(userSaysCorrect){
+    if (answered) return;
+    answered = true;
+    clearInterval(timerInterval);
+    rightBtn.disabled = true;
+    wrongBtn.disabled = true;
+
+    const item = items[currentIndex];
+    let points = 0;
+    let isRight = false;
+
+    if (userSaysCorrect !== null) {
+      isRight = (userSaysCorrect === item.isCorrect);
+      if (isRight) {
+        // Speed-based scoring: faster answers earn more points.
+        // Range: 20 (answered right at the last second) to 100 (answered instantly)
+        const fraction = Math.max(0, timeLeft / ROUND_TIME);
+        points = Math.round(20 + 80 * fraction);
+      }
+    }
+
+    score += points;
+    results.push({ word: item.word, correct: isRight, points });
+
+    if (userSaysCorrect === null) {
+      feedback.classList.add('incorrect');
+      feedback.innerHTML = `Time's up! <span class="points">+0 points</span><span class="real-def">Meaning: ${item.realDef}</span>`;
+    } else if (isRight) {
+      feedback.classList.add('correct');
+      feedback.innerHTML = `Correct! <span class="points">+${points} points</span><span class="real-def">Meaning: ${item.realDef}</span>`;
+    } else {
+      feedback.classList.add('incorrect');
+      feedback.innerHTML = `Not quite. <span class="points">+0 points</span><span class="real-def">Meaning: ${item.realDef}</span>`;
+    }
+
+    scoreText.textContent = `Score: ${score}`;
+
+    setTimeout(() => {
+      currentIndex++;
+      if (currentIndex < items.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }, 2200);
+  }
+
+  function showResults(){
+    gameScreen.classList.add('hidden');
+    resultsScreen.classList.remove('hidden');
+
+    const maxPossible = items.length * 100;
+    document.getElementById('finalScoreText').textContent = `Final Score: ${score} / ${maxPossible}`;
+
+    const list = document.getElementById('resultsList');
+    list.innerHTML = '';
+    results.forEach((r, i) => {
+      const row = document.createElement('div');
+      row.className = 'result-row ' + (r.correct ? 'correct-row' : 'incorrect-row');
+      row.innerHTML = `<span>${i + 1}. ${r.word}</span><span>${r.correct ? '✓' : '✗'} +${r.points}</span>`;
+      list.appendChild(row);
+    });
+  }
+</script>
+
+</body>
+</html>
