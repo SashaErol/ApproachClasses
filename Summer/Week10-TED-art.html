@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discussion Cards: Art, Aesthetics & Everyday Life</title>
+<style>
+  :root{
+    --navy-dark:#0B1828;
+    --navy-mid:#0F2A47;
+    --red:#9E251A;
+    --blue:#4289BD;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+    background:var(--gray);
+    color:var(--navy-dark);
+    padding:24px 16px 60px;
+  }
+  header{
+    max-width:620px;
+    margin:0 auto 22px;
+    text-align:center;
+  }
+  header h1{
+    color:var(--navy-dark);
+    font-size:1.6rem;
+    margin-bottom:6px;
+    letter-spacing:0.3px;
+  }
+  header p{
+    color:var(--navy-mid);
+    font-size:0.98rem;
+    max-width:560px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+  .instructions{
+    max-width:620px;
+    margin:0 auto 24px;
+    background:var(--white);
+    border-left:5px solid var(--blue);
+    padding:14px 18px;
+    border-radius:6px;
+    font-size:0.92rem;
+    color:var(--navy-mid);
+  }
+  .deck{
+    max-width:620px;
+    margin:0 auto;
+    position:relative;
+    min-height:420px;
+  }
+  .card{
+    background:var(--white);
+    border-radius:10px;
+    padding:24px 26px 22px;
+    box-shadow:0 2px 6px rgba(11,24,40,0.12);
+    display:none;
+    flex-direction:column;
+    border-top:6px solid var(--navy-mid);
+    animation:fadeIn 0.25s ease;
+  }
+  .card.active{display:flex;}
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .card:nth-of-type(3n+1){border-top-color:var(--red);}
+  .card:nth-of-type(3n+2){border-top-color:var(--blue);}
+  .card:nth-of-type(3n){border-top-color:var(--navy-mid);}
+  .card-number{
+    font-size:0.75rem;
+    font-weight:700;
+    color:var(--blue);
+    letter-spacing:1px;
+    margin-bottom:4px;
+  }
+  .card h2{
+    font-size:1.15rem;
+    color:var(--navy-dark);
+    margin:0 0 12px;
+    line-height:1.3;
+  }
+  .card ul{
+    margin:0 0 14px;
+    padding-left:18px;
+    flex-grow:1;
+  }
+  .card li{
+    margin-bottom:11px;
+    line-height:1.5;
+    font-size:0.95rem;
+  }
+  .vocab{
+    color:var(--red);
+    font-weight:700;
+    cursor:pointer;
+    border-bottom:2px dotted var(--red);
+    white-space:nowrap;
+    position:relative;
+  }
+  .vocab:hover{color:var(--navy-mid);border-bottom-color:var(--navy-mid);}
+  .word-bank{
+    border-top:1px solid var(--gray);
+    padding-top:10px;
+    margin-top:auto;
+    min-height:34px;
+  }
+  .word-bank-label{
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--navy-mid);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .chip{
+    font-size:0.78rem;
+    background:var(--navy-dark);
+    color:var(--white);
+    padding:4px 10px;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .chip:hover{background:var(--red);}
+
+  /* Nav controls */
+  .nav-wrap{
+    max-width:620px;
+    margin:22px auto 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+  }
+  .nav-btn{
+    background:var(--navy-dark);
+    color:var(--white);
+    border:none;
+    padding:12px 22px;
+    border-radius:8px;
+    font-size:0.95rem;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:0.3px;
+    transition:background 0.15s;
+  }
+  .nav-btn:hover{background:var(--red);}
+  .nav-btn:disabled{
+    background:var(--gray);
+    color:#a9a9a9;
+    cursor:not-allowed;
+  }
+  .progress{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--gray);
+    cursor:pointer;
+    border:2px solid var(--gray);
+    transition:background 0.15s, border 0.15s;
+  }
+  .dot.done{background:var(--blue); border-color:var(--blue);}
+  .dot.current{background:var(--red); border-color:var(--red);}
+  .progress-label{
+    text-align:center;
+    font-size:0.85rem;
+    color:var(--navy-mid);
+    margin-top:10px;
+    letter-spacing:0.3px;
+  }
+
+  /* Tooltip */
+  #tooltip{
+    position:fixed;
+    max-width:260px;
+    background:var(--navy-dark);
+    color:var(--white);
+    padding:12px 14px;
+    border-radius:8px;
+    font-size:0.85rem;
+    line-height:1.45;
+    box-shadow:0 4px 14px rgba(0,0,0,0.3);
+    z-index:999;
+    display:none;
+  }
+  #tooltip .tt-word{
+    color:var(--blue);
+    font-weight:700;
+    display:block;
+    margin-bottom:4px;
+    font-size:0.9rem;
+  }
+  #tooltip .tt-syn{
+    color:var(--gray);
+    font-style:italic;
+    font-size:0.8rem;
+  }
+  #tooltip .tt-close{
+    position:absolute;
+    top:4px;
+    right:8px;
+    cursor:pointer;
+    color:var(--gray);
+    font-size:0.9rem;
+  }
+
+  @media (max-width:600px){
+    header h1{font-size:1.35rem;}
+    .nav-btn{padding:11px 16px; font-size:0.88rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Discussion Cards</h1>
+  <p>Art, Aesthetics, and the Beauty of Daily Life</p>
+</header>
+
+<div class="instructions">
+  Work in trios. Pick 2–3 questions per card and dig into real opinions, not just quick answers. Click any highlighted word to check its meaning.
+</div>
+
+<div class="deck">
+
+  <div class="card" id="card-1">
+    <div class="card-number">CARD 1</div>
+    <h2>How We See Art</h2>
+    <ul>
+      <li>If you think about art from an anthropological angle — basically, what it says about being human — what do you think it reveals about us as a species?</li>
+      <li>Do you think there's an <span class="vocab" data-word="underlying unity" data-def="a hidden connection or shared quality beneath things that look completely different on the surface" data-syn="a hidden connection">underlying unity</span> in how humans across different cultures create art, even though the styles look nothing alike?</li>
+      <li>Do you have a favorite painting, building, sculpture, or even a clothing designer? What is it about their work that pulls you in?</li>
+      <li>Sometimes a piece of art has a <span class="vocab" data-word="hidden" data-def="not obvious or visible at first; kept out of sight" data-syn="concealed, not obvious">hidden</span> meaning that isn't clear at first glance. Has a painting or building ever surprised you once you learned the story behind it?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="underlying unity" data-def="a hidden connection or shared quality beneath things that look completely different on the surface" data-syn="a hidden connection">underlying unity</span>
+        <span class="chip" data-word="hidden" data-def="not obvious or visible at first; kept out of sight" data-syn="concealed, not obvious">hidden</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-2">
+    <div class="card-number">CARD 2</div>
+    <h2>Everyday Style: Colors and Patterns</h2>
+    <ul>
+      <li>How would you describe your everyday style? Do you gravitate toward bold colors and <span class="vocab" data-word="patterns" data-def="repeated designs, shapes, or colors that create a recognizable look" data-syn="repeated designs">patterns</span>, or do you keep things simple?</li>
+      <li>Do certain colors or patterns actually affect your mood, or is that just something people say?</li>
+      <li>If you had to <span class="vocab" data-word="weave together" data-def="to combine different parts or ideas into a single, connected whole" data-syn="combine into one">weave together</span> three words to describe your personal style, what would they be?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="patterns" data-def="repeated designs, shapes, or colors that create a recognizable look" data-syn="repeated designs">patterns</span>
+        <span class="chip" data-word="weave together" data-def="to combine different parts or ideas into a single, connected whole" data-syn="combine into one">weave together</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-3">
+    <div class="card-number">CARD 3</div>
+    <h2>Home, Seasons, and Little Details</h2>
+    <ul>
+      <li>Do you change your room's decorations with the seasons, the way a lot of Americans do — pumpkins in fall, flowers in spring?</li>
+      <li>Have you ever picked out something small, like <span class="vocab" data-word="tiles" data-def="flat, hard pieces used to cover floors, walls, or roofs, often decorative" data-syn="flat decorative pieces">tiles</span>, a rug, or a vase, just because it made a space feel more "you"?</li>
+      <li>Do fresh flowers or small decorative touches actually change how you feel in a space, or is that just clever marketing?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key word</div>
+      <div class="chip-row">
+        <span class="chip" data-word="tiles" data-def="flat, hard pieces used to cover floors, walls, or roofs, often decorative" data-syn="flat decorative pieces">tiles</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-4">
+    <div class="card-number">CARD 4</div>
+    <h2>Does Beauty Affect Motivation?</h2>
+    <ul>
+      <li>Do you think using nice stationery while studying, or eating from a nice plate, actually changes how motivated you feel — <span class="vocab" data-word="in spite of" data-def="even though something is true; despite" data-syn="despite, even though">in spite of</span> the fact that the task itself hasn't changed at all?</li>
+      <li>Do clean streets, green parks, and well-kept public buildings affect your mood when you're just walking through a city?</li>
+      <li>Do you regularly tidy up your desktop, wardrobe, or car, or does a little clutter not bother you at all?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key word</div>
+      <div class="chip-row">
+        <span class="chip" data-word="in spite of" data-def="even though something is true; despite" data-syn="despite, even though">in spite of</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-5">
+    <div class="card-number">CARD 5</div>
+    <h2>How Aesthetics Change Through Time</h2>
+    <ul>
+      <li>Style and taste <span class="vocab" data-word="unfold" data-def="to happen gradually and become fully clear or developed over time" data-syn="happen slowly, develop">unfold</span> over decades and centuries — think about how different fashion or architecture looked just 100 years ago. What do you think really drives those changes?</li>
+      <li>Do you know of any style, trend, or even a word that was <span class="vocab" data-word="coined" data-def="invented or first used, usually referring to a new word or phrase" data-syn="invented, created">coined</span> fairly recently but now feels like it's always existed?</li>
+      <li>Do you think taste in beauty looks completely different across continents, or are people more similar than we think?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key words</div>
+      <div class="chip-row">
+        <span class="chip" data-word="unfold" data-def="to happen gradually and become fully clear or developed over time" data-syn="happen slowly, develop">unfold</span>
+        <span class="chip" data-word="coined" data-def="invented or first used, usually referring to a new word or phrase" data-syn="invented, created">coined</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="card-6">
+    <div class="card-number">CARD 6</div>
+    <h2>The Big Takeaway</h2>
+    <ul>
+      <li>After everything we've talked about, do you think our mindset today is really that different from people's mindset 500 years ago, or do we just have different tools and technology?</li>
+      <li>If you had to give one <span class="vocab" data-word="takeaway" data-def="the main lesson or point you remember from a conversation or experience" data-syn="main lesson, key point">takeaway</span> from today's conversation about art, style, and daily life, what would it be?</li>
+      <li>Do you think future generations will look back at our current style and taste the same way we look back at the past — with curiosity, judgment, or admiration?</li>
+    </ul>
+    <div class="word-bank">
+      <div class="word-bank-label">Key word</div>
+      <div class="chip-row">
+        <span class="chip" data-word="takeaway" data-def="the main lesson or point you remember from a conversation or experience" data-syn="main lesson, key point">takeaway</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-wrap">
+  <button class="nav-btn" id="backBtn">← Back</button>
+  <div class="progress" id="progressDots"></div>
+  <button class="nav-btn" id="nextBtn">Next →</button>
+</div>
+<div class="progress-label" id="progressLabel">Card 1 of 6</div>
+
+<div id="tooltip">
+  <span class="tt-close" id="ttClose">✕</span>
+  <span class="tt-word" id="ttWord"></span>
+  <span id="ttDef"></span><br>
+  <span class="tt-syn" id="ttSyn"></span>
+</div>
+
+<script>
+  const tooltip = document.getElementById('tooltip');
+  const ttWord = document.getElementById('ttWord');
+  const ttDef = document.getElementById('ttDef');
+  const ttSyn = document.getElementById('ttSyn');
+  const ttClose = document.getElementById('ttClose');
+
+  function showTooltip(el){
+    const word = el.getAttribute('data-word');
+    const def = el.getAttribute('data-def');
+    const syn = el.getAttribute('data-syn');
+    ttWord.textContent = word;
+    ttDef.textContent = def;
+    ttSyn.textContent = 'Similar to: ' + syn;
+
+    tooltip.style.display = 'block';
+    const rect = el.getBoundingClientRect();
+    let top = rect.bottom + 8;
+    let left = rect.left;
+
+    const ttWidth = 260;
+    if (left + ttWidth > window.innerWidth - 10) {
+      left = window.innerWidth - ttWidth - 16;
+    }
+    if (top + 120 > window.innerHeight) {
+      top = rect.top - 130;
+    }
+    tooltip.style.top = top + 'px';
+    tooltip.style.left = left + 'px';
+  }
+
+  document.querySelectorAll('.vocab, .chip').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showTooltip(el);
+    });
+  });
+
+  ttClose.addEventListener('click', () => tooltip.style.display = 'none');
+  document.addEventListener('click', () => tooltip.style.display = 'none');
+  tooltip.addEventListener('click', (e) => e.stopPropagation());
+
+  // ---- Card navigation ----
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const total = cards.length;
+  let current = 0;
+
+  const backBtn = document.getElementById('backBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressDots = document.getElementById('progressDots');
+  const progressLabel = document.getElementById('progressLabel');
+
+  cards.forEach((_, i) => {
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    dot.addEventListener('click', () => goTo(i));
+    progressDots.appendChild(dot);
+  });
+  const dots = Array.from(progressDots.children);
+
+  function render(){
+    cards.forEach((c, i) => c.classList.toggle('active', i === current));
+    dots.forEach((d, i) => {
+      d.classList.toggle('current', i === current);
+      d.classList.toggle('done', i < current);
+    });
+    backBtn.disabled = current === 0;
+    nextBtn.textContent = current === total - 1 ? 'Done ✓' : 'Next →';
+    progressLabel.textContent = `Card ${current + 1} of ${total}`;
+    tooltip.style.display = 'none';
+  }
+
+  function goTo(i){
+    current = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+
+  backBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => {
+    if (current < total - 1) goTo(current + 1);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+  render();
+</script>
+
+</body>
+</html>
