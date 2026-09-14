@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Vocabulary Review — Before Bingo</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+    --good:#2F7D5C;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:22px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:520px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(22px,6vw,27px); text-align:center; margin:0 0 6px;
+  }
+  .sub{ text-align:center; font-size:13px; color:var(--muted); margin:0 0 16px; line-height:1.4; }
+  .progress{ text-align:center; font-family:'Cambria',Georgia,serif; font-style:italic; font-size:13px; color:var(--darkblue); margin-bottom:16px; }
+
+  .card{
+    border:1.5px solid var(--darkblue); border-radius:18px;
+    padding:26px 22px; margin-bottom:16px; transition:border-color .2s ease, background .2s ease;
+  }
+  .card.correct{ border-color:var(--good); background:rgba(47,125,92,0.05); }
+  .card.wrong{ border-color:var(--red); background:rgba(159,36,28,0.05); }
+  .card-sentence{
+    font-family:'Cambria',Georgia,serif; font-style:italic; font-size:17px;
+    line-height:1.55; color:var(--darkblue); text-align:center; margin-bottom:4px;
+  }
+
+  .options{ display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .opt{
+    font-family:'Calibri','Segoe UI',sans-serif; font-size:15px; font-weight:500;
+    text-align:left; padding:13px 16px; border:2px solid var(--gray); background:var(--white);
+    color:var(--darkblue); border-radius:12px; cursor:pointer; min-height:46px;
+  }
+  .opt:disabled{ cursor:default; }
+  .opt.correct{ background:rgba(47,125,92,0.12); border-color:var(--good); color:var(--good); font-weight:700; }
+  .opt.incorrect{ background:rgba(159,36,28,0.10); border-color:var(--red); color:var(--red); font-weight:700; }
+
+  .feedback{ text-align:center; font-size:14px; min-height:24px; margin-bottom:8px; color:var(--muted); }
+  .feedback b{ color:var(--good); }
+  .feedback.bad b{ color:var(--red); }
+
+  .next-btn{
+    display:none; width:100%; padding:14px; border:none; border-radius:12px;
+    background:var(--darkblue); color:var(--white); font-weight:700; font-size:16px; cursor:pointer;
+  }
+  .next-btn.show{ display:block; }
+
+  #endScreen{ display:none; text-align:center; }
+  #endScreen h2{ font-family:'Cambria',Georgia,serif; font-size:26px; margin:8px 0 4px; }
+  .final-score{ font-family:'Cambria',Georgia,serif; font-size:38px; font-weight:700; color:var(--lightblue); margin:4px 0 16px; }
+
+  #translationScreen{ display:none; }
+  .trans-title{ font-family:'Cambria',Georgia,serif; font-weight:700; font-size:22px; text-align:center; margin:6px 0 4px; }
+  .trans-sub{ font-size:13px; color:var(--muted); text-align:center; margin-bottom:16px; }
+  .trans-row{
+    display:grid; grid-template-columns:1.1fr 1fr 1fr; gap:8px;
+    border-bottom:1px solid var(--gray); padding:9px 2px; text-align:left; font-size:13px;
+  }
+  .trans-row.header{ font-weight:700; color:var(--muted); font-size:11px; text-transform:uppercase; }
+  .trans-en{ font-weight:700; color:var(--darkblue); }
+  .trans-ar{ direction:rtl; text-align:right; }
+
+  .restart-btn{
+    display:block; width:100%; margin-top:18px; padding:13px; border:none; border-radius:12px;
+    background:var(--lightblue); color:var(--white); font-weight:600; font-size:15px; cursor:pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Before Bingo · Vocabulary Review</div>
+  <h1>Choose the Correct Word</h1>
+  <p class="sub">15 questions. No time limit &mdash; take your time and think it through.</p>
+  <div class="progress" id="progress">Question 1 of 15</div>
+
+  <div id="game">
+    <div class="card" id="card">
+      <div class="card-sentence" id="cardSentence"></div>
+    </div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">Next &rarr;</button>
+  </div>
+
+  <div id="endScreen">
+    <h2 id="endTitle"></h2>
+    <div class="final-score" id="finalScoreVal"></div>
+    <button class="restart-btn" id="seeTranslationsBtn">See Word Translations &rarr;</button>
+  </div>
+
+  <div id="translationScreen">
+    <div class="trans-title">Word Translations</div>
+    <div class="trans-sub">Portuguese and Arabic, for the 15 words you just reviewed.</div>
+    <div class="trans-row header">
+      <div>Word</div><div>Portugu&ecirc;s</div><div style="text-align:right;">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</div>
+    </div>
+    <div id="transList"></div>
+    <button class="restart-btn" id="restartBtn">Start Over</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    sentence: "Before working as a nurse here, Maria had to ________ from her home country.",
+    options: ["evaluate her credentials", "buy a sandwich", "watch a movie", "paint the wall"],
+    answer: 0, word: "evaluate credentials", pt: "avaliar as credenciais", ar: "\u062a\u0642\u064a\u064a\u0645 \u0627\u0644\u0634\u0647\u0627\u062f\u0627\u062a",
+  },
+  {
+    sentence: "John could not get the job because he did not ________ for the position.",
+    options: ["eat breakfast", "meet the requirements", "wash his car", "sing a song"],
+    answer: 1, word: "meet the requirements", pt: "atender aos requisitos", ar: "\u062a\u0644\u0628\u064a\u0629 \u0627\u0644\u0645\u062a\u0637\u0644\u0628\u0627\u062a",
+  },
+  {
+    sentence: "Nurses are ________ right now, so hospitals are hiring quickly.",
+    options: ["in high demand", "sleeping all day", "painting houses", "very quiet"],
+    answer: 0, word: "in high demand", pt: "muito procurado", ar: "\u0645\u0637\u0644\u0648\u0628 \u0628\u0634\u062f\u0629",
+  },
+  {
+    sentence: "Make sure the school you choose is ________ before you enroll.",
+    options: ["accredited", "purple", "delicious", "far away"],
+    answer: 0, word: "accredited", pt: "credenciado", ar: "\u0645\u0639\u062a\u0645\u062f",
+  },
+  {
+    sentence: "At the end of the year, it's good to ________ on what you have learned.",
+    options: ["reflect", "shout loudly", "run quickly", "buy shoes"],
+    answer: 0, word: "reflect", pt: "refletir", ar: "\u064a\u062a\u0623\u0645\u0644",
+  },
+  {
+    sentence: "Getting my first job in the US was a very ________ moment for me.",
+    options: ["significant", "tiny", "boring", "cold"],
+    answer: 0, word: "significant", pt: "significativo", ar: "\u0645\u0647\u0645",
+  },
+  {
+    sentence: "After the class, I ________ how much English I had actually learned.",
+    options: ["realized", "cooked", "drove", "slept"],
+    answer: 0, word: "realize", pt: "perceber", ar: "\u064a\u062f\u0631\u0643",
+  },
+  {
+    sentence: "The extra hours of studying were ________ because I passed the exam.",
+    options: ["worthwhile", "impossible", "forgotten", "purple"],
+    answer: 0, word: "worthwhile", pt: "que vale a pena", ar: "\u064a\u0633\u062a\u062d\u0642 \u0627\u0644\u0639\u0646\u0627\u0621",
+  },
+  {
+    sentence: "Drinking water every morning became a healthy ________ for her.",
+    options: ["habit", "song", "car", "window"],
+    answer: 0, word: "habit", pt: "h\u00e1bito", ar: "\u0639\u0627\u062f\u0629",
+  },
+  {
+    sentence: "After the double shift, he felt completely ________.",
+    options: ["exhausted", "excited", "hungry only", "confused about math"],
+    answer: 0, word: "exhausted", pt: "exausto", ar: "\u0645\u0631\u0647\u0642",
+  },
+  {
+    sentence: "I need to schedule a ________ with my doctor this month.",
+    options: ["checkup", "vacation", "haircut", "party"],
+    answer: 0, word: "checkup", pt: "check-up", ar: "\u0641\u062d\u0635 \u0637\u0628\u064a",
+  },
+  {
+    sentence: "Doctors often recommend a ________ instead of extreme diets.",
+    options: ["balanced diet", "new car", "loud radio", "fast computer"],
+    answer: 0, word: "balanced diet", pt: "dieta equilibrada", ar: "\u0646\u0638\u0627\u0645 \u063a\u0630\u0627\u0626\u064a \u0645\u062a\u0648\u0627\u0632\u0646",
+  },
+  {
+    sentence: "You can always count on him \u2014 he is very ________.",
+    options: ["reliable", "purple", "far away", "expensive"],
+    answer: 0, word: "reliable", pt: "confi\u00e1vel", ar: "\u0645\u0648\u062b\u0648\u0642",
+  },
+  {
+    sentence: "My grandfather refuses to change his mind about anything; he is very ________.",
+    options: ["stubborn", "delicious", "tall", "cheap"],
+    answer: 0, word: "stubborn", pt: "teimoso", ar: "\u0639\u0646\u064a\u062f",
+  },
+  {
+    sentence: "She made such a clever joke \u2014 everyone said she was very ________.",
+    options: ["witty", "heavy", "wet", "slow"],
+    answer: 0, word: "witty", pt: "espirituoso", ar: "\u0630\u0643\u064a \u0648\u0641\u0643\u0627\u0647\u064a",
+  },
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+const progressEl = document.getElementById('progress');
+const card = document.getElementById('card');
+const cardSentence = document.getElementById('cardSentence');
+const optionsEl = document.getElementById('options');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const gameEl = document.getElementById('game');
+const endEl = document.getElementById('endScreen');
+const translationEl = document.getElementById('translationScreen');
+
+function shuffleOptions(q){
+  const indexed = q.options.map((text, i) => ({ text, isCorrect: i === q.answer }));
+  for (let i = indexed.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
+  }
+  return indexed;
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[current];
+  answered = false;
+  progressEl.textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
+  card.className = 'card';
+  cardSentence.textContent = q.sentence;
+  feedback.className = 'feedback';
+  feedback.textContent = '';
+  nextBtn.classList.remove('show');
+
+  optionsEl.innerHTML = '';
+  const shuffled = shuffleOptions(q);
+  shuffled.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt.text;
+    btn.dataset.correct = opt.isCorrect ? 'true' : 'false';
+    btn.addEventListener('click', () => selectAnswer(opt.isCorrect, btn));
+    optionsEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(isCorrect, btn){
+  if (answered) return;
+  answered = true;
+  const buttons = Array.from(optionsEl.children);
+  buttons.forEach(b => b.disabled = true);
+
+  const correctBtn = buttons.find(b => b.dataset.correct === 'true');
+  correctBtn.classList.add('correct');
+  if (!isCorrect) btn.classList.add('incorrect');
+
+  if (isCorrect){
+    score++;
+    card.classList.add('correct');
+    feedback.innerHTML = `<b>Correct!</b>`;
+  } else {
+    card.classList.add('wrong');
+    feedback.className = 'feedback bad';
+    feedback.innerHTML = `<b>Not quite.</b> The correct answer is highlighted.`;
+  }
+
+  nextBtn.classList.add('show');
+  nextBtn.textContent = current < QUESTIONS.length - 1 ? 'Next \u2192' : 'See results';
+}
+
+nextBtn.addEventListener('click', () => {
+  current++;
+  if (current < QUESTIONS.length){
+    renderQuestion();
+  } else {
+    showEnd();
+  }
+});
+
+function showEnd(){
+  gameEl.style.display = 'none';
+  endEl.style.display = 'block';
+  document.getElementById('finalScoreVal').textContent = `${score} / ${QUESTIONS.length}`;
+  const pct = score / QUESTIONS.length;
+  const title = document.getElementById('endTitle');
+  if (pct === 1) title.textContent = 'Perfect! Ready for Bingo.';
+  else if (pct >= 0.7) title.textContent = 'Great Review!';
+  else title.textContent = "Let's Look at the Words Again.";
+}
+
+document.getElementById('seeTranslationsBtn').addEventListener('click', () => {
+  endEl.style.display = 'none';
+  translationEl.style.display = 'block';
+
+  const list = document.getElementById('transList');
+  list.innerHTML = '';
+  QUESTIONS.forEach(q => {
+    const row = document.createElement('div');
+    row.className = 'trans-row';
+    row.innerHTML = `
+      <div class="trans-en">${q.word}</div>
+      <div>${q.pt}</div>
+      <div class="trans-ar">${q.ar}</div>
+    `;
+    list.appendChild(row);
+  });
+});
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+  current = 0; score = 0;
+  translationEl.style.display = 'none';
+  gameEl.style.display = 'block';
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>
