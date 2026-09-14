@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>True or False? — Synonym Speed Check</title>
+<style>
+  :root{
+    --darkblue:#0B182B;
+    --red:#9F241C;
+    --lightblue:#388CCA;
+    --gray:#E8E8E8;
+    --white:#FFFFFF;
+    --muted:#5B6572;
+    --good:#2F7D5C;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--white);
+    font-family:'Calibri','Segoe UI',system-ui,sans-serif;
+    color:var(--darkblue);
+    padding:22px 16px 50px;
+    display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:460px; }
+
+  .eyebrow{
+    font-family:'Cambria',Georgia,serif; font-style:italic;
+    font-size:13px; color:var(--lightblue); text-align:center;
+    letter-spacing:0.04em; margin-bottom:4px;
+  }
+  h1{
+    font-family:'Cambria',Georgia,serif; font-weight:700;
+    font-size:clamp(23px,6vw,28px); text-align:center; margin:0 0 10px;
+  }
+
+  #startScreen p{ font-size:15px; color:var(--muted); line-height:1.55; margin:0 0 10px; text-align:center; }
+  .rules-list{ font-size:14px; line-height:1.8; margin:0 0 16px; padding-left:0; list-style:none; }
+  .rules-list li{ margin-bottom:2px; }
+  .rules-list b{ color:var(--darkblue); }
+  .start-btn, .restart-btn{
+    display:block; width:100%; padding:16px; border:none; border-radius:14px;
+    background:var(--darkblue); color:var(--white); font-weight:700; font-size:17px;
+    cursor:pointer;
+  }
+
+  #gameScreen{ display:none; }
+  .hud{ display:flex; justify-content:space-between; margin-bottom:10px; }
+  .hud-item{ text-align:center; flex:1; }
+  .hud-label{ font-family:'Cambria',Georgia,serif; font-style:italic; font-size:10.5px; color:var(--muted); display:block; }
+  .hud-value{ font-family:'Cambria',Georgia,serif; font-weight:700; font-size:19px; color:var(--darkblue); }
+
+  .timer-shell{ height:8px; border-radius:999px; background:var(--gray); overflow:hidden; margin-bottom:20px; }
+  .timer-fill{ height:100%; width:100%; background:var(--lightblue); transition:width 0.15s linear, background 0.2s ease; }
+  .timer-fill.warn{ background:var(--red); }
+
+  .card{
+    border:1.5px solid var(--darkblue); border-radius:18px;
+    padding:30px 24px; min-height:160px;
+    display:flex; flex-direction:column; justify-content:center; text-align:center;
+    margin-bottom:18px; transition:border-color .2s ease, background .2s ease;
+  }
+  .card.correct{ border-color:var(--good); background:rgba(47,125,92,0.06); }
+  .card.wrong{ border-color:var(--red); background:rgba(159,36,28,0.06); }
+  .card-word{ font-family:'Cambria',Georgia,serif; font-weight:700; font-size:22px; margin-bottom:14px; }
+  .card-statement{ font-size:15.5px; line-height:1.5; color:var(--darkblue); }
+  .card-statement b{ color:var(--lightblue); }
+
+  .choices{ display:flex; gap:14px; margin-bottom:14px; }
+  .choice-btn{
+    flex:1; padding:18px; border:2px solid var(--darkblue); background:var(--white);
+    color:var(--darkblue); border-radius:14px; font-weight:700; font-size:17px; cursor:pointer;
+  }
+  .choice-btn[data-val="true"]{ border-color:var(--good); color:var(--good); }
+  .choice-btn[data-val="false"]{ border-color:var(--red); color:var(--red); }
+  .choice-btn:disabled{ opacity:0.4; cursor:default; }
+  .choice-btn.picked-right{ background:var(--good); border-color:var(--good); color:var(--white); opacity:1; }
+  .choice-btn.picked-wrong{ background:var(--red); border-color:var(--red); color:var(--white); opacity:1; }
+  .choice-btn.reveal-correct{ background:var(--good); border-color:var(--good); color:var(--white); opacity:1; }
+
+  .feedback{ text-align:center; font-size:14px; min-height:24px; margin-bottom:6px; color:var(--muted); }
+  .feedback b{ color:var(--good); }
+  .feedback.bad b{ color:var(--red); }
+
+  #endScreen{ display:none; text-align:center; }
+  #endScreen h2{ font-family:'Cambria',Georgia,serif; font-size:27px; margin:8px 0 4px; }
+  .final-score{ font-family:'Cambria',Georgia,serif; font-size:40px; font-weight:700; color:var(--lightblue); margin:4px 0 18px; }
+
+  .key-title{ font-family:'Cambria',Georgia,serif; font-weight:700; font-size:17px; margin:8px 0 4px; }
+  .key-sub{ font-size:12.5px; color:var(--muted); margin-bottom:12px; }
+  .key-row{
+    border-bottom:1px solid var(--gray); padding:9px 2px; text-align:left; font-size:13px;
+  }
+  .key-row .key-word{ font-weight:700; color:var(--darkblue); }
+  .key-row .key-syn{ color:var(--muted); font-style:italic; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="startScreen">
+    <div class="eyebrow">Weeks 1&ndash;9 · Vocabulary</div>
+    <h1>True or False?</h1>
+    <p>10 words. Is the synonym given TRUE or FALSE? The faster you answer, the more points you get.</p>
+    <ul class="rules-list">
+      <li>&bull; <b>20 seconds</b> per word.</li>
+      <li>&bull; Correct = points (faster answers earn more).</li>
+      <li>&bull; Wrong or too slow = 0 points for that word.</li>
+      <li>&bull; At the end: all 10 words with easy English synonyms.</li>
+    </ul>
+    <button class="start-btn" id="startBtn">Start</button>
+  </div>
+
+  <div id="gameScreen">
+    <div class="eyebrow">True or False?</div>
+    <div class="hud">
+      <div class="hud-item"><span class="hud-label">SCORE</span><span class="hud-value" id="scoreVal">0</span></div>
+      <div class="hud-item"><span class="hud-label">WORD</span><span class="hud-value" id="wordNum">1/10</span></div>
+    </div>
+    <div class="timer-shell"><div class="timer-fill" id="timerFill"></div></div>
+
+    <div class="card" id="card">
+      <div class="card-word" id="cardWord"></div>
+      <div class="card-statement" id="cardStatement"></div>
+    </div>
+
+    <div class="choices">
+      <button class="choice-btn" data-val="true" id="trueBtn">TRUE</button>
+      <button class="choice-btn" data-val="false" id="falseBtn">FALSE</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <div id="endScreen">
+    <div class="eyebrow">Game Complete</div>
+    <h2 id="endTitle"></h2>
+    <div class="final-score" id="finalScoreVal"></div>
+
+    <div class="key-title">Answer Key — Easy Synonyms</div>
+    <div class="key-sub">All 10 words, with 2&ndash;3 easy synonyms in English.</div>
+    <div id="keyList"></div>
+
+    <button class="restart-btn" id="restartBtn" style="margin-top:20px;">Play Again</button>
+  </div>
+
+</div>
+
+<script>
+const WORDS = [
+  { word: "earn credits", statement: "A synonym for this is <b>complete coursework</b>.", isTrue: true,
+    synonyms: ["complete coursework", "gain course credits", "finish required classes"] },
+  { word: "hands-on experience", statement: "A synonym for this is <b>practical experience</b>.", isTrue: true,
+    synonyms: ["practical experience", "real-world practice", "on-the-job experience"] },
+  { word: "eligible", statement: "A synonym for this is <b>forbidden</b>.", isTrue: false,
+    synonyms: ["qualified", "allowed", "entitled"] },
+  { word: "competitive", statement: "A synonym for this is <b>relaxed and easy to get</b>.", isTrue: false,
+    synonyms: ["hard to get", "sought-after", "in tough competition"] },
+  { word: "entry-level", statement: "A synonym for this is <b>beginner</b>.", isTrue: true,
+    synonyms: ["beginner", "starting position", "junior-level"] },
+  { word: "valuable", statement: "A synonym for this is <b>worthless</b>.", isTrue: false,
+    synonyms: ["useful", "important", "precious"] },
+  { word: "growth", statement: "A synonym for this is <b>development</b>.", isTrue: true,
+    synonyms: ["development", "progress", "improvement"] },
+  { word: "work out", statement: "A synonym for this is <b>to exercise</b>.", isTrue: true,
+    synonyms: ["exercise", "train", "do physical activity"] },
+  { word: "deep sleep", statement: "A synonym for this is <b>a quick nap</b>.", isTrue: false,
+    synonyms: ["restful sleep", "sound sleep", "quality sleep"] },
+  { word: "supportive", statement: "A synonym for this is <b>unhelpful</b>.", isTrue: false,
+    synonyms: ["encouraging", "helpful", "caring"] },
+];
+
+const TIME_LIMIT = 20;
+const MAX_POINTS = 100;
+
+let current = 0;
+let score = 0;
+let timeLeft = TIME_LIMIT;
+let timerId = null;
+let answered = false;
+
+const startScreen = document.getElementById('startScreen');
+const gameScreen = document.getElementById('gameScreen');
+const endScreen = document.getElementById('endScreen');
+const startBtn = document.getElementById('startBtn');
+const scoreVal = document.getElementById('scoreVal');
+const wordNum = document.getElementById('wordNum');
+const timerFill = document.getElementById('timerFill');
+const card = document.getElementById('card');
+const cardWord = document.getElementById('cardWord');
+const cardStatement = document.getElementById('cardStatement');
+const trueBtn = document.getElementById('trueBtn');
+const falseBtn = document.getElementById('falseBtn');
+const feedback = document.getElementById('feedback');
+
+startBtn.addEventListener('click', () => {
+  startScreen.style.display = 'none';
+  gameScreen.style.display = 'block';
+  renderWord();
+});
+
+function renderWord(){
+  const item = WORDS[current];
+  answered = false;
+  timeLeft = TIME_LIMIT;
+  wordNum.textContent = `${current + 1}/${WORDS.length}`;
+  scoreVal.textContent = score;
+  timerFill.style.width = '100%';
+  timerFill.classList.remove('warn');
+  card.className = 'card';
+  cardWord.textContent = item.word;
+  cardStatement.innerHTML = item.statement;
+  feedback.className = 'feedback';
+  feedback.textContent = '';
+
+  [trueBtn, falseBtn].forEach(b => {
+    b.disabled = false;
+    b.classList.remove('picked-right', 'picked-wrong', 'reveal-correct');
+  });
+
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerId);
+  timerId = setInterval(() => {
+    timeLeft -= 0.1;
+    if (timeLeft <= 0){
+      timeLeft = 0;
+      updateTimerUI();
+      clearInterval(timerId);
+      if (!answered) selectAnswer(null);
+      return;
+    }
+    updateTimerUI();
+  }, 100);
+}
+
+function updateTimerUI(){
+  const pct = (timeLeft / TIME_LIMIT) * 100;
+  timerFill.style.width = pct + '%';
+  timerFill.classList.toggle('warn', timeLeft <= 4);
+}
+
+function selectAnswer(val){
+  if (answered) return;
+  answered = true;
+  clearInterval(timerId);
+  const item = WORDS[current];
+  const correctBtn = item.isTrue ? trueBtn : falseBtn;
+  const chosenBtn = val === true ? trueBtn : val === false ? falseBtn : null;
+  const isCorrect = val === item.isTrue;
+
+  trueBtn.disabled = true;
+  falseBtn.disabled = true;
+
+  if (isCorrect){
+    const pts = Math.max(10, Math.round(MAX_POINTS * (timeLeft / TIME_LIMIT)));
+    score += pts;
+    card.classList.add('correct');
+    chosenBtn.classList.add('picked-right');
+    feedback.innerHTML = `<b>Correct! +${pts} points</b>`;
+  } else {
+    card.classList.add('wrong');
+    if (chosenBtn) chosenBtn.classList.add('picked-wrong');
+    correctBtn.classList.add('reveal-correct');
+    feedback.className = 'feedback bad';
+    feedback.innerHTML = val === null
+      ? `<b>Time's up.</b> The correct answer is ${item.isTrue ? 'TRUE' : 'FALSE'}.`
+      : `<b>Not quite.</b> The correct answer is ${item.isTrue ? 'TRUE' : 'FALSE'}.`;
+  }
+
+  scoreVal.textContent = score;
+
+  setTimeout(() => {
+    current++;
+    if (current < WORDS.length){
+      renderWord();
+    } else {
+      showEnd();
+    }
+  }, 1100);
+}
+
+trueBtn.addEventListener('click', () => selectAnswer(true));
+falseBtn.addEventListener('click', () => selectAnswer(false));
+
+function showEnd(){
+  gameScreen.style.display = 'none';
+  endScreen.style.display = 'block';
+  document.getElementById('finalScoreVal').textContent = score;
+
+  const maxPossible = WORDS.length * MAX_POINTS;
+  const pct = score / maxPossible;
+  const title = document.getElementById('endTitle');
+  if (pct >= 0.8) title.textContent = 'Lightning Fast!';
+  else if (pct >= 0.5) title.textContent = 'Solid Recall!';
+  else title.textContent = 'Good Practice!';
+
+  const keyList = document.getElementById('keyList');
+  keyList.innerHTML = '';
+  WORDS.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'key-row';
+    row.innerHTML = `<span class="key-word">${item.word}</span> &mdash; <span class="key-syn">${item.synonyms.join(' \u00b7 ')}</span>`;
+    keyList.appendChild(row);
+  });
+}
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+  current = 0; score = 0;
+  endScreen.style.display = 'none';
+  gameScreen.style.display = 'block';
+  renderWord();
+});
+</script>
+</body>
+</html>
