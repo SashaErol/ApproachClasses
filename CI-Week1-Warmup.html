@@ -1,0 +1,248 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Approach Warm-Up Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+/* Layout: one card at a time, centered column, brand header on top, Back/Next pinned under the card. */
+:root {
+  --navy: #14223f;
+  --gold: #86683a;
+  --bg: #f3f4f8;
+  --card: #ffffff;
+  --fg: #14223f;
+  --muted: #5a6479;
+  --line: #d9dce6;
+  --band: #a8924f;
+  --btn-bg: #14223f;
+  --btn-fg: #ffffff;
+  --soft: #eceef5;
+  --font-display: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --gold: #c9ad6e;
+    --bg: #0c1429;
+    --card: #14223f;
+    --fg: #eef0f6;
+    --muted: #a6aec2;
+    --line: #2a3a5e;
+    --band: #a8924f;
+    --btn-bg: #c9ad6e;
+    --btn-fg: #14223f;
+    --soft: #1b2c52;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --gold: #c9ad6e;
+  --bg: #0c1429;
+  --card: #14223f;
+  --fg: #eef0f6;
+  --muted: #a6aec2;
+  --line: #2a3a5e;
+  --band: #a8924f;
+  --btn-bg: #c9ad6e;
+  --btn-fg: #14223f;
+  --soft: #1b2c52;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  padding-inline: 16px;
+  padding-block: 20px 32px;
+}
+.wrap { max-width: 640px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
+
+header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.mark { display: flex; flex-direction: column; gap: 2px; }
+.mark b { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; letter-spacing: 0.04em; line-height: 1; }
+.mark span { font-size: 0.78rem; color: var(--muted); }
+.count { font-family: var(--font-display); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-variant-numeric: tabular-nums; }
+
+.bar { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.bar i { height: 3px; background: var(--line); display: block; }
+.bar i.on { background: var(--gold); }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 2px; display: flex; flex-direction: column; min-width: 0; }
+.card-body { padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.band { height: 8px; background: var(--band); }
+.meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-family: var(--font-display); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.meta .topic { color: var(--gold); }
+.meta .tag { color: var(--muted); }
+h1 { font-family: var(--font-body); font-weight: 600; font-size: clamp(1.4rem, 5.2vw, 1.8rem); line-height: 1.25; margin: 0; text-wrap: balance; }
+ul.prompts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+ul.prompts li { font-size: 1.08rem; line-height: 1.5; padding-left: 22px; position: relative; max-width: 65ch; }
+ul.prompts li::before { content: ""; position: absolute; left: 2px; top: 0.62em; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; }
+.note { font-size: 0.92rem; line-height: 1.5; color: var(--muted); background: var(--soft); padding: 12px 14px; border-radius: 2px; margin: 0; }
+
+.challenge-wrap { border-top: 1px solid var(--line); padding-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+.btn { font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.03em; border-radius: 2px; cursor: pointer; padding: 13px 20px; min-height: 48px; border: 1px solid transparent; }
+.btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--gold); align-self: flex-start; }
+.btn.ghost:hover { background: var(--soft); }
+.btn.solid { background: var(--btn-bg); color: var(--btn-fg); }
+.btn.solid:hover { opacity: 0.9; }
+.btn.line { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn.line:hover { background: var(--soft); }
+.btn[disabled] { opacity: 0.35; cursor: default; }
+.challenge { background: var(--soft); padding: 16px 18px; border-radius: 2px; display: flex; flex-direction: column; gap: 6px; }
+.challenge small { font-family: var(--font-display); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+.challenge p { margin: 0; font-size: 1.08rem; line-height: 1.5; max-width: 65ch; }
+
+nav { display: flex; gap: 12px; }
+nav .btn { flex: 1; }
+nav .btn.solid { flex: 2; }
+
+.fade { animation: fade 0.25s ease-out; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .fade { animation: none; } }
+@media (max-width: 420px) { .card-body { padding: 22px 18px 20px; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="mark"><b>APPROACH</b><span>International Student Center</span></div>
+    <div class="count" id="count">Card 1 of 6</div>
+  </header>
+  <div class="bar" id="bar" aria-hidden="true"></div>
+
+  <article class="card" aria-live="polite">
+    <div class="card-body fade" id="body"></div>
+    <div class="band"></div>
+  </article>
+
+  <nav>
+    <button class="btn line" id="back" type="button">Back</button>
+    <button class="btn solid" id="next" type="button">Next</button>
+  </nav>
+</div>
+
+<script>
+var cards = [
+  {
+    topic: "Staying informed",
+    tag: "Groups of 3–4 · about 5 min",
+    q: "Do you follow the news?",
+    prompts: [
+      "Where do you usually get your news: TV, social media, apps, or friends and family?",
+      "Are you interested in politics? Why or why not?",
+      "Do politics and big news events change your daily life? Give an example, or explain why they don't."
+    ],
+    challenge: "Think of one news story from this year that changed something in your own life, even something small. What changed?"
+  },
+  {
+    topic: "Your country in the headlines",
+    tag: "Groups of 3–4 · about 5 min",
+    q: "Tell your group about one recent event in your country that got a lot of attention.",
+    prompts: [
+      "It can be something the whole world heard about, or something that mattered to you personally.",
+      "What happened, and how did people in your country feel about it?",
+      "Did news from other countries tell the story the same way?"
+    ],
+    challenge: "You are talking to someone who has never been to your country. What 3 things should they know to understand this event?"
+  },
+  {
+    topic: "Conflicts in the news",
+    tag: "Groups of 3–4 · about 6 min",
+    q: "Which 3 conflicts around the world have you heard about the most in the past year?",
+    prompts: [
+      "Where did you hear about them?",
+      "How do these stories make you feel: worried, tired, angry, or nothing at all?",
+      "Do you follow this kind of news closely, or do you try to avoid it?"
+    ],
+    note: "Share only what you feel comfortable sharing. Listen with respect. Some of these topics may feel personal to people in the room.",
+    challenge: "Is it our job to stay informed about bad news, or is it OK to take a break? Where do you draw the line?"
+  },
+  {
+    topic: "Who do you trust?",
+    tag: "Groups of 3–4 · about 5 min",
+    q: "Which news sources do you think are true, trustworthy, and fair?",
+    prompts: [
+      "Name two or three sources you check often.",
+      "Why do you trust them?",
+      "Have you ever believed a story that turned out to be false? What happened?"
+    ],
+    challenge: "Can any news source be completely neutral? Describe what a fair news story looks like."
+  },
+  {
+    topic: "You're the teacher",
+    tag: "Groups of 3–4 · about 6 min",
+    q: "Imagine you are the teacher of this course at Approach. What news and activities would you want every week for the next three months?",
+    prompts: [
+      "Which topics: world news, local news, science, sports, culture, or something else?",
+      "What would students do in class: debates, videos, games, interviews?",
+      "What would you do in the very first class?"
+    ],
+    challenge: "Plan one perfect class in 2 minutes: the topic, one speaking activity, and one homework task. Then present it to another group."
+  },
+  {
+    topic: "The class you'd never repeat",
+    tag: "Groups of 3–4 · about 5 min",
+    q: "What is the worst type of class you have ever had? What was a total no-go?",
+    prompts: [
+      "What did the teacher or the group do?",
+      "How did you feel in that class?",
+      "What would have made it better?"
+    ],
+    challenge: "Write 3 rules for this class that make sure it never happens here."
+  }
+];
+
+var idx = 0;
+var open = false;
+var body = document.getElementById("body");
+var count = document.getElementById("count");
+var bar = document.getElementById("bar");
+var back = document.getElementById("back");
+var next = document.getElementById("next");
+
+function esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+function render(animate) {
+  var c = cards[idx];
+  var html = '<div class="meta"><span class="topic">' + esc(c.topic) + '</span><span class="tag">' + esc(c.tag) + '</span></div>' +
+    '<h1>' + esc(c.q) + '</h1>' +
+    '<ul class="prompts">' + c.prompts.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join("") + '</ul>' +
+    (c.note ? '<p class="note">' + esc(c.note) + '</p>' : '') +
+    '<div class="challenge-wrap">' +
+      '<button class="btn ghost" id="ch-btn" type="button" aria-expanded="' + open + '">' + (open ? 'Hide challenge' : 'Challenge question') + '</button>' +
+      '<div class="challenge" id="ch" ' + (open ? '' : 'hidden') + '><small>Extra challenge</small><p>' + esc(c.challenge) + '</p></div>' +
+    '</div>';
+  body.innerHTML = html;
+  if (animate) { body.classList.remove("fade"); void body.offsetWidth; body.classList.add("fade"); }
+  document.getElementById("ch-btn").addEventListener("click", toggle);
+
+  count.textContent = "Card " + (idx + 1) + " of " + cards.length;
+  bar.innerHTML = cards.map(function (_, i) { return '<i class="' + (i <= idx ? 'on' : '') + '"></i>'; }).join("");
+  back.disabled = idx === 0;
+  next.textContent = idx === cards.length - 1 ? "Start over" : "Next";
+}
+
+function toggle() {
+  open = !open;
+  var ch = document.getElementById("ch");
+  var b = document.getElementById("ch-btn");
+  ch.hidden = !open;
+  b.textContent = open ? "Hide challenge" : "Challenge question";
+  b.setAttribute("aria-expanded", String(open));
+}
+
+function go(n) { idx = n; open = false; render(true); window.scrollTo(0, 0); }
+
+next.addEventListener("click", function () { go(idx === cards.length - 1 ? 0 : idx + 1); });
+back.addEventListener("click", function () { if (idx > 0) go(idx - 1); });
+document.addEventListener("keydown", function (e) {
+  if (e.key === "ArrowRight" && idx < cards.length - 1) go(idx + 1);
+  if (e.key === "ArrowLeft" && idx > 0) go(idx - 1);
+});
+
+render(false);
+</script>
+
+</body></html>
