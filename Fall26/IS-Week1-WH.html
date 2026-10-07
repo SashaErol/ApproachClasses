@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Question Words: What's the Job?</title>
+<style>
+:root{
+  --navy:#0B1827; --red:#9D251A; --blue:#418ABD;
+  --bg:#EEF2F6; --card:#FFFFFF; --ink:#0B1827; --soft:#5A6878; --line:#D3DBE4;
+  --ok:#2E7D4F; --okbg:#E3F2E8; --bad:#9D251A; --badbg:#F8E4E1; --pick:#DCEBF6;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#08111C; --card:#122236; --ink:#EAF0F6; --soft:#9FB0C2; --line:#24384F;
+  --ok:#6FCF97; --okbg:#173326; --bad:#F08A7E; --badbg:#3A1B19; --pick:#1C3A55; } }
+:root[data-theme="dark"]{
+  --bg:#08111C; --card:#122236; --ink:#EAF0F6; --soft:#9FB0C2; --line:#24384F;
+  --ok:#6FCF97; --okbg:#173326; --bad:#F08A7E; --badbg:#3A1B19; --pick:#1C3A55; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:18px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+.shell{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.bar{height:8px;background:linear-gradient(90deg,var(--navy),var(--blue) 60%,var(--red))}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{font-size:15px;color:var(--soft)}
+.brand b{color:var(--ink)}
+.score{font-size:16px;color:var(--soft)}
+.score b{color:var(--ink);font-size:20px}
+main{padding:22px}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.1;margin:0 0 10px;font-weight:normal}
+h2{font-size:clamp(24px,3.6vw,32px);font-weight:normal;margin:0 0 6px}
+.lead{color:var(--soft);margin:0 0 18px;max-width:62ch}
+.dots{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 18px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--blue)} .dot.done{background:var(--navy)}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .dot.done{background:var(--soft)} }
+:root[data-theme="dark"] .dot.done{background:var(--soft)}
+button{font:inherit;cursor:pointer}
+.btn{border:0;border-radius:10px;padding:12px 22px;font-size:18px;background:var(--navy);color:#fff}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.red{background:var(--red)}
+.btn:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:22px;flex-wrap:wrap}
+
+/* start */
+.rounds{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0 24px}
+.round{border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.round strong{display:block;font-size:19px}
+.round span{color:var(--soft);font-size:16px}
+.cloud{display:flex;flex-wrap:wrap;gap:8px 14px;margin:6px 0 4px;font-size:clamp(22px,3.4vw,34px);color:var(--blue)}
+.cloud span:nth-child(3n){color:var(--red)} .cloud span:nth-child(4n){color:var(--ink)}
+
+/* match */
+.match{display:grid;grid-template-columns:minmax(150px,1fr) 2fr;gap:14px}
+.col{display:flex;flex-direction:column;gap:10px}
+.word,.fn{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:12px 14px;text-align:left;min-height:54px}
+.word{font-size:22px;font-weight:bold;text-align:center}
+.fn{font-size:17px}
+.word.sel{border-color:var(--blue);background:var(--pick)}
+.word.ok,.fn.ok{border-color:var(--ok);background:var(--okbg);cursor:default}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.hint{font-size:16px;color:var(--soft);margin:0 0 14px}
+
+.word.paired,.fn.paired{border-color:var(--blue)}
+.word.bad,.fn.bad{border-color:var(--bad);background:var(--badbg)}
+.tag{display:inline-block;min-width:26px;height:26px;line-height:26px;border-radius:50%;text-align:center;font-size:14px;font-weight:bold;color:#fff;background:var(--blue);margin:0 8px 0 0;vertical-align:middle;font-family:Arial,sans-serif}
+.word .tag{margin:0 0 0 8px}
+.tag.tB{background:var(--red)} .tag.tC{background:#2E7D4F} .tag.tD{background:#7A4FA3} .tag.tE{background:#B7791F} .tag.tF{background:#5A6878}
+.reveal{margin-top:6px;overflow-x:auto}
+.reveal table{border-collapse:collapse;width:100%;font-size:17px;min-width:560px}
+.reveal th,.reveal td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:middle}
+.reveal th{font-weight:normal;color:var(--soft);font-size:15px}
+.note{border-left:4px solid var(--red);padding:8px 12px;margin:12px 0 0;font-size:17px}
+/* quiz */
+.answer{font-size:clamp(26px,4.4vw,38px);margin:8px 0 6px;line-height:1.25}
+.answer .q{color:var(--soft);font-size:18px;display:block;margin-bottom:4px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.opt{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:14px;font-size:22px;font-weight:bold}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.fb{min-height:56px;margin-top:14px;font-size:19px}
+.fb .full{display:block;font-style:italic}
+.say{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:6px 12px;font-size:15px;margin-left:6px;vertical-align:middle}
+
+/* speak */
+.card{border:2px solid var(--navy);border-radius:14px;padding:26px 22px;text-align:center}
+.card .qw{font-size:clamp(42px,8vw,72px);color:var(--red);line-height:1}
+.card .topic{font-size:clamp(22px,3.6vw,30px);margin:12px 0 6px}
+.card .model{min-height:34px;font-style:italic;color:var(--blue);font-size:21px}
+.steps{color:var(--soft);font-size:16px;margin:12px 0 0}
+
+/* end */
+.result{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.result div{border:1px solid var(--line);border-radius:10px;padding:14px}
+.result b{font-size:30px;display:block}
+@media (max-width:620px){
+  .match{grid-template-columns:1fr 1.6fr}
+  .word{font-size:18px} .fn{font-size:15px}
+  main{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){ .shake{animation:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="shell">
+    <div class="bar"></div>
+    <header class="top">
+      <div class="brand"><b>Approach</b> &nbsp;Integrated Skills, Independent</div>
+      <div class="score">Points <b id="pts">0</b></div>
+    </header>
+    <main id="app" aria-live="polite"></main>
+  </div>
+</div>
+
+<script>
+/* ---------- content ---------- */
+const SET_A = [
+  {w:"Who",   f:"a person",                                 ex:"Who is your teacher?",                     pt:"Quem",  es:"Quién"},
+  {w:"What",  f:"a thing or an action",                     ex:"What do you eat for breakfast?",           pt:"O que / Qual", es:"Qué"},
+  {w:"Which", f:"a choice between a few things",            ex:"Which bag is yours, the red or the black?", pt:"Qual (de algumas opções)", es:"Cuál"},
+  {w:"Whose", f:"the owner of something",                   ex:"Whose keys are these?",                    pt:"De quem", es:"De quién"},
+  {w:"Where", f:"a place",                                  ex:"Where do you work?",                       pt:"Onde",  es:"Dónde"},
+  {w:"When",  f:"a time, a day, or a date",                 ex:"When is your next appointment?",           pt:"Quando", es:"Cuándo"}
+];
+const SET_B = [
+  {w:"Why",       f:"a reason",                             ex:"Why are you tired today?",                 pt:"Por que", es:"Por qué"},
+  {w:"How",       f:"the way or method",                    ex:"How do you get to class?",                 pt:"Como", es:"Cómo"},
+  {w:"How often", f:"how regularly something happens",      ex:"How often do you call your family?",       pt:"Com que frequência", es:"Con qué frecuencia / Cada cuánto"},
+  {w:"How long",  f:"the time from start to finish",        ex:"How long is the movie?",                   pt:"Quanto tempo", es:"Cuánto tiempo"},
+  {w:"How many",  f:"a number of things you can count",     ex:"How many brothers do you have?",           pt:"Quantos / Quantas", es:"Cuántos / Cuántas"},
+  {w:"How much",  f:"a price, or an amount you can't count", ex:"How much is a gallon of milk?",          pt:"Quanto / Quanta", es:"Cuánto / Cuánta"}
+];
+const QUIZ = [
+  {a:"Because my car didn't start.", c:"Why",       o:["Why","When","How","What"],          full:"Why were you late this morning?"},
+  {a:"Twice a week.",                c:"How often", o:["How often","How long","How many","When"], full:"How often do you go to the gym?"},
+  {a:"It's Yara's jacket.",          c:"Whose",     o:["Whose","Who","Which","What"],       full:"Whose jacket is this?"},
+  {a:"The blue one, please.",        c:"Which",     o:["Which","What","Whose","Where"],     full:"Which cup do you want, the blue one or the white one?"},
+  {a:"I drive my car.",              c:"How",       o:["How","How long","Where","How often"], full:"How do you get to work?"},
+  {a:"About forty minutes.",         c:"How long",  o:["How long","How often","When","How much"], full:"How long does the oil change take?"},
+  {a:"Three. Two girls and a boy.",  c:"How many",  o:["How many","How much","How long","Who"], full:"How many children do you have?"},
+  {a:"$4.50 for a large coffee.",    c:"How much",  o:["How much","How many","What","Which"], full:"How much is a large coffee?"},
+  {a:"My neighbor, Tomasz.",         c:"Who",       o:["Who","Whose","Which","What"],       full:"Who helped you move the sofa?"},
+  {a:"At the library on Main Street.", c:"Where",   o:["Where","When","Which","What"],      full:"Where is the English conversation club?"},
+  {a:"Next Saturday at 10 a.m.",     c:"When",      o:["When","Where","How long","What"],   full:"When is your son's soccer game?"},
+  {a:"Chicken soup and rice.",       c:"What",      o:["What","Which","Who","How"],         full:"What did you cook for dinner?"}
+];
+const SPEAK = [
+  {w:"How often", t:"exercise",                      m:"How often do you exercise?"},
+  {w:"Where",     t:"buy groceries",                 m:"Where do you buy groceries?"},
+  {w:"Why",       t:"study English",                 m:"Why do you study English?"},
+  {w:"Which",     t:"season / like best",            m:"Which season do you like best?"},
+  {w:"Whose",     t:"advice / always listen to",     m:"Whose advice do you always listen to?"},
+  {w:"How many",  t:"languages / speak",             m:"How many languages do you speak?"},
+  {w:"How much",  t:"coffee / drink every day",      m:"How much coffee do you drink every day?"},
+  {w:"Who",       t:"call / when you have a problem",m:"Who do you call when you have a problem?"},
+  {w:"When",      t:"your birthday",                 m:"When is your birthday?"},
+  {w:"What",      t:"do on weekends",                m:"What do you do on weekends?"},
+  {w:"How",       t:"relax after work",              m:"How do you relax after work?"},
+  {w:"How long",  t:"take / get to class",           m:"How long does it take you to get to class?"}
+];
+
+/* ---------- state ---------- */
+const S = {screen:"start", pts:0, r1first:0, r1miss:0, qi:0, qOK:0, si:0, quiz:[], speak:[]};
+const app = document.getElementById("app");
+const ptsEl = document.getElementById("pts");
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function addPts(n){ S.pts+=n; ptsEl.textContent=S.pts; }
+function dots(total, cur){ return `<div class="dots" aria-label="Step ${cur+1} of ${total}">${Array.from({length:total},(_,i)=>`<span class="dot ${i<cur?'done':i===cur?'on':''}"></span>`).join("")}</div>`; }
+
+/* ---------- speech ---------- */
+let voice=null;
+function pickVoice(){
+  const vs = speechSynthesis.getVoices().filter(v=>/^en[-_]US/i.test(v.lang));
+  const rank = v => (/natural|neural|premium|enhanced/i.test(v.name)?3:0) + (/google|samantha|aria|jenny|ava/i.test(v.name)?1:0);
+  voice = vs.sort((a,b)=>rank(b)-rank(a))[0] || null;
+}
+if ("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function speak(text){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text); if(voice) u.voice=voice; u.lang="en-US"; u.rate=.92;
+  speechSynthesis.speak(u);
+}
+
+/* ---------- screens ---------- */
+function start(){
+  app.innerHTML = `
+    <div class="cloud" aria-hidden="true">${[...SET_A,...SET_B].map(x=>`<span>${x.w}</span>`).join("")}</div>
+    <h1>Question words: what's the job?</h1>
+    <p class="lead">Every question word has a job. Some ask about people, some ask about places, and some ask about money or time. Learn the jobs, then use them.</p>
+    <div class="rounds">
+      <div class="round"><strong>Round 1: Match</strong><span>Match each word to what it asks about. Check your answers, then see examples in English, Portuguese, and Spanish.</span></div>
+      <div class="round"><strong>Round 2: Answer first</strong><span>Read an answer. Which question word was in the question?</span></div>
+      <div class="round"><strong>Round 3: Ask a partner</strong><span>Make a question from a word and a topic. Then ask your partner.</span></div>
+    </div>
+    <button class="btn" id="go">Start Round 1</button>`;
+  document.getElementById("go").onclick = ()=>matchRound(0);
+}
+
+function matchRound(setIdx){
+  const set = setIdx===0?SET_A:SET_B;
+  const words = shuffle(set), fns = shuffle(set);
+  const TAGS = ["A","B","C","D","E","F"];
+  let sel=null, pairs={}, locked=new Set(), missed=new Set();   // pairs: word -> fn word
+  app.innerHTML = `
+    ${dots(2,setIdx)}
+    <h2>Round 1: Match the word to its job</h2>
+    <p class="hint">Each question word asks about something. Tap a word, then tap what it asks about. Change your mind? Tap the word again. When all 6 are matched, check your answers. Correct on the first check = 2 points.</p>
+    <div class="match">
+      <div class="col">${words.map(x=>`<button class="word" data-w="${x.w}">${x.w}<span class="tag" hidden></span></button>`).join("")}</div>
+      <div class="col">${fns.map(x=>`<button class="fn" data-w="${x.w}"><span class="tag" hidden></span>It asks about ${esc(x.f)}.</button>`).join("")}</div>
+    </div>
+    <p class="fb" id="fb"></p>
+    <div id="reveal"></div>
+    <div class="nav">
+      <button class="btn alt" id="back">Back</button>
+      <span><button class="btn red" id="check" disabled>Check my answers</button>
+      <button class="btn" id="next" hidden>${setIdx===0?"Next set":"Start Round 2"}</button></span>
+    </div>`;
+  const W = w => app.querySelector(`.word[data-w="${w}"]`), F = w => app.querySelector(`.fn[data-w="${w}"]`);
+  function draw(){
+    const used = Object.keys(pairs);
+    app.querySelectorAll(".word,.fn").forEach(el=>{ el.classList.remove("paired","bad"); const t=el.querySelector(".tag"); t.hidden=true; t.className="tag"; });
+    used.forEach((w,i)=>{
+      const tag = TAGS[words.findIndex(x=>x.w===w)];
+      [W(w),F(pairs[w])].forEach(el=>{ if(!locked.has(w)) el.classList.add("paired"); const t=el.querySelector(".tag"); t.hidden=false; t.textContent=tag; t.classList.add("t"+tag); });
+    });
+    document.getElementById("check").disabled = used.length!==set.length || locked.size===set.length;
+  }
+  app.querySelectorAll(".word").forEach(b=>b.onclick=()=>{
+    const w=b.dataset.w; if(locked.has(w)) return;
+    if(pairs[w]){ delete pairs[w]; sel=null; app.querySelectorAll(".word").forEach(x=>x.classList.remove("sel")); draw(); return; }
+    app.querySelectorAll(".word").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel"); sel=w;
+  });
+  app.querySelectorAll(".fn").forEach(f=>f.onclick=()=>{
+    if(!sel) return;
+    const fw=f.dataset.w;
+    const owner=Object.keys(pairs).find(k=>pairs[k]===fw);
+    if(owner && locked.has(owner)) return;
+    if(owner) delete pairs[owner];
+    pairs[sel]=fw; W(sel).classList.remove("sel"); sel=null; draw();
+  });
+  document.getElementById("check").onclick=()=>{
+    let right=0, wrong=[];
+    Object.keys(pairs).forEach(w=>{
+      if(locked.has(w)) return;
+      if(pairs[w]===w){ locked.add(w); if(!missed.has(w)){ addPts(2); S.r1first++; } right++; }
+      else { missed.add(w); wrong.push(w); }
+    });
+    draw();
+    locked.forEach(w=>{ W(w).classList.add("ok"); F(w).classList.add("ok"); });
+    wrong.forEach(w=>{ [W(w),F(pairs[w])].forEach(el=>{el.classList.add("bad","shake");}); });
+    const fb=document.getElementById("fb");
+    if(locked.size===set.length){ fb.textContent="All correct!"; showReveal(); }
+    else {
+      fb.textContent=`${locked.size} of ${set.length} correct. The red pairs are wrong. Tap a red word to try again.`;
+      wrong.forEach(w=>delete pairs[w]);
+      setTimeout(()=>{ draw(); wrong.forEach(w=>{ W(w).classList.add("bad"); }); }, 700);
+    }
+  };
+  function showReveal(){
+    document.getElementById("check").hidden=true;
+    document.getElementById("next").hidden=false;
+    document.getElementById("reveal").innerHTML=`
+      <div class="reveal">
+        <table>
+          <thead><tr><th>Word</th><th>Example</th><th>Português</th><th>Español</th></tr></thead>
+          <tbody>${set.map(x=>`<tr><td><b>${x.w}</b></td><td><button class="say" data-ex="${esc(x.ex)}" aria-label="Listen">Listen</button> ${esc(x.ex)}</td><td>${esc(x.pt)}</td><td>${esc(x.es)}</td></tr>`).join("")}</tbody>
+        </table>
+        ${setIdx===0?`<p class="note"><b>Careful:</b> in Portuguese, "Qual é o seu nome?" uses <i>qual</i>, but English says <b>What</b> is your name? Use <b>Which</b> only when you choose from a small group of options.</p>`
+                    :`<p class="note"><b>Careful:</b> "Quanto tempo leva?" is <b>How long</b> does it take? (not "How much time it takes?"). Ask <b>How many</b> with things you can count (apples, kids) and <b>How much</b> with money and things you can't count (water, time, coffee).</p>`}
+      </div>`;
+    app.querySelectorAll(".reveal .say").forEach(b=>b.onclick=()=>speak(b.dataset.ex));
+  }
+  document.getElementById("back").onclick = ()=> setIdx===0?start():matchRound(0);
+  document.getElementById("next").onclick = ()=> setIdx===0?matchRound(1):(S.quiz=shuffle(QUIZ),S.qi=0,quiz());
+}
+
+function quiz(){
+  const q = S.quiz[S.qi];
+  app.innerHTML = `
+    ${dots(S.quiz.length,S.qi)}
+    <h2>Round 2: Answer first</h2>
+    <p class="answer"><span class="q">Someone answered:</span>"${esc(q.a)}" <button class="say" id="say" aria-label="Listen to the answer">Listen</button></p>
+    <p class="hint">Which word was in the question? Right on the first try = 2 points.</p>
+    <div class="opts">${shuffle(q.o).map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join("")}</div>
+    <div class="fb" id="fb"></div>
+    <div class="nav">
+      <button class="btn alt" id="back">Back</button>
+      <button class="btn" id="next" disabled>${S.qi===S.quiz.length-1?"Start Round 3":"Next answer"}</button>
+    </div>`;
+  document.getElementById("say").onclick=()=>speak(q.a);
+  let tried=false;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    if(document.getElementById("next").disabled===false) return;
+    const fb=document.getElementById("fb");
+    if(b.dataset.o===q.c){
+      b.classList.add("ok");
+      if(!tried){ addPts(2); S.qOK++; }
+      fb.innerHTML=`Yes! The question was: <span class="full">${esc(q.full)}</span>`;
+      speak(q.full + " ... " + q.a);
+      document.getElementById("next").disabled=false;
+    } else {
+      tried=true; b.classList.add("bad"); b.disabled=true;
+      const job=[...SET_A,...SET_B].find(x=>x.w===b.dataset.o).f;
+      fb.textContent=`Not this one: "${b.dataset.o}" asks about ${job}. Try again.`;
+    }
+  });
+  document.getElementById("back").onclick=()=> S.qi===0?matchRound(1):(S.qi--,quiz());
+  document.getElementById("next").onclick=()=>{
+    if(S.qi<S.quiz.length-1){S.qi++;quiz();} else {S.speak=shuffle(SPEAK);S.si=0;speakRound();}
+  };
+}
+
+function speakRound(){
+  const c=S.speak[S.si];
+  app.innerHTML=`
+    ${dots(S.speak.length,S.si)}
+    <h2>Round 3: Ask a partner</h2>
+    <p class="hint">Make a question with the word and the topic. Ask your partner, then listen to the answer. Switch roles on the next card.</p>
+    <div class="card">
+      <div class="qw">${c.w}</div>
+      <div class="topic">${esc(c.t)}</div>
+      <div class="model" id="model"></div>
+      <p class="steps">Say your question first. Then check the example.</p>
+    </div>
+    <div class="nav">
+      <button class="btn alt" id="back">Back</button>
+      <span>
+        <button class="btn alt" id="show">Show example</button>
+        <button class="btn red" id="next">${S.si===S.speak.length-1?"Finish":"Next card"}</button>
+      </span>
+    </div>`;
+  document.getElementById("show").onclick=()=>{ document.getElementById("model").textContent=c.m; speak(c.m); };
+  document.getElementById("back").onclick=()=> S.si===0?(S.qi=S.quiz.length-1,quiz()):(S.si--,speakRound());
+  document.getElementById("next").onclick=()=>{ if(S.si<S.speak.length-1){S.si++;speakRound();} else finish(); };
+}
+
+function finish(){
+  const max=48, pct=Math.round(S.pts/max*100);
+  const msg = pct>=90?"Excellent. You know the job of every question word."
+            : pct>=70?"Good work. Look again at the words you missed."
+            : "Good start. Play Round 1 again and say each example out loud.";
+  app.innerHTML=`
+    <h1>Finished</h1>
+    <p class="lead">${msg}</p>
+    <div class="result">
+      <div><b>${S.pts} / ${max}</b>points</div>
+      <div><b>${S.r1first} / 12</b>matched on the first try</div>
+      <div><b>${S.qOK} / 12</b>answers right on the first try</div>
+    </div>
+    <div class="nav"><span></span><button class="btn" id="again">Play again</button></div>`;
+  document.getElementById("again").onclick=()=>{ Object.assign(S,{pts:0,r1first:0,r1miss:0,qi:0,qOK:0,si:0}); ptsEl.textContent=0; start(); };
+}
+start();
+</script>
+</body>
+</html>
