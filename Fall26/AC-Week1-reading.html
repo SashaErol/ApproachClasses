@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feeling Comfortable in Your New Home — Reading</title>
+<style>
+  :root {
+    --navy: #1b2a4a;
+    --navy-dark: #10192e;
+    --green: #2f7a4f;
+    --gold: #c9a227;
+    --red: #a8342a;
+    --paper: #faf7f0;
+    --ink: #1c1c1c;
+    --line: #d9d2c0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
+    font-family: 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+    padding: 28px 16px 60px;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .kicker {
+    color: var(--gold);
+    letter-spacing: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .title {
+    color: var(--paper);
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    font-family: Georgia, Cambria, 'Times New Roman', serif;
+    margin: 0 0 4px;
+  }
+  .subtitle {
+    color: #c9c2b2;
+    text-align: center;
+    font-size: 13.5px;
+    margin-bottom: 18px;
+  }
+  .download-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 26px;
+  }
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green);
+    color: var(--paper);
+    border: none;
+    padding: 11px 24px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  }
+  .download-btn:hover { background: var(--gold); }
+  .download-btn:active { transform: scale(0.97); }
+
+  .sheet {
+    background: var(--paper);
+    border-radius: 18px;
+    padding: 34px 34px 30px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    border: 1px solid var(--line);
+    position: relative;
+  }
+  .sheet::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(90deg, var(--navy), var(--green), var(--gold), var(--red));
+  }
+  .name-date {
+    display: flex;
+    gap: 28px;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .line-field { border-bottom: 1px solid var(--ink); display:inline-block; min-width: 160px; }
+  hr.thin {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 14px 0 20px;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    font-family: Georgia, Cambria, 'Times New Roman', serif;
+    margin: 0 0 3px;
+  }
+  .instructions {
+    font-style: italic;
+    color: #6e6e6e;
+    font-size: 12.5px;
+    margin: 0 0 12px;
+  }
+  table.vocab {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 26px;
+    font-size: 13px;
+  }
+  table.vocab th {
+    background: var(--navy);
+    color: var(--paper);
+    text-align: left;
+    padding: 7px 10px;
+    font-size: 12.5px;
+  }
+  table.vocab td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  table.vocab tr:nth-child(even) td { background: rgba(0,0,0,0.03); }
+  table.vocab td.word { font-weight: 700; color: var(--navy); }
+  table.vocab td.chunk { font-weight: 700; color: var(--green); }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 26px;
+    align-items: start;
+  }
+  @media (max-width: 680px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+  .reading-box {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .reading-box p { margin: 0 0 12px; }
+  .reading-box p:last-child { margin-bottom: 0; }
+  .reading-box strong.heading { font-size: 15.5px; font-family: Georgia, Cambria, serif; color: var(--navy); }
+
+  .tf-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+    font-family: Georgia, Cambria, 'Times New Roman', serif;
+    margin: 0 0 10px;
+  }
+  .tf-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .tf-item:last-child { border-bottom: none; }
+  .tf-text { font-size: 13.8px; color: var(--ink); line-height: 1.4; }
+  .tf-choices { display: flex; gap: 6px; flex: none; }
+  .tf-choice {
+    border: 1px solid var(--navy);
+    background: #fff;
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tf-choice:hover { background: var(--line); }
+  .tf-choice.selected { background: var(--navy); color: var(--paper); }
+
+  .talk-about {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .talk-about p { color: var(--ink); font-size: 14px; line-height: 1.5; margin: 0; }
+
+  .footer-note {
+    text-align: center;
+    color: #8793ad;
+    font-size: 12px;
+    margin-top: 18px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .download-row, .kicker, .title, .subtitle, .footer-note { display: none; }
+    .sheet { box-shadow: none; border: none; border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="kicker">Approach ISC &middot; American Culture &amp; Civic Life</div>
+  <div class="title">Feeling Comfortable in Your New Home</div>
+  <div class="subtitle">Reading &middot; Tips for Everyday Life &middot; Level: A1</div>
+
+  <div class="download-row">
+    <a class="download-btn" id="downloadPdf" download="Reading_ComfortableInAmerica_A1.pdf" href="#">
+      &#8681; Download PDF
+    </a>
+  </div>
+
+  <div class="sheet">
+    <div class="name-date">
+      <div>Name: <span class="line-field">&nbsp;</span></div>
+      <div>Date: <span class="line-field" style="min-width:100px">&nbsp;</span></div>
+    </div>
+    <hr class="thin">
+
+    <div class="section-title">Vocabulary &mdash; 6 Key Words</div>
+    <p class="instructions">Learn these words before you read. Say the chunk out loud with your teacher.</p>
+    <table class="vocab">
+      <tr><th>Word</th><th>It means&hellip;</th><th>Say it! (chunk)</th></tr>
+      <tr><td class="word">neighbor</td><td>a person who lives near you</td><td class="chunk">talk to your neighbor</td></tr>
+      <tr><td class="word">small talk</td><td>easy, friendly talk (like about weather)</td><td class="chunk">try some small talk</td></tr>
+      <tr><td class="word">careful</td><td>paying close attention; not making mistakes</td><td class="chunk">be careful with parking</td></tr>
+      <tr><td class="word">permit</td><td>a paper that says you can do something</td><td class="chunk">need a permit</td></tr>
+      <tr><td class="word">comfortable</td><td>feeling relaxed, not nervous</td><td class="chunk">feel comfortable</td></tr>
+      <tr><td class="word">community</td><td>a group of people in your area</td><td class="chunk">part of the community</td></tr>
+    </table>
+
+    <div class="section-title">Reading &amp; Comprehension</div>
+    <p class="instructions">Read the tips. Then answer True or False on the right.</p>
+
+    <div class="two-col">
+      <div class="reading-box">
+        <p><strong class="heading">Tips to Feel at Home</strong></p>
+        <p>You are new in Massachusetts. You want new friends. Here are some tips.</p>
+        <p>Find a free speaking group. Approach ISC has a group every week. The library has one too. You can practice English and meet your community.</p>
+        <p>Talk to your neighbors. Say &ldquo;Hi!&rdquo; You can try small talk. Talk about the weather. You do not need big topics.</p>
+        <p>Be careful with parking. Some streets need a permit. Some streets say &ldquo;No Parking&rdquo; on snow days. Read the signs. If you don't, you can get a ticket.</p>
+        <p>Americans like personal space. Standing a little far away is OK. It is not rude.</p>
+        <p>Practice a little every day. Soon you will feel comfortable in your community.</p>
+      </div>
+
+      <div>
+        <div class="tf-title">True or False?</div>
+        <div id="tfList"></div>
+      </div>
+    </div>
+
+    <div class="talk-about">
+      <div class="section-title">Talk About It</div>
+      <p>With a partner: What is one more tip you would give a new neighbor? Is small talk the same or different in your country?</p>
+    </div>
+  </div>
+
+  <div class="footer-note">Click True or False to check your answer.</div>
+</div>
+
+<script>
+const PDF_BASE64 = "JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUiAvRjMgNCAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL0Jhc2VGb250IC9IZWx2ZXRpY2EgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0YxIC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKMyAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYS1Cb2xkIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMiAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL0Jhc2VGb250IC9IZWx2ZXRpY2EtT2JsaXF1ZSAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjMgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iago1IDAgb2JqCjw8Ci9Db250ZW50cyA5IDAgUiAvTWVkaWFCb3ggWyAwIDAgNjEyIDc5MiBdIC9QYXJlbnQgOCAwIFIgL1Jlc291cmNlcyA8PAovRm9udCAxIDAgUiAvUHJvY1NldCBbIC9QREYgL1RleHQgL0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUkgXQo+PiAvUm90YXRlIDAgL1RyYW5zIDw8Cgo+PiAKICAvVHlwZSAvUGFnZQo+PgplbmRvYmoKNiAwIG9iago8PAovUGFnZU1vZGUgL1VzZU5vbmUgL1BhZ2VzIDggMCBSIC9UeXBlIC9DYXRhbG9nCj4+CmVuZG9iago3IDAgb2JqCjw8Ci9BdXRob3IgKFwoYW5vbnltb3VzXCkpIC9DcmVhdGlvbkRhdGUgKEQ6MjAyNjEwMDcxMzI2MDAtMDQnMDAnKSAvQ3JlYXRvciAoXCh1bnNwZWNpZmllZFwpKSAvS2V5d29yZHMgKCkgL01vZERhdGUgKEQ6MjAyNjEwMDcxMzI2MDAtMDQnMDAnKSAvUHJvZHVjZXIgKFJlcG9ydExhYiBQREYgTGlicmFyeSAtIFwob3BlbnNvdXJjZVwpKSAKICAvU3ViamVjdCAoXCh1bnNwZWNpZmllZFwpKSAvVGl0bGUgKEZlZWxpbmcgQ29tZm9ydGFibGUgaW4gWW91ciBOZXcgSG9tZSAtIFJlYWRpbmcpIC9UcmFwcGVkIC9GYWxzZQo+PgplbmRvYmoKOCAwIG9iago8PAovQ291bnQgMSAvS2lkcyBbIDUgMCBSIF0gL1R5cGUgL1BhZ2VzCj4+CmVuZG9iago5IDAgb2JqCjw8Ci9GaWx0ZXIgWyAvQVNDSUk4NURlY29kZSAvRmxhdGVEZWNvZGUgXSAvTGVuZ3RoIDI0MTkKPj4Kc3RyZWFtCkdhdWBVRDArRGomSDg4LloyTitHU15iWElWWT9jT0YzMCtvOiIsPzhlIVxHOCNTPnE2MDpYVzJuYUNCdFo0L15iITRoP0o4WllJZ0c1J0MhcEs6b2spYUM0dDQsYTNzcCM1UnQkKVJuKTBwbiFbNWxWMjpxXjZsY1IpTWBcIThrMicxQTRrVF8jRidVRClsZTprPUhqOjB0PVpJY05xN1RJKVx0XEFfVTM8VUY8STMvZ1xKN21NMEpFSlQjZS9KbSgxKDVjXTZRRjhNcWBGcFlpOEI1aEwvNScwI1xodEdALGY1VUhWV3JNYmMqMWsmTm1wIzVoWSdMb0kwOy89WXFDYkc3OWJrbD1LbFpqdC9pSUUxM29EaF0rWCE9WihTIiEoMTRjYmcqaUdFNks4O21eXmxOVC9fKTVUOEFLI1dsZCdnQCREUUMicjwtSSItLihdci8ySnFALkdTMVh1UztnJlEjc3BrSGphW11TcSNlcy8sSVc5K0U2UWtiJ24+L2gpc0VfUG9sPDRiSSIpZTxrbFlkOl1zWmYicGw2K1JBSi1SbChvLFlxPypmcDVKXE45JWZvO1xKWFBjPTFmRllcPWs0QGAkSCtuLDBTcTljImxAczVGWTFKNmVGJEpqXj5oQFdqclsuP2lndHVvZURWYj8tVipkLy43a0BtKGsjc3I4blVXQFBIXl1xN1NfSkViaUhEZ3JXcCxZSzY0bldDQE9PKiInWCdMPiZlSiE1RicrTisoaVhSWiVhL3IoKT5eLTA/ZFNhaiFYdSF1ajt1YVtKMS10TD9rSjhGYyxyOmoyT3M/XmNvSW47Mkt0Uj4yKF1lYVwpRVYqNiIpSHJNNkc6KCo2LUkoTEFiVDZrVnNVTFg/VlRxSl9RUHM+S1tCYT1OV0xEOUEuU2s5QXVdQ2o5Ji9RZnJjPHE7UDRWMFhZUiFSN14uJXFhRmVZUjgrO2IuSE5JWyVQNU5VP109VkB1SCY7bEpcNTU7P105W1FMXSwqUWpHUnQiNDJYRlk7Nko+PS5fU2FLO09DZ1A8cDBRTmovQyVZQ1pUTHJpMGhpZXUrKlw4JSpdLG8xPjBOIzg3XjIodDcmblBtVVNgPSgvPDpMMGEiMyp1YDlEZyxIaGYiLVNFN3BtKGhZIWY3YVksVjVyWFY6SE9haldUa0QxWmBoSC9lJzg1RG5qcDtJNzNUYl9BX2JMVlRjQjJSai9FPmM5VWs8WFRbQDdgUWZUTEt0ME00J3ExRWd1ZV9ETScvT3FeXEVdO01ubmJRWVdBUk09ZEVfNzBOQyQ+I2pQJk1vYDg8IjRrckojIkpUQVQ5LD8wXmNYSFE2WFVtSC1DWTA1Z0dcK2JfU1dQXmFQSSMsLFJEciNmMzpcOGlSb0ROJDE3SjRMIVBbcVZSMXVsRzIvJHI/Y2RMSmxaTUhAZlByRldIPmstQitPNjNtclYnKDZrV29NWlonLS8jOylNcFRpYygubTpeXjVBRWVJR2tucGxtU1orQTQ3V1VbYTleY1Q2KlpnVVJPc2RmMmBqWVg6cWY+YUhSYExtaW1NOEg1NlMwTSUnaWYvI0YxbDQ3TlosJTdXU3VgdFVSLE1xR1JJYTtsOkNiTi1UOSsyVWpCJE8pZUdYRy5kTzZaNzM4QidZWWsqOzllMW5sNzoyXzslRyNDIypTIWEtWj9Kc0BpTzEmc0Q9ZmtUa0k9dXAvLm5MUVxON3EvUFVBSkdHJFVnInBfPSpeRWlEPWBWNl5ILzooP0VeR1gqSV9eYF89VmpyQ1UxXWpNRiFTUSRAPU88RnVEXThIXzAzTUdVVHA7KGxkblYzJ0c+OStnIWhKcltCVjQlV2VEai1dLT5ASHQobDg0cDs7L0s6MV4uWWJUN2stdTAkXmNFRjxzVSdLYzZZSTZcK0toWiQ2RixFTiFoXTcrJ0cxRixyTyNaJi1zdEwvbSc9WVliRk8yIl9bLmFqLDxROFVhcElZakIvaGI3QDZtYSkuc3JQYmRiZ24xPDo8WlNeIkdTN0VLPjMuRWVDajVMbyVobU4lQypuVSVnb2FDLDtrJ3JhI0s5aSwvYi5LcTdFYzglOWxpTlMzTVhuLSc5TCV1RnJAdF9mJihGa01IMHJDWFhJaUVVVjxTYEwjWXE5VXQwI00+JUpSKSJzPjRUKFlXaWFYMUNGWz1wWSNxbnRWKSUxT1EmW1E/JWAvTzBTcVknL0hMSjsrKHQ7MGA2XDIxbiosOj1WLSt1MmFZRjBDJF9UYHVAO1YnY1dhY2dmSSxHWjFdUGlvLE8vZTk8OXBAbFJpSnJKLj0yZlckK09VOG5KRTt0XmY+VnA5XGBdT1dLOihFRlBYLS8tKWtSREBMZDFWJC02VmJJOj5SNCJgQGs6TDBKbFBDOCgkPiNNIiVqPlovSFJNbk8qRiU3OXNPU3JBWCllWjBuYFJXZGhtW21IYUc6cFwmcXQtRTA3ailPPzI9KTRSSy9eU3BAOURSPl1YL1dVXS0qYnVlay8qbHUvYkEhUF8lb3NyYS1GKXNpP3FrPTRyIms6IiIxPUpFbC0tbnN0VE1galJrYW5vKmpedXBTb2VPInJOZD5xOUdLLyY/VUk7TicsKWpXLFE8NDRXYzNHKzM5QEtnKV48TzAnWDZXYF1gMHQiSjszcTdiRmYoJjpsZTZpXVlnYnBQPi4xLTxNVVZaOldSdClPIjpRZllPUTVSbV44cDYkImg9NExddSRXVEdgTWk3XT5oOktrJEowYGkwS2pRMyVmQSFAU1lVLzlMbHUzIiZUWTAwcmRYM28jYEhBPFJGWCQ5I3B0SCtFPWdvS0RjcDRlaj9SIVBjQFxRYSZpTjNSKidKQiFjYG9jMU8vMllFSipoRHMqQVdGYSEwT146aDE2VlZJVTonamViLy9hWkxiRS1uOlBqUmBCS2kkNWZpdV1qRDUtYiQ5OS4zTmNwaW9qUyk5XS4tSyJFNWRXTFFRczRXMzVwRGE8b20mS25tWUVQZitWQltcUTFKUURGKUUocVgpXy1yaEpwVi4mY0FkZDQuO0ZlUE1ZVS4/byElXlsoOiQrWCVgKHJTQjAlcEFJbS8kWi1URWtYPj85b1g5RWNEcjxdXyJiaGc2YTdMQVlaPk4qS2RXbVskOGJiUFJObkFYcWVERVNHP2ZTJklNcmxSVldJNUpAYTJtNSVobGtcWTRAKTxnOV9XTXMwMk4hLmpUfj5lbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCAxMAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwNjEgMDAwMDAgbiAKMDAwMDAwMDExMiAwMDAwMCBuIAowMDAwMDAwMjE5IDAwMDAwIG4gCjAwMDAwMDAzMzEgMDAwMDAgbiAKMDAwMDAwMDQ0NiAwMDAwMCBuIAowMDAwMDAwNjM5IDAwMDAwIG4gCjAwMDAwMDA3MDcgMDAwMDAgbiAKMDAwMDAwMTAyMCAwMDAwMCBuIAowMDAwMDAxMDc5IDAwMDAwIG4gCnRyYWlsZXIKPDwKL0lEIApbPGU3ZmZjYmExMzk1ODZhNDU3Y2VmODIyNDA2NDA5ZTMyPjxlN2ZmY2JhMTM5NTg2YTQ1N2NlZjgyMjQwNjQwOWUzMj5dCiUgUmVwb3J0TGFiIGdlbmVyYXRlZCBQREYgZG9jdW1lbnQgLS0gZGlnZXN0IChvcGVuc291cmNlKQoKL0luZm8gNyAwIFIKL1Jvb3QgNiAwIFIKL1NpemUgMTAKPj4Kc3RhcnR4cmVmCjM1ODkKJSVFT0YK";
+document.getElementById('downloadPdf').href = "data:application/pdf;base64," + PDF_BASE64;
+
+const items = [
+  { text: "1. Approach ISC has a speaking group only one time a year.", answer: "False" },
+  { text: "2. You need a big, serious topic to talk to your neighbor.", answer: "False" },
+  { text: "3. Some streets have special parking rules on snow days.", answer: "True" },
+  { text: "4. Standing very close to Americans makes them feel comfortable.", answer: "False" },
+  { text: "5. Practicing English can help you feel part of your community.", answer: "True" }
+];
+
+const tfList = document.getElementById('tfList');
+items.forEach((item, idx) => {
+  const row = document.createElement('div');
+  row.className = 'tf-item';
+
+  const text = document.createElement('div');
+  text.className = 'tf-text';
+  text.textContent = item.text;
+
+  const choices = document.createElement('div');
+  choices.className = 'tf-choices';
+
+  ['True', 'False'].forEach(label => {
+    const btn = document.createElement('button');
+    btn.className = 'tf-choice';
+    btn.textContent = label;
+    btn.addEventListener('click', () => {
+      choices.querySelectorAll('.tf-choice').forEach(b => {
+        b.classList.remove('selected');
+        b.style.background = '';
+        b.style.color = '';
+      });
+      btn.classList.add('selected');
+      if (label === item.answer) {
+        btn.style.background = '#2f7a4f';
+        btn.style.borderColor = '#2f7a4f';
+      } else {
+        btn.style.background = '#a8342a';
+        btn.style.borderColor = '#a8342a';
+      }
+    });
+    choices.appendChild(btn);
+  });
+
+  row.appendChild(text);
+  row.appendChild(choices);
+  tfList.appendChild(row);
+});
+</script>
+
+</body>
+</html>
