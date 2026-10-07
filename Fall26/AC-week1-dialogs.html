@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dialogues: Using What You Know</title>
+<style>
+  :root {
+    --navy: #1b2a4a;
+    --navy-dark: #10192e;
+    --rust: #a8431c;
+    --amber: #c9871f;
+    --olive: #6b6b2f;
+    --paper: #fbf1dd;
+    --ink: #2a1d12;
+    --line: #e3cfa3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(201,135,31,0.18), transparent 45%),
+      radial-gradient(circle at 85% 85%, rgba(168,67,28,0.22), transparent 45%),
+      linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .leaf-bg {
+    position: fixed;
+    opacity: 0.12;
+    width: 120px;
+    height: 120px;
+  }
+  .leaf-bg.l1 { top: -20px; left: -20px; transform: rotate(-15deg); }
+  .leaf-bg.l2 { bottom: -30px; right: -10px; transform: rotate(25deg) scale(1.3); }
+
+  .wrap {
+    width: 100%;
+    max-width: 620px;
+    position: relative;
+    z-index: 1;
+  }
+  .kicker {
+    color: var(--amber);
+    letter-spacing: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .title {
+    color: var(--paper);
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+  .subtitle {
+    color: #c9c2b2;
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+  .card {
+    background: var(--paper);
+    border-radius: 18px;
+    padding: 28px 26px 24px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    border: 1px solid var(--line);
+    position: relative;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(90deg, var(--rust), var(--amber), var(--olive));
+  }
+  .scene-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+    margin-bottom: 4px;
+  }
+  .card-number {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--olive);
+    letter-spacing: 1px;
+  }
+  .scene-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+    flex: 1;
+  }
+  .scene-sub {
+    text-align: center;
+    color: #8a7a5e;
+    font-size: 12.5px;
+    font-style: italic;
+    margin-bottom: 16px;
+  }
+  .bubbles {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+  }
+  .row { display: flex; align-items: flex-end; gap: 8px; }
+  .row.b { flex-direction: row-reverse; }
+  .avatar {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .row.a .avatar { background: var(--navy); }
+  .row.b .avatar { background: var(--rust); }
+  .bubble {
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .row.a .bubble {
+    background: #fff;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-bottom-left-radius: 3px;
+  }
+  .row.b .bubble {
+    background: var(--navy);
+    color: var(--paper);
+    border-bottom-right-radius: 3px;
+  }
+  .word {
+    border-bottom: 2px dotted var(--rust);
+    cursor: pointer;
+    font-weight: 700;
+    position: relative;
+  }
+  .row.a .word { color: var(--navy); }
+  .row.b .word { border-bottom-color: var(--amber); color: var(--paper); }
+  .tooltip {
+    display: none;
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    z-index: 5;
+  }
+  .tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--ink);
+  }
+  .word.open .tooltip { display: block; }
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  button.nav {
+    background: var(--rust);
+    color: var(--paper);
+    border: none;
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  button.nav:hover { background: var(--amber); }
+  button.nav:active { transform: scale(0.97); }
+  button.nav:disabled { opacity: 0.35; cursor: default; }
+  button.nav:disabled:hover { background: var(--rust); }
+  .dots { display: flex; gap: 8px; }
+  .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--line);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .dot.active { background: var(--amber); transform: scale(1.25); }
+  .footer-note {
+    text-align: center;
+    color: #a99c82;
+    font-size: 12px;
+    margin-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<svg class="leaf-bg l1" viewBox="0 0 100 100"><path fill="#c9871f" d="M50 92 C 18 78, 8 42, 50 8 C 92 42, 82 78, 50 92 Z"/></svg>
+<svg class="leaf-bg l2" viewBox="0 0 100 100"><path fill="#a8431c" d="M50 92 C 18 78, 8 42, 50 8 C 92 42, 82 78, 50 92 Z"/></svg>
+
+<div class="wrap">
+  <div class="kicker">Approach ISC &middot; American Culture &amp; Civic Life</div>
+  <div class="title">Dialogues: Using What You Know</div>
+  <div class="subtitle">Read with a partner. Then act it out in your own words.</div>
+
+  <div class="card">
+    <div class="scene-row">
+      <div class="card-number" id="cardNum">1 / 4</div>
+      <div class="scene-title" id="sceneTitle"></div>
+      <div style="width:40px"></div>
+    </div>
+    <div class="scene-sub" id="sceneSub"></div>
+    <div class="bubbles" id="bubbles"></div>
+  </div>
+
+  <div class="controls">
+    <button class="nav" id="backBtn">&larr; Back</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav" id="nextBtn">Next &rarr;</button>
+  </div>
+
+  <div class="footer-note">Tap a dotted word to see the Portuguese meaning.</div>
+</div>
+
+<script>
+const glossary = {
+  "enroll": "matricular-se",
+  "form": "formulário",
+  "help": "ajuda / ajudar",
+  "appointment": "consulta / hora marcada",
+  "resource": "recurso",
+  "support": "apoio",
+  "sign up": "se inscrever",
+  "front desk": "recepção"
+};
+
+function markWords(text) {
+  let out = text;
+  Object.keys(glossary).sort((a,b)=>b.length-a.length).forEach(word => {
+    const re = new RegExp("\\b" + word.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') + "\\b", "i");
+    out = out.replace(re, function(match) {
+      return `<span class="word" data-pt="${glossary[word]}">${match}<span class="tooltip">${glossary[word]}</span></span>`;
+    });
+  });
+  return out;
+}
+
+const scenes = [
+  {
+    title: "At Approach ISC",
+    sub: "Enrolling in an English class",
+    lines: [
+      { who: "a", text: "Hi! I want to enroll in an English class." },
+      { who: "b", text: "Great! Please fill out this form at the front desk." },
+      { who: "a", text: "OK. Can you help me? I don't understand this word." },
+      { who: "b", text: "Sure, no problem. Let's look at it together." }
+    ]
+  },
+  {
+    title: "Calling the Clinic",
+    sub: "Making a doctor's appointment",
+    lines: [
+      { who: "a", text: "Hello, I need to make an appointment, please." },
+      { who: "b", text: "OK. Is Tuesday or Thursday better for you?" },
+      { who: "a", text: "Thursday, please. Can you help me with the address too?" },
+      { who: "b", text: "Yes, it's 45 Main Street in Marlborough." }
+    ]
+  },
+  {
+    title: "At the Library",
+    sub: "Asking about resources",
+    lines: [
+      { who: "a", text: "Excuse me, is the library a good resource for free English classes?" },
+      { who: "b", text: "Yes! We also have a support group for new families on Fridays." },
+      { who: "a", text: "That's wonderful. Where do I sign up?" },
+      { who: "b", text: "Just ask at the front desk, they will help you." }
+    ]
+  },
+  {
+    title: "Calling a Community Center",
+    sub: "Asking about support in Nashua",
+    lines: [
+      { who: "a", text: "Hi, I'm new in Nashua. I need some support." },
+      { who: "b", text: "No problem, we are a resource for new neighbors." },
+      { who: "a", text: "Can you help me find a job in this area?" },
+      { who: "b", text: "Yes, come visit us on Tuesday morning." }
+    ]
+  },
+  {
+    title: "Your First Visit to Approach ISC",
+    sub: "A longer conversation — using all 6 words",
+    lines: [
+      { who: "a", text: "Hi, I'm new here. Can you help me, please?" },
+      { who: "b", text: "Of course! Welcome to Approach ISC. What do you need?" },
+      { who: "a", text: "I want to enroll in an English class." },
+      { who: "b", text: "Great. Please fill out this form with your name and phone number." },
+      { who: "a", text: "OK, one minute... Is this also a resource for finding a doctor?" },
+      { who: "b", text: "Yes! We have a list of doctors. Do you need an appointment?" },
+      { who: "a", text: "Yes, please. My daughter needs a doctor this week." },
+      { who: "b", text: "No problem, I will call and make an appointment for you." },
+      { who: "a", text: "Thank you so much for your support." },
+      { who: "b", text: "You're welcome! Come back anytime you need help." }
+    ]
+  }
+];
+
+let current = 0;
+const cardNum = document.getElementById('cardNum');
+const sceneTitle = document.getElementById('sceneTitle');
+const sceneSub = document.getElementById('sceneSub');
+const bubblesWrap = document.getElementById('bubbles');
+const dotsWrap = document.getElementById('dots');
+const backBtn = document.getElementById('backBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+scenes.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dotsWrap.appendChild(dot);
+});
+
+function render() {
+  const s = scenes[current];
+  cardNum.textContent = (current + 1) + ' / ' + scenes.length;
+  sceneTitle.textContent = s.title;
+  sceneSub.textContent = s.sub;
+
+  bubblesWrap.innerHTML = '';
+  s.lines.forEach(line => {
+    const row = document.createElement('div');
+    row.className = 'row ' + line.who;
+    const avatar = document.createElement('div');
+    avatar.className = 'avatar';
+    avatar.textContent = line.who === 'a' ? 'A' : 'B';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.innerHTML = markWords(line.text);
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+    bubblesWrap.appendChild(row);
+  });
+
+  [...dotsWrap.children].forEach((d, i) => {
+    d.classList.toggle('active', i === current);
+  });
+
+  backBtn.disabled = current === 0;
+  nextBtn.textContent = current === scenes.length - 1 ? 'Restart ↻' : 'Next →';
+
+  attachWordHandlers();
+}
+
+function attachWordHandlers() {
+  document.querySelectorAll('.word').forEach(w => {
+    w.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const wasOpen = w.classList.contains('open');
+      document.querySelectorAll('.word').forEach(x => x.classList.remove('open'));
+      if (!wasOpen) w.classList.add('open');
+    });
+  });
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.word').forEach(x => x.classList.remove('open'));
+});
+
+backBtn.addEventListener('click', () => {
+  if (current > 0) { current--; render(); }
+});
+
+nextBtn.addEventListener('click', () => {
+  if (current === scenes.length - 1) {
+    current = 0;
+  } else {
+    current++;
+  }
+  render();
+});
+
+render();
+</script>
+
+</body>
+</html>
