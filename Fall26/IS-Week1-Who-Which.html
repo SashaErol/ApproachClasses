@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Who or Which? Speed Game</title>
+<style>
+:root{
+  --navy:#0B1827; --red:#9D251A; --blue:#418ABD;
+  --bg:#EEF2F6; --card:#FFFFFF; --ink:#0B1827; --soft:#5A6878; --line:#D3DBE4;
+  --ok:#2E7D4F; --okbg:#E3F2E8; --bad:#9D251A; --badbg:#F8E4E1; --gold:#B7791F; --goldbg:#FBF1DE;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#08111C; --card:#122236; --ink:#EAF0F6; --soft:#9FB0C2; --line:#24384F;
+  --ok:#6FCF97; --okbg:#173326; --bad:#F08A7E; --badbg:#3A1B19; --gold:#F2C26B; --goldbg:#33270F; --blue:#6FAEDD; } }
+:root[data-theme="dark"]{
+  --bg:#08111C; --card:#122236; --ink:#EAF0F6; --soft:#9FB0C2; --line:#24384F;
+  --ok:#6FCF97; --okbg:#173326; --bad:#F08A7E; --badbg:#3A1B19; --gold:#F2C26B; --goldbg:#33270F; --blue:#6FAEDD; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 36px}
+.shell{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.bar{height:8px;background:linear-gradient(90deg,#0B1827,#418ABD 60%,#9D251A)}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px}
+.logo svg{width:38px;height:38px;flex:none}
+.logo .name{font-size:21px;line-height:1}
+.logo .sub{display:block;font-size:12px;color:var(--soft);letter-spacing:.08em;text-transform:uppercase;margin-top:3px;font-family:Arial,sans-serif}
+.hud{display:flex;gap:18px;font-family:Arial,sans-serif;font-size:14px;color:var(--soft)}
+.hud b{display:block;font-size:24px;color:var(--ink);font-variant-numeric:tabular-nums}
+main{padding:22px 24px}
+h1{font-size:clamp(32px,5.5vw,50px);line-height:1.1;margin:0 0 10px;font-weight:normal}
+.lead{color:var(--soft);max-width:58ch;margin:0 0 18px}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 22px}
+.rules div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:16px}
+.rules b{display:block;font-size:22px;color:var(--blue)}
+.rules .r b{color:var(--red)} .rules .g b{color:var(--gold)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 10px;flex-wrap:wrap}
+.qn{font-family:Arial,sans-serif;font-size:14px;color:var(--soft);letter-spacing:.06em;text-transform:uppercase}
+.double{font-family:Arial,sans-serif;font-weight:bold;font-size:15px;letter-spacing:.08em;color:var(--gold);background:var(--goldbg);border:2px solid var(--gold);border-radius:999px;padding:4px 14px;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.clock{font-family:Arial,sans-serif;font-size:28px;font-weight:bold;font-variant-numeric:tabular-nums;min-width:56px;text-align:right}
+.clock.low{color:var(--red)}
+.track{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:0 0 22px}
+.fill{height:100%;background:var(--blue);width:100%;transition:width .25s linear}
+.fill.low{background:var(--red)}
+.sentence{font-size:clamp(26px,4.4vw,38px);line-height:1.35;margin:0 0 26px;min-height:2.8em}
+.gap{display:inline-block;min-width:120px;border-bottom:4px solid var(--blue);text-align:center;color:var(--blue);font-weight:bold}
+.gap.ok{border-color:var(--ok);color:var(--ok)} .gap.bad{border-color:var(--bad);color:var(--bad)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+button{font:inherit;cursor:pointer}
+.opt{border:3px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:22px 10px;font-size:clamp(28px,5vw,40px);font-weight:bold}
+.opt small{display:block;font-size:14px;font-weight:normal;color:var(--soft);font-family:Arial,sans-serif;margin-top:2px}
+.opt:hover:not(:disabled){border-color:var(--blue)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)} .opt.bad{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.fb{min-height:64px;margin-top:18px;font-size:19px}
+.pts{font-family:Arial,sans-serif;font-weight:bold;color:var(--ok)}
+.btn{border:0;border-radius:10px;padding:12px 26px;font-size:18px;background:#0B1827;color:#fff;font-family:inherit}
+.btn.red{background:#9D251A}
+.btn:disabled{opacity:.35;cursor:default}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.nav{display:flex;justify-content:flex-end;margin-top:14px}
+.big{font-size:clamp(46px,8vw,72px);margin:0;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:18px 0}
+.stats div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:15px;color:var(--soft);font-family:Arial,sans-serif}
+.stats b{display:block;font-size:26px;color:var(--ink);font-family:Georgia,serif}
+.review{list-style:none;padding:0;margin:8px 0 0}
+.review li{border-bottom:1px solid var(--line);padding:9px 0;font-size:18px}
+.review .m{font-family:Arial,sans-serif;font-weight:bold;margin-right:8px}
+.review .r{color:var(--ok)} .review .w{color:var(--bad)}
+@media (max-width:560px){ main{padding:18px 16px} .hud{gap:12px} }
+@media (prefers-reduced-motion:reduce){ .double{animation:none} .fill{transition:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="shell">
+    <div class="bar"></div>
+    <header class="top">
+      <div class="logo" aria-label="Approach">
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="#0B1827"/>
+          <path d="M11 30 L20 9 L29 30" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M14.5 23 H25.5" stroke="#9D251A" stroke-width="3.2" stroke-linecap="round"/>
+          <circle cx="20" cy="9" r="2.4" fill="#418ABD"/>
+        </svg>
+        <div><span class="name">Approach</span><span class="sub">Who or Which? · Speed Game</span></div>
+      </div>
+      <div class="hud"><div>Score<b id="score">0</b></div><div>Correct<b id="corr">0/16</b></div></div>
+    </header>
+    <main id="app" aria-live="polite"></main>
+  </div>
+</div>
+<script>
+const LIMIT = 45, BASE = 100, SPEED_MAX = 100;
+const DOUBLE_AT = [3, 7, 11, 15]; // question 4, 8, 12, 16
+const POOL = [
+  {s:"The woman ___ sells flowers at the market is very friendly.", a:"who",   n:"the woman"},
+  {s:"I like the shirt ___ is on the table.",                       a:"which", n:"the shirt"},
+  {s:"This is the bike ___ I ride to the park.",                    a:"which", n:"the bike"},
+  {s:"My friend ___ lives in Texas calls me every Sunday.",         a:"who",   n:"my friend"},
+  {s:"The cake ___ you made was delicious.",                        a:"which", n:"the cake"},
+  {s:"The boy ___ plays the piano is my nephew.",                   a:"who",   n:"the boy"},
+  {s:"Where is the bag ___ was here this morning?",                 a:"which", n:"the bag"},
+  {s:"The doctor ___ checked my eyes was very kind.",               a:"who",   n:"the doctor"},
+  {s:"I can't find the pen ___ I bought yesterday.",                a:"which", n:"the pen"},
+  {s:"The girl ___ has a red backpack is my sister.",               a:"who",   n:"the girl"},
+  {s:"We watched a movie ___ was very funny.",                      a:"which", n:"a movie"},
+  {s:"The man ___ drives the ice cream truck knows all the kids.",  a:"who",   n:"the man"},
+  {s:"Do you have a phone ___ takes good photos?",                  a:"which", n:"a phone"},
+  {s:"The children ___ won the race got medals.",                   a:"who",   n:"the children"},
+  {s:"The plant ___ is in the kitchen window needs water.",         a:"which", n:"the plant"},
+  {s:"My grandmother, ___ is 90, still cooks every day.",           a:"who",   n:"my grandmother"}
+];
+const app=document.getElementById("app"), scoreEl=document.getElementById("score"), corrEl=document.getElementById("corr");
+let Q=[], i=0, score=0, correct=0, left=LIMIT, tick=null, t0=0, locked=false, log=[];
+const esc=t=>t.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=[...a];for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;};
+
+let voice=null;
+function pickVoice(){ const vs=speechSynthesis.getVoices().filter(v=>/^en[-_]US/i.test(v.lang));
+  const r=v=>(/natural|neural|premium|enhanced/i.test(v.name)?3:0)+(/google|samantha|aria|jenny|ava/i.test(v.name)?1:0);
+  voice=vs.sort((a,b)=>r(b)-r(a))[0]||null; }
+if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+function speak(t){ if(!("speechSynthesis" in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); if(voice)u.voice=voice; u.lang="en-US"; u.rate=.92; speechSynthesis.speak(u); }
+
+function start(){
+  app.innerHTML=`
+    <h1>Who or which?</h1>
+    <p class="lead">Read the sentence. Is the word before the gap a <b>person</b> or a <b>thing</b>? Choose fast for more points.</p>
+    <div class="rules">
+      <div><b>who</b>for people</div>
+      <div class="r"><b>which</b>for things</div>
+      <div><b>45 sec</b>for each question</div>
+      <div><b>+100</b>for a correct answer, plus up to +100 for speed</div>
+      <div class="g"><b>×2</b>Double points on questions 4, 8, 12, and 16</div>
+    </div>
+    <button class="btn red" id="go">Start the game</button>`;
+  document.getElementById("go").onclick=()=>{ Q=shuffle(POOL); i=0; score=0; correct=0; log=[]; scoreEl.textContent=0; corrEl.textContent="0/16"; ask(); };
+}
+
+function ask(){
+  locked=false; left=LIMIT; t0=performance.now();
+  const q=Q[i], dbl=DOUBLE_AT.includes(i), p=q.s.split("___");
+  app.innerHTML=`
+    <div class="row">
+      <span class="qn">Question ${i+1} of ${Q.length}</span>
+      ${dbl?'<span class="double">DOUBLE POINTS ×2</span>':''}
+      <span class="clock" id="clock">${LIMIT}</span>
+    </div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <p class="sentence">${esc(p[0])}<span class="gap" id="gap">&nbsp;?&nbsp;</span>${esc(p[1])}</p>
+    <div class="opts">
+      <button class="opt" data-o="who">who<small>press 1</small></button>
+      <button class="opt" data-o="which">which<small>press 2</small></button>
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="nav"><button class="btn" id="next" disabled>${i===Q.length-1?"See results":"Next question"}</button></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(b.dataset.o));
+  document.getElementById("next").onclick=()=>{ if(i<Q.length-1){i++;ask();} else finish(); };
+  clearInterval(tick);
+  tick=setInterval(()=>{
+    const el=(performance.now()-t0)/1000; left=Math.max(0,LIMIT-el);
+    const c=document.getElementById("clock"), f=document.getElementById("fill");
+    if(!c) return;
+    c.textContent=Math.ceil(left); f.style.width=(left/LIMIT*100)+"%";
+    const low=left<=10; c.classList.toggle("low",low); f.classList.toggle("low",low);
+    if(left<=0) answer(null);
+  },100);
+}
+
+function answer(o){
+  if(locked) return; locked=true; clearInterval(tick);
+  const q=Q[i], dbl=DOUBLE_AT.includes(i), ok=o===q.a;
+  const secs=Math.min(LIMIT,(performance.now()-t0)/1000);
+  let gain=0, speed=0;
+  if(ok){ speed=Math.round(SPEED_MAX*(1-secs/LIMIT)); gain=(BASE+speed)*(dbl?2:1); score+=gain; correct++; }
+  log.push({q,ok,o,secs,gain});
+  scoreEl.textContent=score; corrEl.textContent=`${correct}/16`;
+  app.querySelectorAll(".opt").forEach(b=>{ b.disabled=true;
+    if(b.dataset.o===q.a) b.classList.add("ok"); else if(b.dataset.o===o) b.classList.add("bad"); });
+  const g=document.getElementById("gap"); g.textContent=q.a; g.classList.add(ok?"ok":"bad");
+  const kind = q.a==="who"?"a person":"a thing";
+  const fb=document.getElementById("fb");
+  if(ok) fb.innerHTML=`Correct! <b>${esc(q.n)}</b> is ${kind}. <span class="pts">+${gain}</span> <small>(100 + ${speed} speed${dbl?", ×2":""})</small>`;
+  else if(o===null) fb.innerHTML=`Time's up! The answer is <b>${q.a}</b>: <b>${esc(q.n)}</b> is ${kind}.`;
+  else fb.innerHTML=`Not this time. The answer is <b>${q.a}</b>: <b>${esc(q.n)}</b> is ${kind}.`;
+  speak(q.s.replace("___",q.a));
+  const n=document.getElementById("next"); n.disabled=false; n.focus();
+}
+
+function finish(){
+  const max=Q.length*(BASE+SPEED_MAX)+DOUBLE_AT.length*(BASE+SPEED_MAX);
+  const avg=(log.reduce((s,x)=>s+x.secs,0)/log.length).toFixed(1);
+  const msg=correct===16?"Perfect! Every answer was right.":correct>=12?"Great job! Check the red ones below.":"Good try! Remember: person = who, thing = which.";
+  app.innerHTML=`
+    <p class="qn">Final score</p>
+    <p class="big">${score}</p>
+    <p class="lead">${msg}</p>
+    <div class="stats">
+      <div><b>${correct} / 16</b>correct</div>
+      <div><b>${avg} s</b>average time</div>
+      <div><b>${log.filter((x,k)=>x.ok&&DOUBLE_AT.includes(k)).length} / 4</b>double-points questions</div>
+      <div><b>${max}</b>highest possible score</div>
+    </div>
+    <ul class="review">${log.map(x=>`<li><span class="m ${x.ok?'r':'w'}">${x.ok?'✓':'✗'}</span>${esc(x.q.s.replace("___",x.q.a.toUpperCase()))}</li>`).join("")}</ul>
+    <div class="nav"><button class="btn red" id="again">Play again</button></div>`;
+  document.getElementById("again").onclick=start;
+}
+
+document.addEventListener("keydown",e=>{
+  if(locked||!document.querySelector(".opt")) return;
+  if(e.key==="1") answer("who");
+  if(e.key==="2") answer("which");
+});
+start();
+</script>
+</body>
+</html>
