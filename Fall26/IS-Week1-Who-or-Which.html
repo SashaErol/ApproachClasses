@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Who or Which? Speed Game</title>
+<style>
+:root{
+  --navy:#0B1827; --red:#9D251A; --blue:#418ABD;
+  --bg:#EEF2F6; --card:#FFFFFF; --ink:#0B1827; --soft:#5A6878; --line:#D3DBE4;
+  --ok:#2E7D4F; --okbg:#E3F2E8; --bad:#9D251A; --badbg:#F8E4E1; --gold:#B7791F; --goldbg:#FBF1DE;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#08111C; --card:#122236; --ink:#EAF0F6; --soft:#9FB0C2; --line:#24384F;
+  --ok:#6FCF97; --okbg:#173326; --bad:#F08A7E; --badbg:#3A1B19; --gold:#F2C26B; --goldbg:#33270F; --blue:#6FAEDD; } }
+:root[data-theme="dark"]{
+  --bg:#08111C; --card:#122236; --ink:#EAF0F6; --soft:#9FB0C2; --line:#24384F;
+  --ok:#6FCF97; --okbg:#173326; --bad:#F08A7E; --badbg:#3A1B19; --gold:#F2C26B; --goldbg:#33270F; --blue:#6FAEDD; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 36px}
+.shell{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.bar{height:8px;background:linear-gradient(90deg,#0B1827,#418ABD 60%,#9D251A)}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px}
+.logo .mark{height:44px;width:auto;flex:none}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .logo .mark{filter:brightness(0) invert(1)} }
+:root[data-theme="dark"] .logo .mark{filter:brightness(0) invert(1)}
+.logo .name{font-size:21px;line-height:1}
+.logo .sub{display:block;font-size:12px;color:var(--soft);letter-spacing:.08em;text-transform:uppercase;margin-top:3px;font-family:Arial,sans-serif}
+.hud{display:flex;gap:18px;font-family:Arial,sans-serif;font-size:14px;color:var(--soft)}
+.hud b{display:block;font-size:24px;color:var(--ink);font-variant-numeric:tabular-nums}
+main{padding:22px 24px}
+h1{font-size:clamp(32px,5.5vw,50px);line-height:1.1;margin:0 0 10px;font-weight:normal}
+.lead{color:var(--soft);max-width:58ch;margin:0 0 18px}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 22px}
+.rules div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:16px}
+.rules b{display:block;font-size:22px;color:var(--blue)}
+.rules .r b{color:var(--red)} .rules .g b{color:var(--gold)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 10px;flex-wrap:wrap}
+.qn{font-family:Arial,sans-serif;font-size:14px;color:var(--soft);letter-spacing:.06em;text-transform:uppercase}
+.double{font-family:Arial,sans-serif;font-weight:bold;font-size:15px;letter-spacing:.08em;color:var(--gold);background:var(--goldbg);border:2px solid var(--gold);border-radius:999px;padding:4px 14px;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.clock{font-family:Arial,sans-serif;font-size:28px;font-weight:bold;font-variant-numeric:tabular-nums;min-width:56px;text-align:right}
+.clock.low{color:var(--red)}
+.track{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:0 0 22px}
+.fill{height:100%;background:var(--blue);width:100%;transition:width .25s linear}
+.fill.low{background:var(--red)}
+.sentence{font-size:clamp(26px,4.4vw,38px);line-height:1.35;margin:0 0 26px;min-height:2.8em}
+.gap{display:inline-block;min-width:120px;border-bottom:4px solid var(--blue);text-align:center;color:var(--blue);font-weight:bold}
+.gap.ok{border-color:var(--ok);color:var(--ok)} .gap.bad{border-color:var(--bad);color:var(--bad)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+button{font:inherit;cursor:pointer}
+.opt{border:3px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:22px 10px;font-size:clamp(28px,5vw,40px);font-weight:bold}
+.opt small{display:block;font-size:14px;font-weight:normal;color:var(--soft);font-family:Arial,sans-serif;margin-top:2px}
+.opt:hover:not(:disabled){border-color:var(--blue)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)} .opt.bad{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.fb{min-height:64px;margin-top:18px;font-size:19px}
+.pts{font-family:Arial,sans-serif;font-weight:bold;color:var(--ok)}
+.btn{border:0;border-radius:10px;padding:12px 26px;font-size:18px;background:#0B1827;color:#fff;font-family:inherit}
+.btn.red{background:#9D251A}
+.btn:disabled{opacity:.35;cursor:default}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.nav{display:flex;justify-content:flex-end;margin-top:14px}
+.big{font-size:clamp(46px,8vw,72px);margin:0;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:18px 0}
+.stats div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:15px;color:var(--soft);font-family:Arial,sans-serif}
+.stats b{display:block;font-size:26px;color:var(--ink);font-family:Georgia,serif}
+.review{list-style:none;padding:0;margin:8px 0 0}
+.review li{border-bottom:1px solid var(--line);padding:9px 0;font-size:18px}
+.review .m{font-family:Arial,sans-serif;font-weight:bold;margin-right:8px}
+.review .r{color:var(--ok)} .review .w{color:var(--bad)}
+@media (max-width:560px){ main{padding:18px 16px} .hud{gap:12px} }
+@media (prefers-reduced-motion:reduce){ .double{animation:none} .fill{transition:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="shell">
+    <div class="bar"></div>
+    <header class="top">
+      <div class="logo" aria-label="Approach">
+        <img class="mark" src="data:image/png;base64,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" alt="">
+        <div><span class="name">Approach</span><span class="sub">Who or Which? · Speed Game</span></div>
+      </div>
+      <div class="hud"><div>Score<b id="score">0</b></div><div>Correct<b id="corr">0/16</b></div></div>
+    </header>
+    <main id="app" aria-live="polite"></main>
+  </div>
+</div>
+<script>
+const LIMIT = 45, BASE = 100, SPEED_MAX = 100;
+const DOUBLE_AT = [3, 7, 11, 15]; // question 4, 8, 12, 16
+const POOL = [
+  {s:"The woman ___ sells flowers at the market is very friendly.", a:"who",   n:"the woman"},
+  {s:"I like the shirt ___ is on the table.",                       a:"which", n:"the shirt"},
+  {s:"This is the bike ___ I ride to the park.",                    a:"which", n:"the bike"},
+  {s:"My friend ___ lives in Texas calls me every Sunday.",         a:"who",   n:"my friend"},
+  {s:"The cake ___ you made was delicious.",                        a:"which", n:"the cake"},
+  {s:"The boy ___ plays the piano is my nephew.",                   a:"who",   n:"the boy"},
+  {s:"Where is the bag ___ was here this morning?",                 a:"which", n:"the bag"},
+  {s:"The doctor ___ checked my eyes was very kind.",               a:"who",   n:"the doctor"},
+  {s:"I can't find the pen ___ I bought yesterday.",                a:"which", n:"the pen"},
+  {s:"The girl ___ has a red backpack is my sister.",               a:"who",   n:"the girl"},
+  {s:"We watched a movie ___ was very funny.",                      a:"which", n:"a movie"},
+  {s:"The man ___ drives the ice cream truck knows all the kids.",  a:"who",   n:"the man"},
+  {s:"Do you have a phone ___ takes good photos?",                  a:"which", n:"a phone"},
+  {s:"The children ___ won the race got medals.",                   a:"who",   n:"the children"},
+  {s:"The plant ___ is in the kitchen window needs water.",         a:"which", n:"the plant"},
+  {s:"My grandmother, ___ is 90, still cooks every day.",           a:"who",   n:"my grandmother"}
+];
+const app=document.getElementById("app"), scoreEl=document.getElementById("score"), corrEl=document.getElementById("corr");
+let Q=[], i=0, score=0, correct=0, left=LIMIT, tick=null, t0=0, locked=false, log=[];
+const esc=t=>t.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=[...a];for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;};
+
+
+function start(){
+  app.innerHTML=`
+    <h1>Who or which?</h1>
+    <p class="lead">Read the sentence. Is the word before the gap a <b>person</b> or a <b>thing</b>? Choose fast for more points.</p>
+    <div class="rules">
+      <div><b>who</b>for people</div>
+      <div class="r"><b>which</b>for things</div>
+      <div><b>45 sec</b>for each question</div>
+      <div><b>+100</b>for a correct answer, plus up to +100 for speed</div>
+      <div class="g"><b>×2</b>Double points on questions 4, 8, 12, and 16</div>
+    </div>
+    <button class="btn red" id="go">Start the game</button>`;
+  document.getElementById("go").onclick=()=>{ Q=shuffle(POOL); i=0; score=0; correct=0; log=[]; scoreEl.textContent=0; corrEl.textContent="0/16"; ask(); };
+}
+
+function ask(){
+  locked=false; left=LIMIT; t0=performance.now();
+  const q=Q[i], dbl=DOUBLE_AT.includes(i), p=q.s.split("___");
+  app.innerHTML=`
+    <div class="row">
+      <span class="qn">Question ${i+1} of ${Q.length}</span>
+      ${dbl?'<span class="double">DOUBLE POINTS ×2</span>':''}
+      <span class="clock" id="clock">${LIMIT}</span>
+    </div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <p class="sentence">${esc(p[0])}<span class="gap" id="gap">&nbsp;?&nbsp;</span>${esc(p[1])}</p>
+    <div class="opts">
+      <button class="opt" data-o="who">who<small>press 1</small></button>
+      <button class="opt" data-o="which">which<small>press 2</small></button>
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="nav"><button class="btn" id="next" disabled>${i===Q.length-1?"See results":"Next question"}</button></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(b.dataset.o));
+  document.getElementById("next").onclick=()=>{ if(i<Q.length-1){i++;ask();} else finish(); };
+  clearInterval(tick);
+  tick=setInterval(()=>{
+    const el=(performance.now()-t0)/1000; left=Math.max(0,LIMIT-el);
+    const c=document.getElementById("clock"), f=document.getElementById("fill");
+    if(!c) return;
+    c.textContent=Math.ceil(left); f.style.width=(left/LIMIT*100)+"%";
+    const low=left<=10; c.classList.toggle("low",low); f.classList.toggle("low",low);
+    if(left<=0) answer(null);
+  },100);
+}
+
+function answer(o){
+  if(locked) return; locked=true; clearInterval(tick);
+  const q=Q[i], dbl=DOUBLE_AT.includes(i), ok=o===q.a;
+  const secs=Math.min(LIMIT,(performance.now()-t0)/1000);
+  let gain=0, speed=0;
+  if(ok){ speed=Math.round(SPEED_MAX*(1-secs/LIMIT)); gain=(BASE+speed)*(dbl?2:1); score+=gain; correct++; }
+  log.push({q,ok,o,secs,gain});
+  scoreEl.textContent=score; corrEl.textContent=`${correct}/16`;
+  app.querySelectorAll(".opt").forEach(b=>{ b.disabled=true;
+    if(b.dataset.o===q.a) b.classList.add("ok"); else if(b.dataset.o===o) b.classList.add("bad"); });
+  const g=document.getElementById("gap"); g.textContent=q.a; g.classList.add(ok?"ok":"bad");
+  const kind = q.a==="who"?"a person":"a thing";
+  const fb=document.getElementById("fb");
+  if(ok) fb.innerHTML=`Correct! <b>${esc(q.n)}</b> is ${kind}. <span class="pts">+${gain}</span> <small>(100 + ${speed} speed${dbl?", ×2":""})</small>`;
+  else if(o===null) fb.innerHTML=`Time's up! The answer is <b>${q.a}</b>: <b>${esc(q.n)}</b> is ${kind}.`;
+  else fb.innerHTML=`Not this time. The answer is <b>${q.a}</b>: <b>${esc(q.n)}</b> is ${kind}.`;
+  const n=document.getElementById("next"); n.disabled=false; n.focus();
+}
+
+function finish(){
+  const max=Q.length*(BASE+SPEED_MAX)+DOUBLE_AT.length*(BASE+SPEED_MAX);
+  const avg=(log.reduce((s,x)=>s+x.secs,0)/log.length).toFixed(1);
+  const msg=correct===16?"Perfect! Every answer was right.":correct>=12?"Great job! Check the red ones below.":"Good try! Remember: person = who, thing = which.";
+  app.innerHTML=`
+    <p class="qn">Final score</p>
+    <p class="big">${score}</p>
+    <p class="lead">${msg}</p>
+    <div class="stats">
+      <div><b>${correct} / 16</b>correct</div>
+      <div><b>${avg} s</b>average time</div>
+      <div><b>${log.filter((x,k)=>x.ok&&DOUBLE_AT.includes(k)).length} / 4</b>double-points questions</div>
+      <div><b>${max}</b>highest possible score</div>
+    </div>
+    <ul class="review">${log.map(x=>`<li><span class="m ${x.ok?'r':'w'}">${x.ok?'✓':'✗'}</span>${esc(x.q.s.replace("___",x.q.a.toUpperCase()))}</li>`).join("")}</ul>
+    <div class="nav"><button class="btn red" id="again">Play again</button></div>`;
+  document.getElementById("again").onclick=start;
+}
+
+document.addEventListener("keydown",e=>{
+  if(locked||!document.querySelector(".opt")) return;
+  if(e.key==="1") answer("who");
+  if(e.key==="2") answer("which");
+});
+start();
+</script>
+</body>
+</html>
