@@ -1,0 +1,364 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tense Spotter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: two pages in one column. Page 1 is a tense reference grouped Present / Past / Future; page 2 is a one-at-a-time True or False quiz. Same cranberry-and-ink identity as the Week 1 warm-up. */
+:root{
+  --bg:#F2F4F8;
+  --card:#FFFFFF;
+  --ink:#16213A;
+  --ink-2:#4A556C;
+  --line:#D9DEE8;
+  --line-strong:#B0BACC;
+  --accent:#A8153B;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F9E4EA;
+  --mark:#FFE27A;
+  --mark-fg:#16213A;
+  --ok:#17724A;
+  --ok-soft:#E2F3EA;
+  --warn:#9A4A06;
+  --warn-soft:#FCEBD7;
+  --focus:#1B5FD6;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+    --line:#2B3857; --line-strong:#43547C;
+    --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+    --mark:#FFD84D;
+    --ok:#5FD39A; --ok-soft:#14352A; --warn:#F5A65B; --warn-soft:#3B2A14;
+    --focus:#7FB0FF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+  --line:#2B3857; --line-strong:#43547C;
+  --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+  --mark:#FFD84D;
+  --ok:#5FD39A; --ok-soft:#14352A; --warn:#F5A65B; --warn-soft:#3B2A14;
+  --focus:#7FB0FF;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:1.0625rem/1.5 var(--font-body)}
+.app{max-width:42rem;margin-inline:auto;padding-inline:1rem;padding-block:1.25rem 2.5rem}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.eyebrow{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+
+.top h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.7rem,6.5vw,2.4rem);line-height:1.08;margin:.35rem 0 .5rem;text-wrap:balance}
+.top p.hint{margin:0;color:var(--ink-2)}
+
+/* page tabs */
+.tabs{display:grid;grid-template-columns:1fr 1fr;margin-top:1.25rem;border-bottom:2px solid var(--line)}
+.tab{background:none;border:0;padding:.7rem .25rem;text-align:left;cursor:pointer;color:var(--ink-2);border-bottom:3px solid transparent;margin-bottom:-2px}
+.tab b{display:block;font-family:var(--font-display);font-size:1.05rem;color:inherit}
+.tab small{display:block;font-size:.8rem}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+/* group switch */
+.seg{display:flex;gap:.5rem;margin-top:1.25rem;flex-wrap:wrap}
+.seg button{min-height:2.75rem;padding:.4rem 1.1rem;border:1.5px solid var(--line-strong);border-radius:8px;background:var(--card);cursor:pointer;font-weight:700}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.gintro{margin:.75rem 0 0;color:var(--ink-2)}
+
+/* tense cards */
+.list{display:grid;gap:1rem;margin-top:1rem}
+.tense{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem}
+.tense h3{font-family:var(--font-display);font-size:1.3rem;line-height:1.2;margin:0}
+.form{margin:.15rem 0 .8rem;color:var(--ink-2);font-size:.95rem}
+.ex{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+.ex li{display:flex;gap:.65rem;align-items:baseline}
+.sg{flex:none;width:1.4rem;height:1.4rem;display:inline-grid;place-items:center;border:1.5px solid var(--line-strong);border-radius:6px;font-weight:700;font-size:.9rem;line-height:1;color:var(--ink-2)}
+.ex b{color:var(--accent);font-weight:700}
+.meta{display:grid;grid-template-columns:5.6rem 1fr;gap:.6rem 1rem;margin:.9rem 0 0;padding-top:.8rem;border-top:1px solid var(--line);font-size:.97rem}
+.meta dt{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);padding-top:.2rem}
+.meta dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.meta .spot{color:var(--accent);font-style:italic}
+.meta .w{color:var(--ink)}
+
+.cta{margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.btn{min-height:3rem;padding:.6rem 1.4rem;border-radius:8px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+
+/* quiz */
+.qtop{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-top:1.25rem}
+.qtop .score{margin:0;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.qtop .score b{color:var(--ink)}
+.bar{height:6px;border-radius:3px;background:var(--line);margin:.5rem 0 1rem;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--accent)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.25rem}
+.sent{font-family:var(--font-display);font-weight:600;font-size:clamp(1.25rem,4.6vw,1.6rem);line-height:1.3;margin:0 0 1rem;text-wrap:pretty}
+.k{font-style:normal;border-radius:3px}
+.answered .k{background:var(--mark);color:var(--mark-fg);padding:0 .15em}
+.claim{margin:0 0 1rem;color:var(--ink-2)}
+.claim b{color:var(--ink)}
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.tfb{min-height:3.25rem;border:2px solid var(--line-strong);border-radius:8px;background:var(--card);font-weight:700;font-size:1.1rem;cursor:pointer}
+.tfb:hover:not(:disabled){border-color:var(--ink-2)}
+.tfb:disabled{cursor:default}
+.tfb.right{border-color:var(--ok);background:var(--ok-soft)}
+.tfb.wrong{border-color:var(--warn);background:var(--warn-soft)}
+.fb{margin-top:1.1rem;padding:.9rem 1rem;border-radius:8px}
+.fb.ok{background:var(--ok-soft)}
+.fb.no{background:var(--warn-soft)}
+.fb .v{margin:0;font-family:var(--font-display);font-weight:700;font-size:1.15rem}
+.fb.ok .v{color:var(--ok)}
+.fb.no .v{color:var(--warn)}
+.fb p{margin:.3rem 0 0}
+.fb .btn{margin-top:.9rem}
+
+.res h2{font-family:var(--font-display);font-size:clamp(2rem,9vw,3rem);line-height:1;margin:.35rem 0 .5rem;font-variant-numeric:tabular-nums}
+.res h3{font-family:var(--font-display);font-size:1.1rem;margin:1.5rem 0 .6rem}
+.miss{list-style:none;margin:0;padding:0;display:grid;gap:.9rem}
+.miss li{padding-top:.8rem;border-top:1px solid var(--line)}
+.miss .s{display:block;font-weight:700}
+.miss small{display:block;color:var(--ink-2);font-size:.92rem;margin-top:.15rem}
+
+@media (max-width:30rem){
+  .tense{padding:1rem}
+  .meta{grid-template-columns:1fr;gap:.1rem}
+  .meta dd{margin-bottom:.6rem}
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <p class="eyebrow">Grammar Review &amp; Recovery · Tenses</p>
+    <h1>Same drink, twelve tenses</h1>
+    <p class="hint">Read how one sentence changes with time. Notice the time markers. Then see if you can spot the tense on your own.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Pages">
+    <button class="tab" role="tab" id="tab-guide" aria-selected="true" aria-controls="page-guide" data-page="guide"><b>1 · Tense guide</b><small>Forms, markers, uses</small></button>
+    <button class="tab" role="tab" id="tab-quiz" aria-selected="false" aria-controls="page-quiz" data-page="quiz"><b>2 · True or False</b><small>18 sentences</small></button>
+  </div>
+
+  <section id="page-guide" role="tabpanel" aria-labelledby="tab-guide">
+    <div class="seg" id="seg" role="group" aria-label="Time"></div>
+    <p class="gintro" id="gintro"></p>
+    <div class="list" id="list"></div>
+    <div class="cta"><button type="button" class="btn" data-page="quiz">Test yourself: True or False</button></div>
+  </section>
+
+  <section id="page-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+    <div id="quiz"></div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var GROUPS=[
+    {id:'present',label:'Present',intro:'Now, and anything that connects to now.'},
+    {id:'past',label:'Past',intro:'Finished events, and what happened before them.'},
+    {id:'future',label:'Future',intro:'Plans, predictions, and deadlines.'}
+  ];
+
+  var TENSES=[
+    {g:'present',name:'Present simple',form:'I/you/we/they drink · he/she drinks · do/does in questions and negatives',
+     ex:[`I <b>usually</b> drink caipirinha <b>on Fridays</b>.`,`I <b>never</b> drink fizzy soda.`,`<b>How often</b> do you drink caipirinha?`],
+     spot:'always · usually · every day · on weekends · rarely · never · as a rule · how often',
+     use:'Habits, routines, facts, and schedules.',
+     watch:`It can talk about the future for timetables: “The bar opens at six tonight.”`},
+    {g:'present',name:'Present continuous',form:'am/is/are + verb-ing',
+     ex:[`I’m drinking caipirinha <b>right now</b>.`,`I’m not drinking fizzy soda <b>these days</b>.`,`Are you drinking caipirinha <b>at the moment</b>?`],
+     spot:'right now · at the moment · currently · these days · this week · nowadays · Look!',
+     use:'Actions in progress, temporary situations, and fixed plans (“I’m meeting my accountant Thursday”).',
+     watch:`With <i>always</i> it shows annoyance: “He’s always borrowing my charger.” Verbs like <i>know, want, prefer</i> usually stay simple.`},
+    {g:'present',name:'Present perfect',form:'have/has + past participle (drunk)',
+     ex:[`I’ve <b>already</b> drunk caipirinha <b>this week</b>.`,`I haven’t drunk fizzy soda <b>in years</b>.`,`Have you <b>ever</b> drunk caipirinha with passion fruit?`],
+     spot:'already · yet · just · ever · never · so far · recently · this week/month/year · in years',
+     use:'Past actions that matter now, life experience, and time periods that are not finished.',
+     watch:`Never use it with a finished time. Not “I’ve drunk it last night.” Say “I drank it last night.”`},
+    {g:'present',name:'Present perfect continuous',form:'have/has + been + verb-ing',
+     ex:[`I’ve been drinking caipirinha <b>all weekend</b>.`,`I haven’t been drinking fizzy soda <b>lately</b>.`,`<b>How long</b> have you been drinking caipirinha?`],
+     spot:'for + time · since + starting point · all day · lately · recently · how long…?',
+     use:'An activity that started in the past and continues now, or just stopped and you can see the result.',
+     watch:`Continuous stresses the activity or duration. Simple stresses the result or number: “I’ve drunk three.”`},
+
+    {g:'past',name:'Past simple',form:'drank · did/didn’t + base verb in questions and negatives',
+     ex:[`I drank caipirinha <b>last night</b>.`,`I didn’t drink fizzy soda <b>when I was a kid</b>.`,`Where did you drink caipirinha <b>last summer</b>?`],
+     spot:'yesterday · last night · in 2019 · two years ago · when I was a kid · any finished time',
+     use:'Finished actions at a finished time, and stories told in order.',
+     watch:`<i>Used to</i> and <i>would</i> show past habits that no longer happen: “I used to drink soda every day.”`},
+    {g:'past',name:'Past continuous',form:'was/were + verb-ing',
+     ex:[`I was drinking caipirinha <b>at 8 p.m. last night</b>.`,`I wasn’t drinking fizzy soda <b>while we were talking</b>.`,`What were you drinking <b>when she called</b>?`],
+     spot:'at 8 p.m. last night · while · as · when (interrupted) · all evening',
+     use:'An action in progress at a past moment, or the background to a shorter event.',
+     watch:`It pairs with past simple: “I was walking home <i>when</i> it started to rain.”`},
+    {g:'past',name:'Past perfect',form:'had + past participle',
+     ex:[`I had <b>already</b> drunk caipirinha <b>by the time dinner arrived</b>.`,`I hadn’t drunk fizzy soda <b>before that night</b>.`,`Had you drunk caipirinha <b>before you moved here</b>?`],
+     spot:'by the time · before · after · already · until then · when (the earlier action)',
+     use:'An action that happened before another point in the past.',
+     watch:`Don’t overuse it. If <i>before</i> or <i>after</i> already makes the order clear, past simple is often enough.`},
+    {g:'past',name:'Past perfect continuous',form:'had + been + verb-ing',
+     ex:[`I had been drinking caipirinha <b>for an hour when he arrived</b>.`,`I hadn’t been drinking fizzy soda <b>for months before that party</b>.`,`<b>How long</b> had you been drinking caipirinha <b>before the party ended</b>?`],
+     spot:'for + time + when/before · since · by the time · how long had…?',
+     use:'The duration of an activity before a past moment, often to explain a situation.',
+     watch:`The cause comes first: “I was tired because I’d been studying all night.”`},
+
+    {g:'future',name:'Future simple (will)',form:'will/won’t + base verb',
+     ex:[`I’ll <b>probably</b> drink caipirinha <b>next weekend</b>.`,`I won’t drink fizzy soda, <b>I promise</b>.`,`Will you drink caipirinha <b>tonight</b>?`],
+     spot:'tomorrow · next week · I think · probably · I promise · “OK, I’ll…” (decision now)',
+     use:'Predictions, promises, offers, and decisions made at the moment of speaking.',
+     watch:`Not for plans made earlier. Not after <i>when, if, as soon as</i>: “When I arrive, I’ll call you.”`},
+    {g:'future',name:'Be going to',form:'am/is/are + going to + base verb',
+     ex:[`I’m going to drink caipirinha <b>this weekend</b>.`,`I’m not going to drink fizzy soda <b>tonight</b>.`,`Are you going to drink caipirinha <b>at the barbecue</b>?`],
+     spot:'this weekend · tonight · in a minute · plans · Look at…! (evidence)',
+     use:'Plans and intentions, and predictions based on what you can see now.',
+     watch:`“Look at those clouds. It’s going to pour.” The evidence is in front of you. In speech it often sounds like “gonna.”`},
+    {g:'future',name:'Future continuous',form:'will + be + verb-ing',
+     ex:[`I’ll be drinking caipirinha <b>this time next week</b>.`,`I won’t be drinking fizzy soda <b>at 9 p.m. tomorrow</b>.`,`Will you be drinking caipirinha <b>when we arrive</b>?`],
+     spot:'this time tomorrow · at 9 p.m. next Friday · in the middle of · when you arrive',
+     use:'An action in progress at a future moment.',
+     watch:`It makes polite questions about plans: “Will you be using the car tonight?” sounds softer than “Will you use the car?”`},
+    {g:'future',name:'Future perfect',form:'will + have + past participle',
+     ex:[`I’ll have drunk caipirinha <b>by Friday</b>.`,`I won’t have drunk fizzy soda <b>by the end of the year</b>.`,`Will you have drunk caipirinha <b>by the time we meet</b>?`],
+     spot:'by Friday · by the time · by next June · by 2030 · before',
+     use:'An action that will be finished before a future deadline.',
+     watch:`It looks back from the future: “By next month, we’ll have lived here ten years.”`}
+  ];
+
+  var ITEMS=[
+    {s:`My landlord <i class="k">is always forgetting</i> to answer my texts.`,claim:`This sentence uses the <b>present continuous</b>.`,t:true,ans:'present continuous',
+     why:`Is + verb-ing with <i>always</i> describes a repeated action that annoys the speaker.`},
+    {s:`We<i class="k">’ve been waiting</i> for the plumber <i class="k">since</i> nine o’clock.`,claim:`This sentence uses the <b>present perfect</b> (simple).`,t:false,ans:'present perfect continuous',
+     why:`Have + been + verb-ing with <i>since</i>: we started waiting at nine and we are still waiting.`},
+    {s:`<i class="k">By the time</i> the movie started, we <i class="k">had already finished</i> the popcorn.`,claim:`This sentence uses the <b>past perfect</b>.`,t:true,ans:'past perfect',
+     why:`Had + past participle. Finishing the popcorn came before the movie started.`},
+    {s:`I <i class="k">saw</i> my neighbor at the farmers market <i class="k">last Saturday</i>.`,claim:`This sentence uses the <b>present perfect</b>.`,t:false,ans:'past simple',
+     why:`<i>Last Saturday</i> is a finished time. Present perfect can’t be used with a finished time.`},
+    {s:`<i class="k">By next June</i>, I<i class="k">’ll have paid</i> off my car loan.`,claim:`This sentence uses the <b>future perfect</b>.`,t:true,ans:'future perfect',
+     why:`Will have + past participle with a deadline. The loan will be finished before June.`},
+    {s:`<i class="k">This time tomorrow</i>, I<i class="k">’ll be sitting</i> in the DMV waiting room.`,claim:`This sentence uses the <b>future simple</b>.`,t:false,ans:'future continuous',
+     why:`Will be + verb-ing with <i>this time tomorrow</i>: an action in progress at a specific future moment.`},
+    {s:`Look at those clouds. It<i class="k">’s going to pour</i> before we reach Walden Pond.`,claim:`This sentence uses the <b>future simple</b> (will).`,t:false,ans:'be going to',
+     why:`We use <i>going to</i> for a prediction based on evidence we can see now: the clouds.`},
+    {s:`They <i class="k">had been renovating</i> the kitchen <i class="k">for months</i> when the pipes burst.`,claim:`This sentence uses the <b>past perfect</b> (simple).`,t:false,ans:'past perfect continuous',
+     why:`Had been + verb-ing with <i>for months</i>: the renovation was in progress for a period before the pipes burst.`},
+    {s:`<i class="k">Have</i> you <i class="k">ever paid</i> your rent late?`,claim:`This sentence uses the <b>present perfect</b>.`,t:true,ans:'present perfect',
+     why:`Have + past participle with <i>ever</i>: life experience up to now, with no finished time.`},
+    {s:`He <i class="k">lived</i> in Worcester <i class="k">for five years</i>, and then he <i class="k">moved</i> to Lowell.`,claim:`This sentence uses the <b>past perfect</b>.`,t:false,ans:'past simple',
+     why:`Both actions are finished and told in order. Past perfect is for an action that happened <i>before</i> another past moment.`},
+    {s:`I<i class="k">’m meeting</i> my accountant <i class="k">on Thursday</i> at ten.`,claim:`This sentence uses the <b>present continuous</b>.`,t:true,ans:'present continuous',
+     why:`Present continuous can talk about fixed future arrangements, especially with a day and time.`},
+    {s:`When I called my sister, she <i class="k">was making</i> dinner.`,claim:`This sentence uses the <b>past continuous</b>.`,t:true,ans:'past continuous',
+     why:`Was + verb-ing: an action in progress when another action (the call) happened.`},
+    {s:`The commuter train <i class="k">leaves</i> Framingham at 7:12 <i class="k">tomorrow</i>.`,claim:`This sentence uses the <b>present simple</b>.`,t:true,ans:'present simple',
+     why:`Present simple is normal for timetables and schedules, even when they refer to the future.`},
+    {s:`I<i class="k">’ll cover</i> the check. You paid last time.`,claim:`This sentence uses the <b>future simple</b>.`,t:true,ans:'future simple (will)',
+     why:`I’ll + base verb: an offer or a decision made at the moment of speaking.`},
+    {s:`I<i class="k">’ve lived</i> in the US <i class="k">since</i> 2019.`,claim:`This sentence uses the <b>present perfect continuous</b>.`,t:false,ans:'present perfect',
+     why:`<i>Have lived</i> is the simple form. “I’ve been living” would be the continuous form. With <i>live</i> and <i>work</i>, both are usually fine.`},
+    {s:`<i class="k">While</i> I <i class="k">was shoveling</i> the driveway, my neighbor <i class="k">stopped</i> to chat.`,claim:`<b>Both verbs</b> are in the past continuous.`,t:false,ans:'past continuous + past simple',
+     why:`<i>Was shoveling</i> is the longer action in progress. <i>Stopped</i> is the shorter action that interrupted it.`},
+    {s:`I <i class="k">had been saving</i> for a down payment <i class="k">for two years</i> when interest rates jumped.`,claim:`This sentence uses the <b>past perfect continuous</b>.`,t:true,ans:'past perfect continuous',
+     why:`Had been + verb-ing with <i>for two years</i>: a longer action before a past moment (rates jumped).`},
+    {s:`<i class="k">By next month</i>, we<i class="k">’ll have lived</i> in Marlborough for ten years.`,claim:`This sentence uses the <b>future simple</b>.`,t:false,ans:'future perfect',
+     why:`Will have + past participle with <i>by</i>: ten years will be complete before that point.`}
+  ];
+
+  /* ---------- tabs ---------- */
+  var pages={guide:document.getElementById('page-guide'),quiz:document.getElementById('page-quiz')};
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var started=false;
+  function showPage(p){
+    Object.keys(pages).forEach(function(k){pages[k].hidden=(k!==p);});
+    tabs.forEach(function(t){t.setAttribute('aria-selected',t.dataset.page===p?'true':'false');});
+    window.scrollTo(0,0);
+    if(p==='quiz'&&!started){started=true;startQuiz(false);}
+  }
+
+  /* ---------- guide ---------- */
+  var seg=document.getElementById('seg'), list=document.getElementById('list'), gintro=document.getElementById('gintro');
+  seg.innerHTML=GROUPS.map(function(g){return '<button type="button" data-group="'+g.id+'" aria-pressed="false">'+g.label+'</button>';}).join('');
+  function showGroup(id){
+    [].forEach.call(seg.children,function(b){b.setAttribute('aria-pressed',b.dataset.group===id?'true':'false');});
+    gintro.textContent=GROUPS.filter(function(g){return g.id===id;})[0].intro;
+    list.innerHTML=TENSES.filter(function(t){return t.g===id;}).map(function(t){
+      var sg=['+','–','?'];
+      return '<article class="tense"><h3>'+t.name+'</h3><p class="form">'+t.form+'</p>'+
+        '<ul class="ex">'+t.ex.map(function(e,i){return '<li><span class="sg" aria-hidden="true">'+sg[i]+'</span><span>'+e+'</span></li>';}).join('')+'</ul>'+
+        '<dl class="meta"><dt>Spot it</dt><dd class="spot">'+t.spot+'</dd><dt>Use it for</dt><dd>'+t.use+'</dd><dt>Watch out</dt><dd class="w">'+t.watch+'</dd></dl></article>';
+    }).join('');
+  }
+  showGroup('present');
+
+  /* ---------- quiz ---------- */
+  var quiz=document.getElementById('quiz');
+  var order=[], idx=0, score=0, missed=[], locked=false;
+  function shuffle(a){ for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+  function startQuiz(sh){
+    order=ITEMS.map(function(_,k){return k;}); if(sh) shuffle(order);
+    idx=0; score=0; missed=[]; locked=false; renderQ();
+  }
+  function renderQ(){
+    var it=ITEMS[order[idx]], n=ITEMS.length;
+    quiz.innerHTML=
+      '<div class="qtop"><p class="eyebrow">Question '+(idx+1)+' of '+n+'</p><p class="score">Score <b>'+score+'</b></p></div>'+
+      '<div class="bar" aria-hidden="true"><span style="width:'+Math.round(idx/n*100)+'%"></span></div>'+
+      '<section class="panel" id="qcard">'+
+        '<p class="sent" id="sent">'+it.s+'</p>'+
+        '<p class="claim">True or false? '+it.claim+'</p>'+
+        '<div class="tf"><button type="button" class="tfb" data-ans="1">True</button><button type="button" class="tfb" data-ans="0">False</button></div>'+
+        '<div id="fb" aria-live="polite"></div>'+
+      '</section>';
+    locked=false;
+  }
+  function answer(btn){
+    if(locked) return; locked=true;
+    var it=ITEMS[order[idx]], said=btn.dataset.ans==='1', ok=(said===it.t);
+    if(ok) score++; else missed.push(it);
+    [].forEach.call(quiz.querySelectorAll('.tfb'),function(b){
+      b.disabled=true;
+      var v=b.dataset.ans==='1';
+      if(v===it.t) b.classList.add('right');
+      else if(b===btn) b.classList.add('wrong');
+    });
+    document.getElementById('qcard').classList.add('answered');
+    var last=(idx===ITEMS.length-1);
+    document.getElementById('fb').innerHTML=
+      '<div class="fb '+(ok?'ok':'no')+'"><p class="v">'+(ok?'Correct.':'Not quite.')+'</p>'+
+      '<p>The statement is <b>'+(it.t?'true':'false')+'</b>. Answer: <b>'+it.ans+'</b>.</p>'+
+      '<p>'+it.why+'</p>'+
+      '<button type="button" class="btn" id="nextQ">'+(last?'See my results':'Next question')+'</button></div>';
+    var nb=document.getElementById('nextQ'); nb.focus({preventScroll:true});
+    nb.scrollIntoView({block:'nearest'});
+    quiz.querySelector('.score b').textContent=score;
+  }
+  function results(){
+    var n=ITEMS.length, msg;
+    if(score>=16) msg='Strong. You are reading both the form and the meaning.';
+    else if(score>=12) msg='Solid. Look at the ones below, then try again.';
+    else msg='Good start. Go back to the guide, check the “Spot it” lines, then try again.';
+    var missHtml=missed.length?
+      '<h3>Look again</h3><ul class="miss">'+missed.map(function(it){
+        return '<li><span class="s answered">'+it.s+'</span><small>Answer: <b>'+it.ans+'</b></small><small>'+it.why+'</small></li>';
+      }).join('')+'</ul>':'<p>No mistakes. Try the shuffled round for a fresh order.</p>';
+    quiz.innerHTML='<section class="panel res"><p class="eyebrow">Results</p><h2>'+score+' of '+n+'</h2><p>'+msg+'</p>'+missHtml+
+      '<div class="cta"><button type="button" class="btn" id="again">Try again, shuffled</button><button type="button" class="btn ghost" data-page="guide">Review the guide</button></div></section>';
+    window.scrollTo(0,0);
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener('click',function(e){
+    var t=e.target.closest?e.target.closest('[data-page],[data-group],[data-ans],#nextQ,#again'):null;
+    if(!t) return;
+    if(t.dataset.page) showPage(t.dataset.page);
+    else if(t.dataset.group) showGroup(t.dataset.group);
+    else if(t.dataset.ans!=null) answer(t);
+    else if(t.id==='nextQ'){ idx++; if(idx>=ITEMS.length) results(); else { renderQ(); window.scrollTo(0,0); } }
+    else if(t.id==='again') startQuiz(true);
+  });
+})();
+</script>
+
+</body></html>
