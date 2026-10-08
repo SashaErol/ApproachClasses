@@ -1,0 +1,372 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Grammar Recovery Warm-Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: one column laid out like a commuter-line map. Six stops across the top, one group discussion per stop, sticky Back/Next. */
+:root{
+  --bg:#F2F4F8;
+  --card:#FFFFFF;
+  --ink:#16213A;
+  --ink-2:#4A556C;
+  --line:#D9DEE8;
+  --line-strong:#B0BACC;
+  --accent:#A8153B;          /* cranberry */
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F9E4EA;
+  --mark:#FFE27A;            /* highlighter for tappable phrases */
+  --mark-fg:#16213A;
+  --focus:#1B5FD6;
+  --scrim:rgba(10,16,30,.5);
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+    --line:#2B3857; --line-strong:#43547C;
+    --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+    --mark:#FFD84D; --focus:#7FB0FF; --scrim:rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+  --line:#2B3857; --line-strong:#43547C;
+  --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+  --mark:#FFD84D; --focus:#7FB0FF; --scrim:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:1.0625rem/1.5 var(--font-body)}
+.app{max-width:40rem;margin-inline:auto;padding-inline:1rem;padding-block:1.25rem 0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.eyebrow{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.top h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.6rem,6vw,2.2rem);line-height:1.1;margin:.35rem 0 .5rem;text-wrap:balance}
+.top p.hint{margin:0;color:var(--ink-2)}
+.demo{background:var(--mark);color:var(--mark-fg);padding:0 .25em;border-radius:3px}
+
+/* progress line */
+.stops{list-style:none;margin:1.25rem 0 1rem;padding:0;display:grid;grid-template-columns:repeat(6,1fr)}
+.stop{position:relative}
+.stop::after{content:"";position:absolute;left:1rem;right:0;top:.62rem;height:3px;background:var(--line-strong)}
+.stop:last-child::after{display:none}
+.stop.done::after{background:var(--accent)}
+.stop button{display:block;width:100%;text-align:left;background:none;border:0;padding:.25rem 0 .2rem;cursor:pointer;position:relative;z-index:1}
+.dot{display:block;width:1rem;height:1rem;border-radius:50%;border:3px solid var(--line-strong);background:var(--bg)}
+.stop.done .dot{background:var(--accent);border-color:var(--accent)}
+.stop.now .dot{border-color:var(--accent);background:var(--card);box-shadow:0 0 0 4px var(--accent-soft)}
+.lab{display:block;margin-top:.4rem;font-size:.75rem;line-height:1.2;color:var(--ink-2);padding-right:.25rem}
+.stop.now .lab{color:var(--ink);font-weight:700}
+
+/* panels */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.25rem}
+.qhead{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.75rem}
+.panel h2{font-family:var(--font-display);font-weight:700;font-size:clamp(1.4rem,5.2vw,1.85rem);line-height:1.2;margin:0 0 .6rem;text-wrap:balance}
+.panel h2:focus{outline:none}
+.panel h3{font-family:var(--font-display);font-size:1.1rem;margin:1.5rem 0 .5rem}
+.sub{margin:0;color:var(--ink-2)}
+.qnote{margin:.25rem 0 0;font-size:.875rem;color:var(--ink-2)}
+.qnote:empty{display:none}
+.listen{display:inline-flex;align-items:center;gap:.4rem;font-size:.875rem;padding:.3rem .65rem;border:1.5px solid var(--line-strong);border-radius:8px;background:transparent;color:var(--ink-2);cursor:pointer}
+.listen svg{width:1rem;height:1rem}
+.listen:hover{color:var(--ink);border-color:var(--ink-2)}
+
+.bridge{margin:1.75rem 0 0;color:var(--ink-2);font-style:italic}
+
+/* discussion content */
+.prompts{list-style:none;margin:0;padding:0;display:grid;gap:.85rem}
+.prompts li{position:relative;padding-left:1.4rem}
+.prompts li::before{content:"";position:absolute;left:0;top:.7em;width:.8rem;height:2px;background:var(--accent)}
+.ref{margin-top:1.25rem;padding:.8rem 1rem;border:1px dashed var(--line-strong);border-radius:8px}
+.ref .eyebrow{margin-bottom:.35rem}
+.ref p{margin:0;color:var(--ink-2);font-size:.95rem}
+.lines{display:grid;gap:.35rem;margin:0;padding:0;list-style:none}
+.lines li{font-size:1rem;color:var(--ink)}
+.lines li::before{content:"\201C"}
+.lines li::after{content:"\201D"}
+.starters{list-style:none;margin:0;padding:0;display:grid}
+.starters li{padding-block:.6rem;border-top:1px solid var(--line)}
+.starters li:first-child{border-top:0;padding-top:.1rem}
+.starters small{display:block;color:var(--ink-2);font-size:.85rem}
+
+/* tappable phrases */
+.gloss{display:inline-block;background:var(--mark);color:var(--mark-fg);border:0;border-radius:3px;padding:0 .2em;cursor:pointer;font:inherit;line-height:inherit}
+.gloss svg{width:.75em;height:.75em;margin-left:.25em;vertical-align:-.02em}
+.gloss:hover{filter:brightness(.95)}
+.review{display:flex;flex-wrap:wrap;gap:.6rem}
+.review .gloss{padding:.3rem .55rem;border-radius:6px}
+
+/* nav */
+.navbar{position:sticky;bottom:0;z-index:10;display:flex;justify-content:space-between;gap:.75rem;margin-top:1rem;padding-block:.75rem calc(.75rem + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+.btn{min-height:3rem;padding:.6rem 1.4rem;border-radius:8px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+#next{margin-left:auto;min-width:9rem}
+
+/* phrase sheet */
+#scrim{position:fixed;inset:0;z-index:20;background:var(--scrim)}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:30;max-width:40rem;margin-inline:auto;background:var(--card);border:1px solid var(--line-strong);border-bottom:0;border-radius:14px 14px 0 0;padding:1.1rem 1rem calc(1rem + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px rgba(0,0,0,.2)}
+#sheet h3{font-family:var(--font-display);font-size:1.6rem;line-height:1.15;margin:.3rem 0 .75rem}
+#sheet dl{margin:0}
+#sheet dt{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+#sheet dd{margin:.1rem 0 .8rem}
+.sheet-actions{display:flex;flex-wrap:wrap;gap:.6rem}
+.sheet-actions .btn{padding-inline:1.1rem}
+#gNote{margin:.6rem 0 0;font-size:.9rem;color:var(--ink-2)}
+#gNote:empty{display:none}
+@media (prefers-reduced-motion: no-preference){
+  #sheet:not([hidden]){animation:up .18s ease-out}
+  @keyframes up{from{transform:translateY(14px);opacity:0}}
+}
+@media (max-width:30rem){
+  .panel{padding:1rem}
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <p class="eyebrow">Grammar Review &amp; Recovery · Week 1</p>
+    <h1>Warm-up: five group talks</h1>
+    <p class="hint">Sit in groups of three or four. Read each question out loud, talk it through, and use the sentence starters. Tap any <span class="demo">highlighted phrase</span> to see what it means and hear it.</p>
+  </header>
+  <nav aria-label="Progress"><ol class="stops" id="stops"></ol></nav>
+  <main id="stage"></main>
+  <div class="navbar">
+    <button type="button" id="back" class="btn ghost">Back</button>
+    <button type="button" id="next" class="btn">Next</button>
+  </div>
+</div>
+
+<div id="scrim" hidden></div>
+<section id="sheet" role="dialog" aria-labelledby="gTitle" hidden>
+  <p class="eyebrow">Phrase help</p>
+  <h3 id="gTitle"></h3>
+  <dl>
+    <dt>Meaning</dt><dd id="gMean"></dd>
+    <dt>Example</dt><dd id="gEx"></dd>
+  </dl>
+  <div class="sheet-actions">
+    <button type="button" id="gPlay" class="btn">Listen</button>
+    <button type="button" id="gSlow" class="btn ghost">Slow</button>
+    <button type="button" id="gClose" class="btn ghost">Close</button>
+  </div>
+  <p id="gNote" role="status"></p>
+</section>
+
+<script>
+(function(){
+  var SPK='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 9v6h4l5 4V5L7 9H3z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 8.5a5 5 0 0 1 0 7"/></svg>';
+
+  var GL={
+    trip:{phrase:'trip (someone) up',say:'trip someone up',meaning:'To make someone make a mistake. It looks easy, but it confuses you.',example:'Phrasal verbs always trip me up when I talk fast.'},
+    pick:{phrase:'pick up on (something)',say:'pick up on something',meaning:'To notice something small that most people don’t point out.',example:'I picked up on the way my coworkers say “gonna” in meetings.'},
+    bend:{phrase:'bend the rules',say:'bend the rules',meaning:'To not follow a rule exactly, usually just a little and for a reason.',example:'Our landlord bent the rules and let us pay rent a few days late.'},
+    steam:{phrase:'run out of steam',say:'run out of steam',meaning:'To lose your energy or motivation, usually in the middle of something.',example:'I’m sharp at seven p.m., but by nine I run out of steam.'},
+    deal:{phrase:'deal-breaker',say:'deal breaker',meaning:'One thing that makes you say no, even if everything else is good.',example:'No parking was a deal-breaker when we toured apartments in Worcester.'},
+    toes:{phrase:'keep (someone) on their toes',say:'keep someone on their toes',meaning:'To keep someone alert and ready, because things can change fast.',example:'New England weather changes so fast that it keeps everybody on their toes.'}
+  };
+  function g(k,t){return '<button type="button" class="gloss" data-gloss="'+k+'">'+t+SPK+'</button>';}
+
+  var STOPS=['Grammar','Real talk','Night class','No-gos','Quick tests','Report back'];
+
+  var QS=[
+    {mins:5,
+     heading:'Which parts of English grammar '+g('trip','trip you up')+' the most?',
+     talk:[
+      'Choose your top two or three. Which areas cause the most trouble for you?',
+      'When do they '+g('trip','trip you up')+' the most: speaking fast, writing emails, or talking on the phone?',
+      'How long have you studied English in total, and how long have you been at Approach? Who has studied the longest in your group?'],
+     ref:{label:'Areas to choose from',p:'Verb tenses · present perfect vs. simple past · modal verbs · conditionals · passive voice · relative clauses · articles · prepositions · phrasal verbs · word order · linking words'},
+     starters:[
+      ['I’ve been studying English for ___, and I’ve been at Approach for ___.','present perfect: for / since'],
+      ['___ always trips me up when I ___.','present simple + always'],
+      ['I know the rule, but when I speak, I ___.','although / but contrast']]},
+    {mins:6,
+     heading:'Do you '+g('pick','pick up on')+' how native speakers use grammar?',
+     sub:'At work, at the store, in a meeting, on the phone.',
+     talk:[
+      'When did you last notice something about how a coworker, neighbor, or cashier spoke? What was it?',
+      'Is it always “correct”? Read the sentences below out loud. Do they sound normal to you? Would you write them in an email?',
+      'What about characters in movies and shows? Do they follow the rules, or '+g('bend','bend the rules')+' like real people do? Think of one character and explain why.'],
+     ref:{label:'Real-life sentences. Read them out loud.',lines:['There’s three people waiting outside.','Me and my neighbor went to the game.','Who did you give it to?','Less people came than last year.','I seen that movie already.']},
+     starters:[
+      ['I’ve noticed that native speakers sometimes ___, even though the rule says ___.','even though'],
+      ['That sounds fine when you say it, but it would look wrong in ___.','speaking vs. writing'],
+      ['Characters in movies ___ because ___.','present simple + because']]},
+    {mins:6,
+     heading:'Four hours at night is a long stretch. When do you start to '+g('steam','run out of steam')+'?',
+     talk:[
+      'Think about a class night after a full day of work or taking care of the kids. At what hour do you start to '+g('steam','run out of steam')+'? What does your body do?',
+      'What would keep you awake and engaged? Choose your top three from the ideas below.',
+      'Design the first 90 minutes of a four-hour night that nobody sleeps through. Be ready to share one idea.'],
+     ref:{label:'Ideas to start with',p:'a real break every hour · moving around · new partners · games and team challenges · real-life role plays (calling a landlord, disputing a bill) · short videos or podcasts · a coffee-and-snack break · choosing some topics ourselves · activities that change every 15 minutes'},
+     starters:[
+      ['If we had a real break every hour, I would ___.','second conditional'],
+      ['I’d stay more engaged if ___.','second conditional'],
+      ['It would help if the teacher ___.','would + past simple']]},
+    {mins:5,
+     heading:'What’s a total no-go for you in class?',
+     sub:'Which activities are a '+g('deal','deal-breaker')+' for you?',
+     talk:[
+      'Which activities would you refuse to do, or really dislike? Use the list below to get started.',
+      'Does your group agree? Choose the one biggest no-go for the whole group.',
+      'Can a no-go become okay if the teacher changes something? What would you change?'],
+     ref:{label:'Activities to consider',p:'reading aloud in front of everyone · long lectures with no speaking · being called on without warning · copying from the board · an hour of silent worksheets · recording yourself · role plays with someone you don’t know · being corrected in front of the group · group work outside of class · topics that have nothing to do with your life'},
+     starters:[
+      ['I’d rather not ___, unless ___.','unless'],
+      ['It would be fine if ___.','second conditional'],
+      ['I wouldn’t mind ___ as long as ___.','as long as']]},
+    {mins:5,
+     heading:'How often is a short test okay with you?',
+     sub:'Think 5 to 10 minutes, low stakes. A quick quiz can '+g('toes','keep you on your toes')+', but too many can wear people out.',
+     talk:[
+      'Where is your line: never, once or twice a month, every week, or every class if it’s quick?',
+      'What kind of quick check feels fair? Choose from the formats below, or invent your own.',
+      'Should quick tests count toward your grade? Or only if the score can help you and never hurt you?'],
+     ref:{label:'Formats to consider',p:'online quiz with instant answers · team quiz game · speaking check, one on one · find the mistakes in a short text · paper quiz · listening clip with three questions'},
+     starters:[
+      ['Quick tests should ___ and shouldn’t ___, because ___.','modal verbs'],
+      ['I’d be okay with a quiz every ___ as long as ___.','as long as'],
+      ['If a test didn’t count toward my grade, I would ___.','second conditional']]}
+  ];
+
+  function list(cls,items){return '<ul class="'+cls+'">'+items.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul>';}
+  var BRIDGE=[
+    'Next: do the rules you struggle with match what you hear around you?',
+    'Next: real life is tiring. How do we keep a four-hour night lively?',
+    'Next: what would make you want to leave early?',
+    'Next: one tool teachers love and students argue about, the short test.',
+    'Last: share what your group decided.'
+  ];
+  function head(i,label){
+    return '<div class="qhead"><p class="eyebrow">'+label+'</p><button type="button" class="listen" data-say="'+i+'" aria-label="Read the question aloud">'+SPK+'Listen</button></div>';
+  }
+
+  var html=QS.map(function(q,i){
+    var ref='';
+    if(q.ref){
+      ref='<div class="ref"><p class="eyebrow">'+q.ref.label+'</p>'+(q.ref.lines?list('lines',q.ref.lines):'<p>'+q.ref.p+'</p>')+'</div>';
+    }
+    return '<section class="panel" data-i="'+i+'" hidden aria-labelledby="h'+i+'">'+
+      head(i,'Stop '+(i+1)+' of 5 · '+STOPS[i])+
+      '<h2 id="h'+i+'" tabindex="-1">'+q.heading+'</h2>'+
+      (q.sub?'<p class="sub">'+q.sub+'</p>':'')+
+      '<p class="qnote" role="status"></p>'+
+      '<h3>Talk about it</h3>'+list('prompts',q.talk)+ref+
+      '<h3>Sentence starters</h3><ul class="starters">'+q.starters.map(function(s){return '<li>'+s[0]+'<small>'+s[1]+'</small></li>';}).join('')+'</ul>'+
+      '<p class="bridge">'+BRIDGE[i]+'</p>'+
+    '</section>';
+  }).join('');
+
+  html+='<section class="panel" data-i="5" hidden aria-labelledby="h5">'+
+    head(5,'Final stop · Report back')+
+    '<h2 id="h5" tabindex="-1">Report back to the class</h2>'+
+    '<p class="sub">Choose one reporter per group. Keep it short: about one minute.</p>'+
+    '<p class="qnote" role="status"></p>'+
+    '<h3>The reporter shares</h3>'+
+    list('prompts',[
+      'The biggest grammar struggle in your group.',
+      'One idea for a four-hour night that keeps everybody awake.',
+      'Your group’s biggest no-go, and your answer on quick tests.'])+
+    '<h3>Sentence starters</h3><ul class="starters">'+
+    [['Most of us said that ___.','reported speech'],
+     ['Two people mentioned that ___, but nobody wanted ___.','reported speech'],
+     ['We agreed that ___, although ___.','although']].map(function(s){return '<li>'+s[0]+'<small>'+s[1]+'</small></li>';}).join('')+'</ul>'+
+    '<h3>Phrases from today</h3>'+
+    '<div class="review">'+Object.keys(GL).map(function(k){return g(k,GL[k].phrase.replace(/[()]/g,'').replace(/\s+/g,' '));}).join('')+'</div>'+
+    '</section>';
+
+  var stage=document.getElementById('stage');
+  stage.innerHTML=html;
+  var stopsEl=document.getElementById('stops');
+  stopsEl.innerHTML=STOPS.map(function(s,i){return '<li class="stop"><button type="button" data-go="'+i+'"><span class="dot"></span><span class="lab">'+s+'</span></button></li>';}).join('');
+
+  var panels=[].slice.call(document.querySelectorAll('.panel'));
+  var stops=[].slice.call(document.querySelectorAll('.stop'));
+  var back=document.getElementById('back'), nextBtn=document.getElementById('next');
+  var step=0;
+
+  /* ---------- navigation ---------- */
+  function show(i,focus){
+    step=Math.max(0,Math.min(5,i));
+    panels.forEach(function(p){ p.hidden=(+p.dataset.i!==step); });
+    stops.forEach(function(li,k){
+      li.classList.toggle('done',k<step);
+      li.classList.toggle('now',k===step);
+      var b=li.querySelector('button');
+      if(k===step) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current');
+    });
+    back.style.visibility=step===0?'hidden':'visible';
+    nextBtn.hidden=(step===5);
+    nextBtn.textContent=step===4?'Report back':'Next';
+    window.scrollTo(0,0);
+    if(focus){ var h=panels[step].querySelector('h2'); if(h) h.focus({preventScroll:true}); }
+  }
+  back.addEventListener('click',function(){show(step-1,true);});
+  nextBtn.addEventListener('click',function(){show(step+1,true);});
+
+  /* ---------- audio ---------- */
+  var voice=null, timer=null;
+  var hasTTS='speechSynthesis' in window;
+  function pickVoice(){
+    if(!hasTTS) return;
+    var vs=speechSynthesis.getVoices().filter(function(v){return /^en[-_]US$/i.test(v.lang);});
+    voice=vs.filter(function(v){return /Samantha|Google US|Aria|Jenny|Ava|Allison|Zira|Natural/i.test(v.name);})[0]||vs[0]||null;
+  }
+  if(hasTTS){ pickVoice(); try{speechSynthesis.addEventListener('voiceschanged',pickVoice);}catch(e){} }
+  function setNote(el,t){ if(el) el.textContent=t; }
+  function speak(parts,rate,note){
+    if(!hasTTS){ setNote(note,'Audio isn’t available in this browser. Try Chrome or Safari.'); return; }
+    speechSynthesis.cancel(); clearTimeout(timer); setNote(note,'');
+    timer=setTimeout(function(){setNote(note,'No sound? Turn up your volume, or try Chrome or Safari.');},1800);
+    parts.forEach(function(t,i){
+      var u=new SpeechSynthesisUtterance(t); u.lang='en-US'; if(voice) u.voice=voice; u.rate=rate;
+      if(i===0) u.onstart=function(){clearTimeout(timer);setNote(note,'');};
+      speechSynthesis.speak(u);
+    });
+  }
+
+  /* ---------- phrase sheet ---------- */
+  var sheet=document.getElementById('sheet'), scrim=document.getElementById('scrim');
+  var gNote=document.getElementById('gNote'), cur=null, lastTrg=null;
+  function openG(k,trg){
+    cur=GL[k]; lastTrg=trg;
+    document.getElementById('gTitle').textContent=cur.phrase;
+    document.getElementById('gMean').textContent=cur.meaning;
+    document.getElementById('gEx').textContent=cur.example;
+    gNote.textContent=''; sheet.hidden=false; scrim.hidden=false;
+    document.getElementById('gPlay').focus();
+  }
+  function closeG(){
+    sheet.hidden=true; scrim.hidden=true;
+    if(hasTTS) speechSynthesis.cancel();
+    if(lastTrg&&lastTrg.focus) lastTrg.focus();
+  }
+  document.getElementById('gPlay').addEventListener('click',function(){ if(cur) speak([cur.say,cur.example],0.95,gNote); });
+  document.getElementById('gSlow').addEventListener('click',function(){ if(cur) speak([cur.say,cur.example],0.7,gNote); });
+  document.getElementById('gClose').addEventListener('click',closeG);
+  scrim.addEventListener('click',closeG);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!sheet.hidden) closeG(); });
+
+  /* ---------- clicks ---------- */
+  document.addEventListener('click',function(e){
+    var t=e.target.closest?e.target.closest('[data-gloss],[data-go],[data-say]'):null;
+    if(!t) return;
+    if(t.dataset.gloss) openG(t.dataset.gloss,t);
+    else if(t.dataset.go!=null) show(+t.dataset.go,true);
+    else if(t.dataset.say!=null){
+      var p=panels[+t.dataset.say];
+      speak([p.querySelector('h2').textContent.replace(/\s+/g,' ').trim()],0.9,p.querySelector('.qnote'));
+    }
+  });
+
+  show(0,false);
+})();
+</script>
+
+</body></html>
