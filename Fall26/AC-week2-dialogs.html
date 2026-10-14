@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 2 Dialogues: Listen &amp; Speak</title>
+<style>
+  :root {
+    --navy: #1b2a4a;
+    --navy-dark: #10192e;
+    --green: #2f7a4f;
+    --gold: #c9a227;
+    --gold-soft: #f6e9b8;
+    --red: #a8342a;
+    --paper: #faf7f0;
+    --ink: #1c1c1c;
+    --line: #d9d2c0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh;
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
+    font-family: 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+    padding: 24px 16px 44px; color: var(--ink);
+  }
+  .wrap { max-width: 660px; margin: 0 auto; }
+  .kicker { color: var(--gold); letter-spacing: 2px; font-size: 12px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 6px; }
+  .title { color: var(--paper); text-align: center; font-family: Georgia, Cambria, 'Times New Roman', serif; font-size: 26px; font-weight: 700; margin: 0 0 4px; }
+  .subtitle { color: #b9c2d6; text-align: center; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+
+  .card {
+    background: var(--paper); border-radius: 18px; padding: 26px 24px 22px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.35); position: relative;
+  }
+  .card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; border-radius: 18px 18px 0 0;
+    background: linear-gradient(90deg, var(--navy), var(--green), var(--gold), var(--red));
+  }
+  .head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-top: 4px; }
+  .card-number { font-size: 12px; font-weight: 700; color: var(--green); letter-spacing: 1px; padding-top: 4px; }
+  .scene { text-align: center; flex: 1; }
+  .scene-title { font-family: Georgia, Cambria, serif; font-size: 20px; font-weight: 700; color: var(--navy); }
+  .scene-sub { font-size: 12.5px; color: #6e6e6e; font-style: italic; margin-top: 2px; }
+
+  .toolbar { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 14px 0 16px; }
+  button.play {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: inherit; font-size: 14px; font-weight: 700; color: var(--paper); background: var(--green);
+    border: none; border-radius: 999px; padding: 9px 20px; cursor: pointer; transition: background .15s, transform .1s;
+  }
+  button.play:hover { background: var(--navy); }
+  button.play:active { transform: scale(0.97); }
+  button.play.stop { background: var(--red); }
+  .seg { display: inline-flex; border: 2px solid var(--navy); border-radius: 999px; overflow: hidden; }
+  .seg button {
+    font-family: inherit; font-size: 13px; font-weight: 700; color: var(--navy); background: #fff;
+    border: none; padding: 7px 14px; cursor: pointer;
+  }
+  .seg button.on { background: var(--navy); color: var(--paper); }
+
+  .bubbles { display: flex; flex-direction: column; gap: 11px; }
+  .row { display: flex; align-items: flex-end; gap: 8px; }
+  .row.b { flex-direction: row-reverse; }
+  .avatar {
+    flex: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+  }
+  .row.a .avatar { background: var(--navy); }
+  .row.b .avatar { background: var(--red); }
+  .bubble {
+    max-width: 80%; padding: 10px 12px 10px 14px; border-radius: 14px; font-size: 15px; line-height: 1.5;
+    display: flex; align-items: flex-start; gap: 8px; transition: box-shadow .15s;
+  }
+  .row.a .bubble { background: #fff; color: var(--ink); border: 1px solid var(--line); border-bottom-left-radius: 3px; }
+  .row.b .bubble { background: var(--navy); color: var(--paper); border-bottom-right-radius: 3px; }
+  .bubble.playing { box-shadow: 0 0 0 3px var(--gold); }
+  .bubble .txt { flex: 1; }
+  button.spk {
+    flex: none; width: 28px; height: 28px; border-radius: 50%; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; padding: 0;
+    background: var(--gold-soft); color: var(--navy);
+  }
+  .row.b button.spk { background: rgba(255,255,255,0.16); color: var(--paper); }
+  button.spk:hover { background: var(--gold); color: var(--navy); }
+  button.spk svg { width: 15px; height: 15px; fill: currentColor; }
+
+  .hl {
+    background: var(--gold-soft); color: var(--navy); font-weight: 700; border-radius: 4px; padding: 0 3px;
+    border-bottom: 2px solid var(--gold); cursor: pointer; position: relative; display: inline-block; line-height: 1.35;
+  }
+  .row.b .hl { background: rgba(201,162,39,0.28); color: #ffe9a3; border-bottom-color: var(--gold); }
+  .hl:hover { background: var(--gold); color: var(--navy); }
+  .tip {
+    display: none; position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: #fff; padding: 5px 10px; border-radius: 7px; font-size: 12.5px; font-weight: 600;
+    white-space: nowrap; z-index: 6; box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  }
+  .hl.open .tip { display: block; }
+
+  .targets { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .targets h3 { margin: 0 0 8px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--green); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  button.chip {
+    font-family: inherit; font-size: 13.5px; font-weight: 700; color: var(--navy); background: var(--gold-soft);
+    border: 1px solid var(--gold); border-radius: 999px; padding: 6px 13px; cursor: pointer;
+  }
+  button.chip:hover { background: var(--gold); }
+  button.chip .pt { font-weight: 600; color: var(--green); display: none; }
+  button.chip.show .pt { display: inline; }
+
+  .controls { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+  button.nav {
+    background: var(--navy); color: var(--paper); border: 1px solid rgba(250,247,240,0.35);
+    padding: 11px 22px; border-radius: 999px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  button.nav:hover { background: var(--green); }
+  button.nav:disabled { opacity: .35; cursor: default; }
+  button.nav:disabled:hover { background: var(--navy); }
+  .dots { display: flex; gap: 8px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #55627f; transition: background .2s, transform .2s; }
+  .dot.active { background: var(--gold); transform: scale(1.25); }
+  .footer-note { text-align: center; color: #8793ad; font-size: 12px; margin-top: 16px; line-height: 1.5; }
+  body.no-tts .spk { display: none; }
+  .noaudio { display: none; background: #f7e4e2; color: var(--red); border-radius: 8px; padding: 8px 12px; font-size: 13px; margin: 10px 0; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Approach ISC &middot; American Culture &amp; Civic Life</div>
+  <div class="title">Unit 2 Dialogues: Listen &amp; Speak</div>
+  <div class="subtitle">Tap the speaker to hear a line. Tap a <b style="color:#f6e9b8">gold word</b> to hear it and see the Portuguese.<br>Then read the dialogue with a partner.</div>
+
+  <div class="card">
+    <div class="head">
+      <div class="card-number" id="cardNum">1 / 4</div>
+      <div class="scene">
+        <div class="scene-title" id="sceneTitle"></div>
+        <div class="scene-sub" id="sceneSub"></div>
+      </div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="noaudio" id="noAudio">Audio is not available in this browser. Try Chrome, Edge or Safari.</div>
+    <div class="toolbar" id="toolbar">
+      <button class="play" id="playBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span id="playLabel">Play dialogue</span></button>
+      <div class="seg" id="speedSeg"><button data-r="0.88" class="on">Normal</button><button data-r="0.62">Slow</button></div>
+    </div>
+    <div class="bubbles" id="bubbles"></div>
+    <div class="targets"><h3>Target words in this dialogue</h3><div class="chips" id="chips"></div></div>
+  </div>
+
+  <div class="controls">
+    <button class="nav" id="backBtn">&larr; Back</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav" id="nextBtn">Next &rarr;</button>
+  </div>
+  <div class="footer-note">Audio uses the voice on your phone or computer, so it may sound a little different on each device.</div>
+</div>
+
+<script>
+const glossary = {
+  "landlord": "proprietário (do imóvel)",
+  "leasing office": "escritório de locação",
+  "maintenance": "manutenção",
+  "neighborhood": "bairro",
+  "service": "serviço",
+  "complaint": "reclamação",
+  "non-emergency": "não emergencial",
+  "route": "rota / caminho",
+  "block": "quarteirão",
+  "blocks": "quarteirões",
+  "notice": "aviso",
+  "parking lot": "estacionamento",
+  "gas station": "posto de gasolina",
+  "pharmacy": "farmácia",
+  "permit": "autorização (de estacionamento)",
+  "far from": "longe de",
+  "near": "perto de",
+  "form": "formulário"
+};
+const keys = Object.keys(glossary).sort((a, b) => b.length - a.length);
+const wordRe = new RegExp("\\b(" + keys.join("|") + ")\\b", "gi");
+
+const dialogs = [
+  { title: "At the Leasing Office", sub: "Asking about an apartment to rent", lines: [
+    { w: "a", t: "Hello. I want to rent a one-bedroom apartment." },
+    { w: "b", t: "Welcome to the leasing office. There are two apartments today." },
+    { w: "a", t: "Is the neighborhood quiet?" },
+    { w: "b", t: "Yes, it is. There is a pharmacy and a gas station on the next block." },
+    { w: "a", t: "Is there a parking lot?" },
+    { w: "b", t: "Yes, there is. Every tenant needs a permit." },
+    { w: "a", t: "Who is the landlord?" },
+    { w: "b", t: "The landlord lives in the next building." },
+    { w: "a", t: "Great. Can I see an apartment today?" },
+    { w: "b", t: "Sure! Please fill out this form first." }
+  ]},
+  { title: "A Phone Call to Maintenance", sub: "A broken sink in Apartment 4B", lines: [
+    { w: "a", t: "Hello, this is Apartment 4B. There is a problem in my kitchen." },
+    { w: "b", t: "Maintenance office. What is the problem?" },
+    { w: "a", t: "The sink is broken. There is water on the floor." },
+    { w: "b", t: "Was there water yesterday too?" },
+    { w: "a", t: "No, there wasn't. It started this morning." },
+    { w: "b", t: "OK. A worker comes today between 2 and 4 p.m." },
+    { w: "a", t: "Is there a fee for this service?" },
+    { w: "b", t: "No, there isn't. Maintenance is free for tenants." },
+    { w: "a", t: "Thank you. Should I tell the leasing office too?" },
+    { w: "b", t: "No, we tell them. What is your phone number?" }
+  ]},
+  { title: "A Noise Complaint", sub: "Talking to the building office", lines: [
+    { w: "a", t: "Excuse me. I want to make a complaint about noise." },
+    { w: "b", t: "I'm sorry. What happened?" },
+    { w: "a", t: "There was loud music in Apartment 5C last night. There were people in the hallway after midnight." },
+    { w: "b", t: "Is it an emergency?" },
+    { w: "a", t: "No, it's a non-emergency problem. But I can't sleep." },
+    { w: "b", t: "I understand. I will write a notice for all the tenants today." },
+    { w: "a", t: "Thank you. Will you tell the landlord too?" },
+    { w: "b", t: "Yes, I will. If there is more noise, call us right away." },
+    { w: "a", t: "OK. Thank you for your help." }
+  ]},
+  { title: "A New Neighbor", sub: "Asking about places and routes", lines: [
+    { w: "a", t: "Hi! I'm new in the neighborhood. Is there a pharmacy near here?" },
+    { w: "b", t: "Yes, there is. It's two blocks from here, next to the gas station." },
+    { w: "a", t: "Is it far from here?" },
+    { w: "b", t: "No, it's close to my house. Do you have a car?" },
+    { w: "a", t: "Yes, I do. What is the best route?" },
+    { w: "b", t: "Go straight on Main Street. Turn right at the second light." },
+    { w: "a", t: "Thank you! Also, there is a broken street light on our block." },
+    { w: "b", t: "Call 311. It's a non-emergency city service." },
+    { w: "a", t: "Good to know. Thanks for your help!" },
+    { w: "b", t: "You're welcome. Welcome to the neighborhood!" }
+  ]}
+];
+
+/* ---------- audio ---------- */
+const hasTTS = ('speechSynthesis' in window) && ('SpeechSynthesisUtterance' in window);
+let voices = [], rate = 0.88, token = 0, playing = false;
+
+function loadVoices() { if (hasTTS) voices = speechSynthesis.getVoices() || []; }
+if (hasTTS) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+
+function pickVoice(who) {
+  let en = voices.filter(v => /^en[-_]US/i.test(v.lang));
+  if (!en.length) en = voices.filter(v => /^en/i.test(v.lang));
+  if (!en.length) return null;
+  const prefA = /(Samantha|Google US English|Jenny|Aria|Allison|Zira|Ava|Joanna|Female)/i;
+  const prefB = /(Daniel|Alex|Guy|David|Mark|Fred|Tom|Matthew|Male)/i;
+  const re = who === 'a' ? prefA : prefB;
+  return en.find(v => re.test(v.name)) || (who === 'b' && en[1]) || en[0];
+}
+
+function speak(text, who, onend) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  const v = pickVoice(who);
+  if (v) u.voice = v;
+  u.pitch = (who === 'b' && (!v || v === pickVoice('a'))) ? 0.8 : 1;
+  if (onend) { u.onend = onend; }
+  speechSynthesis.speak(u);
+}
+
+function stopAll() {
+  token++; playing = false;
+  if (hasTTS) speechSynthesis.cancel();
+  document.querySelectorAll('.bubble.playing').forEach(b => b.classList.remove('playing'));
+  setPlayUI(false);
+}
+function setPlayUI(on) {
+  const b = document.getElementById('playBtn');
+  b.classList.toggle('stop', on);
+  document.getElementById('playLabel').textContent = on ? 'Stop' : 'Play dialogue';
+}
+
+function playOne(i) {
+  stopAll();
+  const d = dialogs[current].lines[i];
+  const el = document.querySelectorAll('.bubble')[i];
+  el.classList.add('playing');
+  const my = token;
+  speak(d.t, d.w, () => { if (my === token) el.classList.remove('playing'); });
+}
+
+function playAll() {
+  stopAll();
+  playing = true; setPlayUI(true);
+  const my = token, lines = dialogs[current].lines, els = document.querySelectorAll('.bubble');
+  let i = 0;
+  (function next() {
+    if (my !== token) return;
+    els.forEach(b => b.classList.remove('playing'));
+    if (i >= lines.length) { playing = false; setPlayUI(false); return; }
+    els[i].classList.add('playing');
+    const k = i;
+    speak(lines[k].t, lines[k].w, () => { i++; setTimeout(next, 280); });
+  })();
+}
+
+function playWord(word) {
+  stopAll();
+  speak(word, 'a', null);
+}
+
+/* ---------- rendering ---------- */
+let current = 0;
+const SPK = '<svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+
+function mark(text) {
+  return text.replace(wordRe, m => {
+    const pt = glossary[m.toLowerCase()];
+    return '<span class="hl" data-w="' + m + '">' + m + '<span class="tip">' + pt + '</span></span>';
+  });
+}
+
+function render() {
+  stopAll();
+  const d = dialogs[current];
+  document.getElementById('cardNum').textContent = (current + 1) + ' / ' + dialogs.length;
+  document.getElementById('sceneTitle').textContent = d.title;
+  document.getElementById('sceneSub').textContent = d.sub;
+
+  const box = document.getElementById('bubbles');
+  box.innerHTML = '';
+  const found = new Set();
+  d.lines.forEach((l, i) => {
+    (l.t.match(wordRe) || []).forEach(m => { const k = m.toLowerCase(); found.add(k === 'blocks' ? 'block' : k); });
+    const row = document.createElement('div'); row.className = 'row ' + l.w;
+    const av = document.createElement('div'); av.className = 'avatar'; av.textContent = l.w.toUpperCase();
+    const bub = document.createElement('div'); bub.className = 'bubble';
+    const txt = document.createElement('div'); txt.className = 'txt'; txt.innerHTML = mark(l.t);
+    const sp = document.createElement('button'); sp.className = 'spk'; sp.type = 'button';
+    sp.setAttribute('aria-label', 'Play line ' + (i + 1)); sp.innerHTML = SPK;
+    sp.addEventListener('click', () => playOne(i));
+    bub.appendChild(txt); bub.appendChild(sp);
+    row.appendChild(av); row.appendChild(bub);
+    box.appendChild(row);
+  });
+
+  const chips = document.getElementById('chips'); chips.innerHTML = '';
+  [...found].forEach(w => {
+    const c = document.createElement('button'); c.className = 'chip'; c.type = 'button';
+    c.innerHTML = w + ' <span class="pt">&mdash; ' + glossary[w] + '</span>';
+    c.addEventListener('click', () => { c.classList.toggle('show'); playWord(w); });
+    chips.appendChild(c);
+  });
+
+  document.querySelectorAll('.hl').forEach(h => {
+    h.addEventListener('click', e => {
+      e.stopPropagation();
+      const was = h.classList.contains('open');
+      document.querySelectorAll('.hl').forEach(x => x.classList.remove('open'));
+      if (!was) h.classList.add('open');
+      playWord(h.dataset.w);
+    });
+  });
+
+  [...document.getElementById('dots').children].forEach((x, i) => x.classList.toggle('active', i === current));
+  document.getElementById('backBtn').disabled = current === 0;
+  document.getElementById('nextBtn').textContent = current === dialogs.length - 1 ? 'Restart ↻' : 'Next →';
+}
+
+dialogs.forEach((_, i) => {
+  const dot = document.createElement('div'); dot.className = 'dot' + (i === 0 ? ' active' : '');
+  document.getElementById('dots').appendChild(dot);
+});
+
+document.addEventListener('click', () => document.querySelectorAll('.hl').forEach(x => x.classList.remove('open')));
+document.getElementById('backBtn').addEventListener('click', () => { if (current > 0) { current--; render(); } });
+document.getElementById('nextBtn').addEventListener('click', () => { current = current === dialogs.length - 1 ? 0 : current + 1; render(); });
+document.getElementById('playBtn').addEventListener('click', () => { playing ? stopAll() : playAll(); });
+document.querySelectorAll('#speedSeg button').forEach(b => b.addEventListener('click', () => {
+  rate = parseFloat(b.dataset.r);
+  document.querySelectorAll('#speedSeg button').forEach(x => x.classList.toggle('on', x === b));
+}));
+
+if (!hasTTS) {
+  document.getElementById('noAudio').style.display = 'block';
+  document.getElementById('toolbar').style.display = 'none';
+  document.body.classList.add('no-tts');
+}
+render();
+</script>
+</body>
+</html>
