@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Relative Clauses: Whose and Where</title>
+<style>
+:root{
+  --navy:#0B1827; --red:#9D251A; --blue:#418ABD;
+  --bg:#EEF2F6; --card:#FFFFFF; --ink:#0B1827; --soft:#5A6878; --line:#D3DBE4; --tint:#F4F7FA;
+  --ok:#2E7D4F; --okbg:#E3F2E8; --bad:#9D251A; --badbg:#F8E4E1; --pick:#DCEBF6;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#08111C; --card:#122236; --ink:#EAF0F6; --soft:#9FB0C2; --line:#24384F; --tint:#0E1B2B;
+  --ok:#6FCF97; --okbg:#173326; --bad:#F08A7E; --badbg:#3A1B19; --pick:#1C3A55; --blue:#6FAEDD; --red:#E07A6E; } }
+:root[data-theme="dark"]{
+  --bg:#08111C; --card:#122236; --ink:#EAF0F6; --soft:#9FB0C2; --line:#24384F; --tint:#0E1B2B;
+  --ok:#6FCF97; --okbg:#173326; --bad:#F08A7E; --badbg:#3A1B19; --pick:#1C3A55; --blue:#6FAEDD; --red:#E07A6E; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.5}
+.wrap{max-width:940px;margin:0 auto;padding:20px 16px 36px}
+.shell{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.bar{height:8px;background:linear-gradient(90deg,#0B1827,#418ABD 60%,#9D251A)}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px}
+.logo .mark{height:44px;width:auto;flex:none}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .logo .mark{filter:brightness(0) invert(1)} }
+:root[data-theme="dark"] .logo .mark{filter:brightness(0) invert(1)}
+.logo .name{font-size:21px;line-height:1}
+.logo .sub{display:block;font-size:12px;color:var(--soft);letter-spacing:.08em;text-transform:uppercase;margin-top:3px;font-family:Arial,sans-serif}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:999px;padding:5px 12px;font-size:14px;font-family:Arial,sans-serif;cursor:pointer}
+.tab.on{background:#0B1827;color:#fff;border-color:#0B1827}
+main{padding:24px}
+h1{font-size:clamp(28px,4.6vw,40px);line-height:1.15;margin:0 0 8px;font-weight:normal}
+h2{font-size:24px;font-weight:normal;margin:26px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+.lead{color:var(--soft);margin:0 0 16px;max-width:64ch}
+.code{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:8px 0 6px}
+.code div{border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+.code .from{font-size:17px;color:var(--soft)}
+.code .arrow{font-family:Arial,sans-serif;color:var(--soft);font-size:15px}
+.code .to{font-size:28px;font-weight:bold;color:var(--blue)}
+.code .what{font-size:14px;color:var(--soft);font-family:Arial,sans-serif}
+.small{font-size:16px;color:var(--soft)}
+.build{background:var(--tint);border-radius:10px;padding:14px 16px;margin:10px 0}
+.build p{margin:4px 0}
+.build .lab{font-family:Arial,sans-serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}
+.hl{color:var(--red);font-weight:bold}
+.hb{color:var(--blue);font-weight:bold}
+.strike{text-decoration:line-through;color:var(--soft)}
+.tip{border-left:4px solid var(--red);padding:8px 14px;margin:12px 0;font-size:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.box h3{margin:0 0 6px;font-size:22px;font-weight:normal}
+.box .tag{display:inline-block;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;letter-spacing:.06em;padding:2px 10px;border-radius:999px;color:#fff}
+.tw{background:#418ABD} .ti{background:#9D251A}
+.box p{margin:8px 0}
+.try{margin-top:12px}
+.tryq{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:10px 0}
+.tryq .s{flex:1 1 320px}
+button{font:inherit;cursor:pointer}
+.mini{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 14px;font-size:17px;font-weight:bold}
+.mini.ok{border-color:var(--ok);background:var(--okbg)} .mini.bad{border-color:var(--bad);background:var(--badbg)}
+.trymsg{flex-basis:100%;font-size:16px;color:var(--soft);min-height:0}
+.qcard .num{font-family:Arial,sans-serif;font-size:14px;color:var(--soft);letter-spacing:.06em;text-transform:uppercase}
+.dots{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--blue)} .dot.r{background:var(--ok)} .dot.w{background:var(--bad)}
+.sentence{font-size:clamp(23px,3.8vw,32px);line-height:1.4;margin:6px 0 20px}
+.gap{display:inline-block;min-width:100px;border-bottom:3px solid var(--blue);text-align:center;color:var(--blue);font-weight:bold}
+.gap.ok{border-color:var(--ok);color:var(--ok)} .gap.bad{border-color:var(--bad);color:var(--bad)}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.opt{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:16px 8px;font-size:24px;font-weight:bold}
+.opt.ok{border-color:var(--ok);background:var(--okbg)} .opt.bad{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.fb{min-height:56px;margin-top:14px;font-size:18px}
+.bank{display:flex;gap:10px;flex-wrap:wrap;padding:12px;border:2px dashed var(--line);border-radius:12px;margin:0 0 16px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--card);z-index:2}
+.chip{border:2px solid var(--blue);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 18px;font-size:20px;font-weight:bold}
+.chip.sel{background:var(--blue);color:#fff}
+.fill{border-bottom:1px solid var(--line);padding:12px 0;font-size:21px;line-height:1.7}
+.slot{border:2px dashed var(--blue);background:var(--tint);color:var(--blue);border-radius:8px;min-width:96px;padding:0 10px;font-size:20px;font-weight:bold;line-height:1.5}
+.slot.ok{border-style:solid;border-color:var(--ok);background:var(--okbg);color:var(--ok)}
+.slot.bad{border-style:solid;border-color:var(--bad);background:var(--badbg);color:var(--bad)}
+.hintb{border:0;background:none;color:var(--soft);font-size:15px;text-decoration:underline;font-family:Arial,sans-serif;margin-left:6px}
+.hinttxt{display:block;font-size:16px;color:var(--soft);font-style:italic}
+.write{border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 14px}
+.write h3{margin:0 0 4px;font-size:21px;font-weight:normal}
+.write .st{font-size:16px;color:var(--soft);margin:0 0 8px}
+textarea{width:100%;min-height:96px;font:inherit;font-size:19px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--tint);color:var(--ink);resize:vertical}
+.wfb{font-size:16px;margin-top:8px;min-height:22px}
+.wfb .y{color:var(--ok)} .wfb .n{color:var(--bad)}
+.btn{border:0;border-radius:10px;padding:12px 24px;font-size:18px;background:#0B1827;color:#fff;font-family:inherit}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.red{background:#9D251A}
+.btn:disabled{opacity:.35;cursor:default}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:22px;flex-wrap:wrap}
+.result{font-size:22px;margin-top:10px}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+@media (max-width:640px){
+  .code{grid-template-columns:repeat(2,minmax(0,1fr))} .two{grid-template-columns:1fr}
+  main{padding:18px 16px} .opt{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="shell">
+    <div class="bar"></div>
+    <header class="top">
+      <div class="logo"><img class="mark" src="data:image/png;base64,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" alt="">
+        <div><span class="name">Approach</span><span class="sub">Relative Clauses · Review</span></div></div>
+      <nav class="tabs" id="tabs" aria-label="Pages"></nav>
+    </header>
+    <main id="app" aria-live="polite"></main>
+  </div>
+</div>
+<script>
+/* ===== DATA ===== */
+const TRY = [
+  {s:"Springfield is the city ___ I was born.",  a:"where", why:"I was born <b>there</b> → where"},
+  {s:"Salem is a town ___ is famous for Halloween.", a:"which", why:"<b>It</b> is famous for Halloween → which"},
+  {s:"This is the mall ___ I bought my coat.",   a:"where", why:"I bought my coat <b>there</b> → where"},
+  {s:"This is a mall ___ I really like.",        a:"which", why:"I really like <b>it</b> → which"}
+];
+const MCQ = [
+  {s:"Lourdes is the friend ___ always calls me on my birthday.", a:"who", why:"<b>She</b> always calls me → a person → who."},
+  {s:"We moved to a neighborhood ___ kids can play outside safely.", a:"where", why:"Kids can play outside <b>there</b> → where."},
+  {s:"The heating bill ___ came in January was $400!", a:"which", why:"<b>It</b> came in January → a thing → which."},
+  {s:"I miss my grandmother, ___ still lives in my hometown.", a:"who", why:"<b>She</b> still lives in my hometown → a person → who."},
+  {s:"Market Basket is a supermarket ___ has very low prices.", a:"which", why:"<b>It</b> has very low prices → which. (A place, but the sentence after the gap needs <b>it</b>, not <b>there</b>.)"},
+  {s:"I know a restaurant ___ I can work extra hours on weekends.", a:"where", why:"I can work extra hours <b>there</b> → where."},
+  {s:"Every Sunday I use an app ___ lets me video call my family for free.", a:"which", why:"<b>It</b> lets me video call my family → a thing → which."},
+  {s:"My neighbor ___ cleans houses on Saturdays makes good extra money.", a:"who", why:"<b>He / she</b> cleans houses → a person → who."},
+  {s:"The food pantry ___ we get free vegetables is open on Tuesdays.", a:"where", why:"We get free vegetables <b>there</b> → where."},
+  {s:"Our street, ___ is quiet and has good lights, feels very safe at night.", a:"which", why:"<b>It</b> is quiet → which. (A place, but we need <b>it</b>, not <b>there</b>.)"}
+];
+const FILL = [
+  {s:"My friend Kofi, ___ car is very old, drives me to work every day.", ok:["whose"], hint:"his car → whose"},
+  {s:"This is the park ___ my kids play every afternoon.", ok:["where"], hint:"my kids play there → where"},
+  {s:"I work with a woman ___ husband is a chef.", ok:["whose"], hint:"her husband → whose"},
+  {s:"Mr. Okoro, ___ lives next door, helps me fix my car.", ok:["who"], hint:"he lives next door; with commas → who"},
+  {s:"I have a new phone ___ takes great photos.", ok:["which","that"], hint:"it takes great photos → which (or that)"},
+  {s:"The cookies ___ you baked were delicious!", ok:["that","which"], hint:"you baked them → that (or which)"}
+];
+const BANK = ["who","which","where","whose","that"];
+const WRITE = [
+  {q:"Describe a place in your town where you like to go. What do you do there?", need:"where", st:"Start like this: The library is a place where I…"},
+  {q:"Tell me about a person who helps you here in the US.", need:"who", st:"Start like this: My neighbor is a person who…"},
+  {q:"Tell me about something you bought here which makes your life easier.", need:"which", st:"Start like this: I bought a slow cooker which…"}
+];
+
+/* ===== STATE ===== */
+const app=document.getElementById("app"), tabsEl=document.getElementById("tabs");
+const PAGES=["1 Learn","2 Choose","3 Fill in","4 Write"];
+let page=0;
+const st={tryDone:{}, mi:0, mres:[], mScore:0, sel:null, fills:Array(FILL.length).fill(null), checked:false, fScore:0, texts:["","",""]};
+const esc=t=>t.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function tabs(){ tabsEl.innerHTML=PAGES.map((p,k)=>`<button class="tab ${k===page?'on':''}" data-p="${k}">${p}</button>`).join("");
+  tabsEl.querySelectorAll(".tab").forEach(b=>b.onclick=()=>go(+b.dataset.p)); }
+function go(p){ page=p; tabs(); [learn,mcq,fill,write][p](); window.scrollTo(0,0); }
+function nav(prevLabel,nextLabel){
+  return `<div class="nav">${page>0?`<button class="btn alt" id="prev">${prevLabel||"Back"}</button>`:'<span></span>'}
+    ${page<3?`<button class="btn" id="nxt">${nextLabel||"Next page"}</button>`:''}</div>`;
+}
+function bindNav(){ const p=document.getElementById("prev"), n=document.getElementById("nxt");
+  if(p)p.onclick=()=>go(page-1); if(n)n.onclick=()=>go(page+1); }
+
+/* ===== PAGE 1: LEARN ===== */
+function learn(){
+  app.innerHTML=`
+    <h1>Relative clauses: one sentence, more information</h1>
+    <p class="lead">We use relative clauses to join two short sentences. Each relative word takes the place of a small word in the second sentence.</p>
+    <div class="code">
+      <div><div class="from">he / she / they</div><div class="arrow">becomes</div><div class="to">who</div><div class="what">people</div></div>
+      <div><div class="from">it / they</div><div class="arrow">becomes</div><div class="to">which</div><div class="what">things</div></div>
+      <div><div class="from">his / her / their</div><div class="arrow">becomes</div><div class="to">whose</div><div class="what">the owner</div></div>
+      <div><div class="from">there</div><div class="arrow">becomes</div><div class="to">where</div><div class="what">a place where something happens</div></div>
+    </div>
+    <p class="small">You can also use <b>that</b> for people or things, but only when there are no commas.</p>
+
+    <h2>WHOSE: who it belongs to</h2>
+    <div class="build">
+      <p class="lab">Two sentences</p>
+      <p>I have a friend. <span class="hl">Her</span> son plays soccer.</p>
+      <p class="lab">One sentence</p>
+      <p>I have a friend <span class="hb">whose</span> son plays soccer.</p>
+    </div>
+    <div class="build">
+      <p>My coworker is nice. <span class="hl">His</span> wife makes great empanadas.</p>
+      <p>My coworker, <span class="hb">whose</span> wife makes great empanadas, is nice.</p>
+    </div>
+    <p class="tip"><b>Remember:</b> after <b>whose</b>, there is always a noun: whose <u>son</u>, whose <u>wife</u>, whose <u>car</u>.<br>
+      <span class="strike">The man that his car is red</span> → The man <b>whose</b> car is red. (Portuguese: <i>cujo</i> · Spanish: <i>cuyo</i>)</p>
+
+    <h2>WHERE or WHICH for a place?</h2>
+    <p class="lead">A place does not always use <b>where</b>. Look at the words <u>after</u> the gap and ask: do I need <b>there</b> or <b>it</b>?</p>
+    <div class="two">
+      <div class="box"><span class="tag tw">THERE → WHERE</span>
+        <p>I live in Lowell. I work <span class="hl">there</span>.</p>
+        <p>Lowell is the city <span class="hb">where</span> I work.</p>
+        <p class="small">After "where" comes a full sentence: <i>I work</i>.</p></div>
+      <div class="box"><span class="tag ti">IT → WHICH</span>
+        <p>I live in Lowell. <span class="hl">It</span> has many old buildings.</p>
+        <p>Lowell is a city <span class="hb">which</span> has many old buildings.</p>
+        <p class="small">The city <b>does</b> something (it has…), so we need "which."</p></div>
+    </div>
+    <p class="tip"><b>Quick test:</b> Can you put <b>there</b> at the end of the second part? "I work <b>there</b>" ✓ → use <b>where</b>. Does the second part need <b>it</b> at the start? "<b>It</b> has many old buildings" ✓ → use <b>which</b>.</p>
+
+    <h2>Try it: there or it?</h2>
+    <div class="try">${TRY.map((t,k)=>{const p=t.s.split("___");return `
+      <div class="tryq" id="tq${k}"><span class="s">${esc(p[0])}<b>____</b>${esc(p[1])}</span>
+        <button class="mini" data-k="${k}" data-o="where">where</button>
+        <button class="mini" data-k="${k}" data-o="which">which</button>
+        <span class="trymsg" id="tm${k}"></span></div>`}).join("")}
+    </div>
+    ${nav(null,"Start the questions")}`;
+  app.querySelectorAll(".mini").forEach(b=>b.onclick=()=>{
+    const k=+b.dataset.k, t=TRY[k], row=document.getElementById("tq"+k);
+    row.querySelectorAll(".mini").forEach(x=>x.classList.remove("ok","bad"));
+    const ok=b.dataset.o===t.a; b.classList.add(ok?"ok":"bad");
+    document.getElementById("tm"+k).innerHTML=(ok?"Yes! ":"Not quite. ")+t.why;
+  });
+  bindNav();
+}
+
+/* ===== PAGE 2: MCQ ===== */
+function mcq(){
+  if(st.mi>=MCQ.length){ mcqDone(); return; }
+  const q=MCQ[st.mi], p=q.s.split("___"), answered=st.mres[st.mi]!==undefined;
+  app.innerHTML=`
+    <h1>Choose who, which, or where</h1>
+    <div class="dots">${MCQ.map((_,k)=>`<span class="dot ${st.mres[k]===true?'r':st.mres[k]===false?'w':k===st.mi?'on':''}"></span>`).join("")}</div>
+    <div class="qcard"><span class="num">Sentence ${st.mi+1} of ${MCQ.length}</span>
+      <p class="sentence">${esc(p[0])}<span class="gap" id="gap">&nbsp;?&nbsp;</span>${esc(p[1])}</p>
+      <div class="opts">${["who","which","where"].map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join("")}</div>
+      <div class="fb" id="fb"></div></div>
+    <div class="nav"><button class="btn alt" id="prev">Back to page 1</button>
+      <button class="btn" id="nq" disabled>${st.mi===MCQ.length-1?"See my score":"Next sentence"}</button></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    if(st.mres[st.mi]!==undefined) return;
+    const ok=b.dataset.o===q.a; st.mres[st.mi]=ok; if(ok) st.mScore++;
+    app.querySelectorAll(".opt").forEach(x=>{x.disabled=true; if(x.dataset.o===q.a)x.classList.add("ok"); else if(x===b)x.classList.add("bad");});
+    const g=document.getElementById("gap"); g.textContent=q.a; g.classList.add(ok?"ok":"bad");
+    document.getElementById("fb").innerHTML=(ok?"Correct! ":"Not quite. ")+q.why;
+    document.getElementById("nq").disabled=false;
+  });
+  document.getElementById("prev").onclick=()=>go(0);
+  document.getElementById("nq").onclick=()=>{ st.mi++; mcq(); };
+}
+function mcqDone(){
+  app.innerHTML=`
+    <h1>Page 2: finished</h1>
+    <p class="result">You got <b>${st.mScore} / ${MCQ.length}</b> correct.</p>
+    <p class="lead">${st.mScore>=8?"Great work!":"Good try. Look again at the there / it test on page 1."}</p>
+    <div class="nav"><button class="btn alt" id="redo">Try page 2 again</button><button class="btn" id="nxt">Next page</button></div>`;
+  document.getElementById("redo").onclick=()=>{ st.mi=0; st.mres=[]; st.mScore=0; mcq(); };
+  document.getElementById("nxt").onclick=()=>go(2);
+}
+
+/* ===== PAGE 3: FILL ===== */
+function fill(){
+  app.innerHTML=`
+    <h1>Fill in the gaps</h1>
+    <p class="lead">Tap a word in the box, then tap a gap. You can use a word more than once. Need help? Tap <i>hint</i>.</p>
+    <div class="bank" id="bank">${BANK.map(w=>`<button class="chip ${st.sel===w?'sel':''}" data-w="${w}">${w}</button>`).join("")}</div>
+    ${FILL.map((f,k)=>{const p=f.s.split("___"); const v=st.fills[k];
+      const cls=st.checked&&v?(f.ok.includes(v)?"ok":"bad"):"";
+      return `<div class="fill">${k+1}. ${esc(p[0])}<button class="slot ${cls}" data-k="${k}">${v||"&nbsp;"}</button>${esc(p[1])}
+        <button class="hintb" data-h="${k}">hint</button><span class="hinttxt" id="h${k}" hidden>${esc(f.hint)}</span></div>`}).join("")}
+    <p class="result" id="fres">${st.checked?`You got <b>${st.fScore} / ${FILL.length}</b> correct.${st.fScore<FILL.length?" Fix the red gaps and check again.":" Excellent!"}`:""}</p>
+    <div class="nav"><button class="btn alt" id="prev">Back</button>
+      <span><button class="btn red" id="chk" ${st.fills.every(Boolean)?"":"disabled"}>Check my answers</button>
+      <button class="btn" id="nxt">Next page</button></span></div>`;
+  app.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{ st.sel=st.sel===c.dataset.w?null:c.dataset.w; fill(); });
+  app.querySelectorAll(".slot").forEach(s=>s.onclick=()=>{
+    const k=+s.dataset.k;
+    if(st.sel){ st.fills[k]=st.sel; } else { st.fills[k]=null; }
+    st.checked=false; fill();
+  });
+  app.querySelectorAll(".hintb").forEach(h=>h.onclick=()=>{ const t=document.getElementById("h"+h.dataset.h); t.hidden=!t.hidden; });
+  document.getElementById("chk").onclick=()=>{ st.fScore=FILL.filter((f,k)=>f.ok.includes(st.fills[k])).length; st.checked=true; fill(); };
+  bindNav();
+}
+
+/* ===== PAGE 4: WRITE ===== */
+function write(){
+  app.innerHTML=`
+    <h1>Write your own answers</h1>
+    <p class="lead">Answer each question in one or two full sentences. Use the word in <b>blue</b>. Then read your answers to a partner.</p>
+    ${WRITE.map((w,k)=>`
+      <div class="write">
+        <h3>${k+1}. ${esc(w.q).replace(w.need,`<span class="hb">${w.need}</span>`)}</h3>
+        <p class="st">${esc(w.st)}</p>
+        <label class="small" for="t${k}" hidden>Answer ${k+1}</label>
+        <textarea id="t${k}" data-k="${k}" placeholder="Write here…">${esc(st.texts[k])}</textarea>
+        <div class="wfb" id="wf${k}"></div>
+      </div>`).join("")}
+    <div class="nav"><button class="btn alt" id="prev">Back</button><button class="btn red" id="chk">Check my writing</button></div>`;
+  app.querySelectorAll("textarea").forEach(t=>t.oninput=()=>{ st.texts[+t.dataset.k]=t.value; });
+  document.getElementById("chk").onclick=()=>{
+    WRITE.forEach((w,k)=>{
+      const t=st.texts[k].trim(), words=t?t.split(/\s+/).length:0;
+      const has=new RegExp("\\b"+w.need+"\\b","i").test(t);
+      const cap=/^[A-Z]/.test(t), end=/[.!?]$/.test(t);
+      const out=[
+        has?`<span class="y">✓ uses "${w.need}"</span>`:`<span class="n">✗ add "${w.need}"</span>`,
+        words>=8?`<span class="y">✓ ${words} words</span>`:`<span class="n">✗ write a little more (${words} words, try 8+)</span>`,
+        cap&&end?`<span class="y">✓ capital letter and period</span>`:`<span class="n">✗ check the capital letter and the period</span>`
+      ];
+      document.getElementById("wf"+k).innerHTML=t?out.join(" &nbsp;·&nbsp; "):`<span class="n">✗ write your answer first</span>`;
+    });
+  };
+  bindNav();
+}
+go(0);
+</script>
+</body>
+</html>
