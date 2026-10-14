@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 2 Warm-Up: Where I Live</title>
+<style>
+  :root {
+    --navy: #1b2a4a;
+    --navy-dark: #10192e;
+    --green: #2f7a4f;
+    --gold: #c9a227;
+    --red: #a8342a;
+    --paper: #faf7f0;
+    --ink: #1c1c1c;
+    --line: #d9d2c0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
+    font-family: 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .wrap { width: 100%; max-width: 640px; }
+  .kicker {
+    color: var(--gold);
+    letter-spacing: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .title {
+    color: var(--paper);
+    text-align: center;
+    font-family: Georgia, Cambria, 'Times New Roman', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+  .subtitle {
+    color: #b9c2d6;
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+  .card {
+    background: var(--paper);
+    border-radius: 18px;
+    padding: 38px 32px 24px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    position: relative;
+    min-height: 330px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(90deg, var(--navy), var(--green), var(--gold), var(--red));
+  }
+  .card-number {
+    position: absolute;
+    top: 20px;
+    left: 28px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 1px;
+  }
+  .question {
+    font-family: Georgia, Cambria, 'Times New Roman', serif;
+    font-size: 23px;
+    line-height: 1.5;
+    color: var(--navy);
+    text-align: center;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .hint {
+    text-align: center;
+    color: #6e6e6e;
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 16px;
+    line-height: 1.55;
+  }
+  .tip {
+    margin: 22px auto 0;
+    max-width: 480px;
+    border-left: 4px solid var(--gold);
+    background: #fff8e1;
+    padding: 9px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .tip b { color: var(--navy); }
+  .tip .no { color: var(--red); font-weight: 700; }
+  .tip .yes { color: var(--green); font-weight: 700; }
+  .word {
+    border-bottom: 2px dotted var(--green);
+    cursor: pointer;
+    color: var(--navy);
+    font-weight: 700;
+    position: relative;
+  }
+  .hint .word { font-style: normal; }
+  .word:hover { color: var(--green); }
+  .tooltip {
+    display: none;
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    font-style: normal;
+    white-space: nowrap;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    z-index: 5;
+  }
+  .tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--navy);
+  }
+  .word.open .tooltip { display: block; }
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 22px;
+  }
+  button.nav {
+    background: var(--navy);
+    color: var(--paper);
+    border: 1px solid rgba(250,247,240,0.35);
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  button.nav:hover { background: var(--green); }
+  button.nav:active { transform: scale(0.97); }
+  button.nav:disabled { opacity: 0.35; cursor: default; }
+  button.nav:disabled:hover { background: var(--navy); }
+  .dots { display: flex; gap: 8px; }
+  .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #55627f;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .dot.active { background: var(--gold); transform: scale(1.25); }
+  .footer-note {
+    text-align: center;
+    color: #8793ad;
+    font-size: 12px;
+    margin-top: 18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="kicker">Approach ISC &middot; American Culture &amp; Civic Life</div>
+  <div class="title">Unit 2 Warm-Up: Where I Live</div>
+  <div class="subtitle">Talk with a partner. Click the underlined words for help.</div>
+
+  <div class="card">
+    <div class="card-number" id="cardNum">1 / 5</div>
+    <div class="question" id="cardQuestion"></div>
+    <div class="hint" id="cardHint"></div>
+    <div class="tip" id="cardTip"></div>
+  </div>
+
+  <div class="controls">
+    <button class="nav" id="backBtn">&larr; Back</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav" id="nextBtn">Next &rarr;</button>
+  </div>
+
+  <div class="footer-note">Tap a dotted word to see the Portuguese meaning.</div>
+</div>
+
+<script>
+const glossary = {
+  "town": "cidade (pequena)",
+  "safe": "seguro",
+  "neighborhood": "bairro",
+  "neighbors": "vizinhos",
+  "nice": "legal / simpático",
+  "park": "estacionar",
+  "rules": "regras",
+  "landlord": "proprietário (do imóvel)",
+  "help": "ajuda / ajudar",
+  "notice": "aviso",
+  "grocery store": "mercado",
+  "clothes": "roupas",
+  "walk": "caminhar / ir a pé",
+  "blocks": "quarteirões"
+};
+
+const keys = Object.keys(glossary).sort((a, b) => b.length - a.length);
+const wordRe = new RegExp("\\b(" + keys.join("|") + ")\\b", "gi");
+
+function markWords(text) {
+  return text.replace(wordRe, function (match) {
+    const pt = glossary[match.toLowerCase()];
+    return '<span class="word">' + match + '<span class="tooltip">' + pt + '</span></span>';
+  });
+}
+
+const cards = [
+  {
+    q: "Where do you live now? Is it a good town?",
+    hint: "I live in ___. It is a small town. / It is a big town.",
+    tip: '<b>Say:</b> <span class="yes">There is</span> a school near my home.<br><span class="no">Not:</span> Has a school near my home.'
+  },
+  {
+    q: "Are the streets safe? Are the people in your neighborhood nice?",
+    hint: "Yes, the streets are safe. / There are nice neighbors on my street.",
+    tip: '<b>Say:</b> <span class="yes">There are</span> good neighbors here.<br><span class="no">Not:</span> Have good neighbors here.'
+  },
+  {
+    q: "Where do you park your car? Does anyone help you understand the rules?",
+    hint: "I park in front of my house. / My landlord helps me.",
+    tip: '<b>Say:</b> <span class="yes">There was</span> a notice on my car yesterday.<br><span class="no">Not:</span> Had a notice on my car.'
+  },
+  {
+    q: "What grocery store is near your home? Where do you buy clothes?",
+    hint: "I like ___. / I buy clothes at the mall.",
+    tip: '<b>Say:</b> <span class="yes">There were</span> many people at the store yesterday.<br><span class="no">Not:</span> Had many people at the store.'
+  },
+  {
+    q: "Can you walk to important places, or only by car?",
+    hint: "It is two blocks to the store. / I go only by car.",
+    tip: '<b>Ask:</b> <span class="yes">Is there</span> a store near your home? &nbsp; <b>Answer:</b> Yes, there is. / No, there isn’t.'
+  }
+];
+
+let current = 0;
+const cardNum = document.getElementById('cardNum');
+const cardQuestion = document.getElementById('cardQuestion');
+const cardHint = document.getElementById('cardHint');
+const cardTip = document.getElementById('cardTip');
+const dotsWrap = document.getElementById('dots');
+const backBtn = document.getElementById('backBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+cards.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dotsWrap.appendChild(dot);
+});
+
+function render() {
+  const c = cards[current];
+  cardNum.textContent = (current + 1) + ' / ' + cards.length;
+  cardQuestion.innerHTML = markWords(c.q);
+  cardHint.innerHTML = markWords(c.hint);
+  cardTip.innerHTML = c.tip;
+
+  [...dotsWrap.children].forEach((d, i) => d.classList.toggle('active', i === current));
+
+  backBtn.disabled = current === 0;
+  nextBtn.textContent = current === cards.length - 1 ? 'Restart ↻' : 'Next →';
+  attachWordHandlers();
+}
+
+function attachWordHandlers() {
+  document.querySelectorAll('.word').forEach(w => {
+    w.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const wasOpen = w.classList.contains('open');
+      document.querySelectorAll('.word').forEach(x => x.classList.remove('open'));
+      if (!wasOpen) w.classList.add('open');
+    });
+  });
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.word').forEach(x => x.classList.remove('open'));
+});
+
+backBtn.addEventListener('click', () => { if (current > 0) { current--; render(); } });
+nextBtn.addEventListener('click', () => {
+  current = current === cards.length - 1 ? 0 : current + 1;
+  render();
+});
+
+render();
+</script>
+
+</body>
+</html>
