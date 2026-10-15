@@ -1,0 +1,180 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Simple Tenses Warm-Up</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: one talk card at a time, Next button at the bottom, a sixth card with grammar flags. Same cranberry-and-ink identity as the other Grammar Review pages. */
+:root{
+  --bg:#F2F4F8;
+  --card:#FFFFFF;
+  --ink:#16213A;
+  --ink-2:#4A556C;
+  --line:#D9DEE8;
+  --line-strong:#B0BACC;
+  --accent:#A8153B;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F9E4EA;
+  --ok:#17724A;
+  --ok-soft:#E2F3EA;
+  --warn:#9A4A06;
+  --warn-soft:#FCEBD7;
+  --focus:#1B5FD6;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+    --line:#2B3857; --line-strong:#43547C;
+    --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+    --ok:#5FD39A; --ok-soft:#14352A; --warn:#F5A65B; --warn-soft:#3B2A14;
+    --focus:#7FB0FF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+  --line:#2B3857; --line-strong:#43547C;
+  --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+  --ok:#5FD39A; --ok-soft:#14352A; --warn:#F5A65B; --warn-soft:#3B2A14;
+  --focus:#7FB0FF;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:1.0625rem/1.55 var(--font-body);padding-block:1.25rem 2.5rem;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app{max-width:44rem;margin-inline:auto}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.eyebrow{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.top .step{font-variant-numeric:tabular-nums}
+.dots{display:flex;gap:.4rem;margin:.6rem 0 1.1rem}
+.dots span{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.dots span.on{background:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.4rem 1.4rem 1.5rem}
+.tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem}
+.tag{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .6rem;border-radius:999px;border:1.5px solid var(--line-strong);color:var(--ink-2)}
+.tag.lv{border-color:var(--accent);color:var(--accent)}
+.card h2{font-size:clamp(1.5rem,5.5vw,2rem);line-height:1.1;margin:0 0 .75rem}
+.main{font-family:var(--font-display);font-weight:600;font-size:clamp(1.25rem,4.6vw,1.6rem);line-height:1.3;margin:0 0 1rem;text-wrap:pretty}
+.more{margin:0 0 1.25rem;padding:0;list-style:none;display:grid;gap:.6rem}
+.more li{padding-left:1.1rem;position:relative}
+.more li::before{content:"";position:absolute;left:0;top:.65em;width:.5rem;height:2px;background:var(--accent)}
+.sub{margin:1.25rem 0 .5rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{border:1.5px solid var(--line-strong);border-radius:10px;padding:.3rem .75rem;background:var(--bg);font-style:italic}
+.chip.up{border-color:var(--accent);background:var(--accent-soft);font-style:normal;font-weight:700}
+.nav{display:flex;gap:.75rem;margin-top:1.25rem;flex-wrap:wrap}
+.btn{min-height:3.1rem;padding:.6rem 1.6rem;border-radius:8px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+.btn[hidden]{display:none}
+.lead{margin:0 0 1rem;color:var(--ink-2)}
+.flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.9rem}
+.flag{border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;background:var(--bg);min-width:0}
+.flag h3{margin:0 0 .15rem;font-size:1.1rem}
+.flag .use{margin:0 0 .6rem;color:var(--ink-2);font-size:.95rem}
+.flag .say{margin:0 0 .6rem;font-weight:700;overflow-wrap:anywhere}
+.slip{margin:0;padding:.5rem .65rem;border-radius:8px;background:var(--warn-soft);font-size:.95rem;overflow-wrap:anywhere}
+.slip + .slip{margin-top:.4rem}
+.slip s{color:var(--warn);text-decoration-thickness:2px}
+.slip b{color:var(--ok)}
+.fine{margin:1rem 0 0;color:var(--ink-2);font-size:.95rem}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <div class="top">
+    <p class="eyebrow">Grammar Review &amp; Recovery · Warm-up</p>
+    <p class="eyebrow step" id="step">Card 1 of 5</p>
+  </div>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+  <article class="card" id="card" aria-live="polite"></article>
+  <div class="nav">
+    <button class="btn ghost" id="back" hidden>Back</button>
+    <button class="btn" id="next">NEXT</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var CARDS=[
+ {tag:"Daily life",lv:"B2",t:"The stuff nobody wants to do",
+  q:"What's one boring routine in your week that you can't avoid? And what do you put off every time you can?",
+  more:["Does anyone at home help with it, or do you handle it alone?","What gets you through it: a podcast, music, a snack?","Is there a chore you secretly like?"],
+  st:["I can't stand…","Every single week I have to…","I usually put it off until…","Honestly, I don't mind…, but…","The only way I get through it is…"],
+  up:["It's a necessary evil.","I'd gladly pay someone to do it."]},
+ {tag:"Childhood",lv:"B2",t:"Back then",
+  q:"Think about a place or a person from your childhood. What did a normal Saturday look like back then?",
+  more:["What food or smell takes you straight back there?","What did you hate as a kid that you like now?","Who didn't you listen to as a kid, and what happened?"],
+  st:["When I was around ten, we…","My grandmother always…","I still remember the day when…","Back then, nobody had…","We didn't have much, but…"],
+  up:["Looking back, I realize…","I took it for granted."]},
+ {tag:"Inventions",lv:"B2+",t:"Game changers",
+  q:"Which invention do you use every day and couldn't live without? What did people do before it existed?",
+  more:["Which invention made adult life more stressful instead of easier?","Who changed more lives, the person who built the smartphone or the person who built the washing machine?","What did your parents' generation do without it?"],
+  st:["I wouldn't last a day without…","Before… existed, people had to…","It sounds silly, but…","For me, the biggest game changer is…","It was supposed to save time, but…"],
+  up:["It has completely changed the way we…","It's a double-edged sword."]},
+ {tag:"Predictions",lv:"C1",t:"What's next",
+  q:"What will daily life look like in twenty years? What will disappear, and what will stay exactly the same?",
+  more:["Will you be happy about the changes, or will they worry you?","What won't a robot ever do better than a person?","Will people still cook, drive and shop in stores?"],
+  st:["I bet that by then…","There's no way… will…","I don't think… will ever…","Most likely…","I'm pretty sure we'll…"],
+  up:["I wouldn't be surprised if…","That remains to be seen."]},
+ {tag:"Thanksgiving weekend",lv:"C1",t:"The long weekend",
+  q:"The Thanksgiving long weekend is coming. What will yours look like, and who will you spend it with?",
+  more:["Will you shop on Black Friday, or will you stay far away from the stores? What would make you buy something?","Which holiday expense do you regret every year?","What do you never do on a long weekend, no matter what?"],
+  st:["If the weather is nice, we'll…","I'm not planning to…, but…","My family always…, so this year…","I'll probably end up…","Unless there's a really good deal, I won't…"],
+  up:["I'm torn between… and…","It all comes down to…"]}
+];
+var FLAGS=[
+ {h:"Present simple",u:"Habits, routines, facts",s:"She works late. He doesn't cook. Do you shop online?",
+  x:[["She don't like it","She doesn't like it"],["He go to the gym","He goes to the gym"],["Does he works?","Does he work?"]]},
+ {h:"Past simple",u:"Finished time: when I was a kid, last year",s:"We lived there. I didn't have a bike. Did you go?",
+  x:[["I didn't went","I didn't go"],["I buyed it","I bought it"],["Did you saw it?","Did you see it?"]]},
+ {h:"Future with will",u:"Predictions and quick decisions",s:"It won't be crowded. I'll probably stay home. Will you shop?",
+  x:[["I will to go","I'll go"],["She will calls","She'll call"],["It will to rain","It will rain"]]},
+ {h:"Verb BE",u:"Was, were, am, is, are: no do/did",s:"Were you tired? We weren't ready. I'm not sure.",
+  x:[["I am agree","I agree"],["They was late","They were late"],["Did you tired?","Were you tired?"]]},
+ {h:"Question words",u:"Wh- + helper + base verb",s:"What did you do? Where will they stay? Who called you?",
+  x:[["What did you did?","What did you do?"],["Who did called?","Who called?"],["Where you will go?","Where will you go?"]]},
+ {h:"Time clauses",u:"After when, if, as soon as, before: present simple",s:"When I get home, I'll cook. If it snows, we won't drive.",
+  x:[["If it will rain","If it rains"],["When I will arrive","When I arrive"],["As soon as he will call","As soon as he calls"]]}
+];
+var $=function(s){return document.querySelector(s)};
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+var total=CARDS.length+1,i=0;
+var dots=$("#dots");
+for(var k=0;k<total;k++){dots.appendChild(document.createElement("span"))}
+function render(){
+  var c=$("#card"),h="";
+  if(i<CARDS.length){
+    var d=CARDS[i];
+    h+='<div class="tags"><span class="tag">'+esc(d.tag)+'</span><span class="tag lv">Level '+d.lv+'</span></div>';
+    h+='<h2>'+esc(d.t)+'</h2><p class="main">'+esc(d.q)+'</p><ul class="more">'+d.more.map(function(m){return '<li>'+esc(m)+'</li>'}).join("")+'</ul>';
+    h+='<p class="eyebrow sub">You can start with</p><div class="chips">'+d.st.map(function(m){return '<span class="chip">'+esc(m)+'</span>'}).join("")+'</div>';
+    h+='<p class="eyebrow sub">Level up</p><div class="chips">'+d.up.map(function(m){return '<span class="chip up">'+esc(m)+'</span>'}).join("")+'</div>';
+    $("#step").textContent="Card "+(i+1)+" of 5";
+  }else{
+    h+='<div class="tags"><span class="tag">Wrap-up</span></div><h2>Grammar flags</h2><p class="lead">You just used these forms out loud. Check them before you move on, and correct each other kindly.</p><div class="flags">';
+    FLAGS.forEach(function(f){
+      h+='<section class="flag"><h3>'+esc(f.h)+'</h3><p class="use">'+esc(f.u)+'</p><p class="say">'+esc(f.s)+'</p>'+f.x.map(function(x){return '<p class="slip"><s>'+esc(x[0])+'</s> → <b>'+esc(x[1])+'</b></p>'}).join("")+'</section>';
+    });
+    h+='</div><p class="fine">After will, do, does, did and didn’t, the main verb stays in its base form. Only he, she and it take -s in the present.</p>';
+    $("#step").textContent="Wrap-up";
+  }
+  c.innerHTML=h;
+  var ds=dots.children;for(var k=0;k<ds.length;k++){ds[k].className=(k<=i)?"on":""}
+  $("#back").hidden=(i===0);
+  $("#next").textContent=(i===total-1)?"START OVER":(i===total-2)?"NEXT: GRAMMAR FLAGS":"NEXT";
+  window.scrollTo(0,0);
+}
+$("#next").addEventListener("click",function(){i=(i===total-1)?0:i+1;render()});
+$("#back").addEventListener("click",function(){if(i>0){i--;render()}});
+render();
+})();
+</script>
+
+</body></html>
