@@ -1,0 +1,647 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Simple Tenses Workshop</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: five tabbed pages in one column. Pattern tables with colour-coded parts of the verb (helper, -s, -ed, irregular, base), then practice, MCQ, true/false and writing. Same cranberry-and-ink identity as Tense Spotter. */
+:root{
+  --bg:#F2F4F8;
+  --card:#FFFFFF;
+  --ink:#16213A;
+  --ink-2:#4A556C;
+  --line:#D9DEE8;
+  --line-strong:#B0BACC;
+  --accent:#A8153B;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F9E4EA;
+  --base:#FFE98F;
+  --ok:#17724A;
+  --ok-soft:#E2F3EA;
+  --blue:#1B5FD6;
+  --blue-soft:#E1EBFB;
+  --amber:#9A4A06;
+  --warn:#9A4A06;
+  --warn-soft:#FCEBD7;
+  --focus:#1B5FD6;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+    --line:#2B3857; --line-strong:#43547C;
+    --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+    --base:#5A4A12;
+    --ok:#5FD39A; --ok-soft:#14352A;
+    --blue:#7FB0FF; --blue-soft:#17294D;
+    --amber:#F5A65B; --warn:#F5A65B; --warn-soft:#3B2A14;
+    --focus:#7FB0FF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+  --line:#2B3857; --line-strong:#43547C;
+  --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+  --base:#5A4A12;
+  --ok:#5FD39A; --ok-soft:#14352A;
+  --blue:#7FB0FF; --blue-soft:#17294D;
+  --amber:#F5A65B; --warn:#F5A65B; --warn-soft:#3B2A14;
+  --focus:#7FB0FF;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:1.0625rem/1.5 var(--font-body);padding-block:1.25rem 2.5rem;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app{max-width:46rem;margin-inline:auto}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.eyebrow{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.7rem,6.5vw,2.4rem);line-height:1.08;margin:.35rem 0 .5rem;text-wrap:balance}
+h2,h3{font-family:var(--font-display);text-wrap:balance}
+.hint{margin:0;color:var(--ink-2)}
+
+/* tabs */
+.tabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(6.5rem,1fr);margin-top:1.25rem;border-bottom:2px solid var(--line);overflow-x:auto}
+.tab{background:none;border:0;padding:.65rem .5rem;text-align:left;cursor:pointer;color:var(--ink-2);border-bottom:3px solid transparent;margin-bottom:-2px;min-width:0}
+.tab b{display:block;font-family:var(--font-display);font-size:1rem;color:inherit;white-space:nowrap}
+.tab small{display:block;font-size:.78rem;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.page{margin-top:1.25rem}
+
+/* highlight system */
+.h-a{background:var(--accent-soft);color:var(--accent);font-weight:700;padding:0 .25em;border-radius:3px}
+.h-s{color:var(--ok);font-weight:700;text-decoration:underline solid 2px;text-underline-offset:3px}
+.h-e{color:var(--blue);font-weight:700;text-decoration:underline dotted 2px;text-underline-offset:3px}
+.h-i{color:var(--amber);font-weight:700;text-decoration:underline wavy 1.5px;text-underline-offset:3px}
+.h-b{background:var(--base);color:var(--ink);padding:0 .2em;border-radius:3px}
+.legend{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin:.9rem 0 0;padding:.75rem 1rem;background:var(--card);border:1px solid var(--line);border-radius:10px;font-size:.92rem}
+.legend span.l{display:inline-flex;gap:.4rem;align-items:baseline}
+.legend small{color:var(--ink-2)}
+
+/* mode switch */
+.seg{display:flex;gap:.5rem;margin-top:1.1rem;flex-wrap:wrap}
+.seg button{min-height:2.9rem;padding:.4rem 1.2rem;border:1.5px solid var(--line-strong);border-radius:8px;background:var(--card);cursor:pointer;font-weight:700}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.mode-note{margin:.75rem 0 0;color:var(--ink-2)}
+
+/* tense block */
+.tb{margin-top:1.25rem;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem}
+.tb h3{font-size:1.35rem;line-height:1.15;margin:0 0 .75rem}
+.tbl{overflow-x:auto}
+.pt{width:100%;border-collapse:collapse;font-size:1rem}
+.pt th,.pt td{border:1px solid var(--line);padding:.6rem .7rem;text-align:left;vertical-align:top;min-width:0}
+.pt thead th{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--bg)}
+.pt tbody th{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);width:6.5rem;background:var(--bg)}
+.pt td small{display:block;color:var(--ink-2);margin-top:.15rem}
+.pt td .ln{display:block}
+.pt td .ln + .ln{margin-top:.35rem}
+.rules{margin:1rem 0 0;padding:0;list-style:none;display:grid;gap:.6rem}
+.rules li{padding-left:1.1rem;position:relative}
+.rules li::before{content:"";position:absolute;left:0;top:.62em;width:.5rem;height:2px;background:var(--line-strong)}
+.traps{margin-top:1.25rem;background:var(--warn-soft);border-radius:12px;padding:1rem 1.25rem}
+.traps h3{margin:0 0 .5rem;font-size:1.1rem;color:var(--warn)}
+.traps ul{margin:0;padding:0;list-style:none;display:grid;gap:.5rem}
+.irr{display:grid;gap:.9rem;margin:1rem 0 0}
+.irr h4{margin:0 0 .35rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{border:1px solid var(--line-strong);border-radius:999px;padding:.15rem .7rem;font-size:.95rem;background:var(--bg);white-space:nowrap}
+@media (max-width:38rem){
+  .tb{padding:1rem}
+  .pt thead{display:none}
+  .pt,.pt tbody,.pt tr,.pt th,.pt td{display:block;width:100%}
+  .pt tr{border:1px solid var(--line);border-radius:8px;margin-bottom:.6rem;overflow:hidden}
+  .pt th,.pt td{border:0;border-bottom:1px solid var(--line)}
+  .pt tr > :last-child{border-bottom:0}
+  .pt tbody th{width:100%}
+  .pt td[data-l]::before{content:attr(data-l);display:block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin-bottom:.1rem}
+}
+
+/* buttons */
+.btn{min-height:3rem;padding:.6rem 1.4rem;border-radius:8px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+.btn.sm{min-height:2.5rem;padding:.35rem 1rem}
+
+/* practice */
+.lvl{margin-top:1.75rem}
+.lvl-h{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.lvl-h h2{margin:0;font-size:1.3rem}
+.lvl-h .cnt{font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.lvl-n{margin:.25rem 0 .75rem;color:var(--ink-2)}
+.blk{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;margin-top:.75rem}
+.blk p.t{margin:0;line-height:2.1;text-wrap:pretty}
+.blk p.t.bad{font-style:italic}
+.gap{display:inline-flex;align-items:baseline;gap:.35rem;vertical-align:baseline}
+.gap input{border:0;border-bottom:2px solid var(--line-strong);background:var(--bg);padding:.15rem .4rem;border-radius:4px 4px 0 0;min-width:4rem;width:9rem;max-width:100%}
+.gap.wide{display:flex;margin-top:.5rem}
+.gap.wide input{width:100%}
+.gap input.ok{border-bottom-color:var(--ok);background:var(--ok-soft)}
+.gap input.no{border-bottom-color:var(--warn);background:var(--warn-soft)}
+.cue{color:var(--ink-2);font-size:.9rem;white-space:nowrap}
+.brow{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem}
+.fbk{margin:.7rem 0 0;padding:.6rem .8rem;border-radius:8px;font-size:.97rem}
+.fbk:empty{display:none}
+.fbk.ok{background:var(--ok-soft)}
+.fbk.no{background:var(--warn-soft)}
+.fbk.rv{background:var(--bg);border:1px solid var(--line)}
+.fbk div + div{margin-top:.2rem}
+.ptop{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-top:.5rem}
+.ptop p{margin:0;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.ptop b{color:var(--ink)}
+.bar{height:6px;border-radius:3px;background:var(--line);margin:.5rem 0 1rem;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--accent);transition:width .2s}
+
+/* quiz */
+.qtop{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-top:.25rem}
+.qtop .score{margin:0;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.qtop .score b{color:var(--ink)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.25rem}
+.sent{font-family:var(--font-display);font-weight:600;font-size:clamp(1.2rem,4.6vw,1.55rem);line-height:1.3;margin:0 0 1rem;text-wrap:pretty}
+.blank{letter-spacing:.05em;color:var(--ink-2)}
+.opts{display:grid;gap:.6rem}
+.opt{min-height:3.1rem;text-align:left;padding:.6rem .9rem;border:2px solid var(--line-strong);border-radius:8px;background:var(--card);cursor:pointer;font-weight:700;display:flex;gap:.7rem;align-items:baseline}
+.opt i{font-style:normal;color:var(--ink-2);min-width:1.1rem}
+.opt:hover:not(:disabled){border-color:var(--ink-2)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--warn);background:var(--warn-soft)}
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.tfb{min-height:3rem;border:2px solid var(--line-strong);border-radius:8px;background:var(--card);font-weight:700;font-size:1.05rem;cursor:pointer}
+.tfb:hover:not(:disabled){border-color:var(--ink-2)}
+.tfb:disabled{cursor:default}
+.tfb.right{border-color:var(--ok);background:var(--ok-soft)}
+.tfb.wrong{border-color:var(--warn);background:var(--warn-soft)}
+.fb{margin-top:1.1rem;padding:.9rem 1rem;border-radius:8px}
+.fb.ok{background:var(--ok-soft)}
+.fb.no{background:var(--warn-soft)}
+.fb .v{margin:0;font-family:var(--font-display);font-weight:700;font-size:1.15rem}
+.fb.ok .v{color:var(--ok)}
+.fb.no .v{color:var(--warn)}
+.fb p{margin:.3rem 0 0}
+.fb .btn{margin-top:.9rem}
+.res h2{font-family:var(--font-display);font-size:clamp(2rem,9vw,3rem);line-height:1;margin:.35rem 0 .5rem;font-variant-numeric:tabular-nums}
+.res h3{font-size:1.1rem;margin:1.5rem 0 .6rem}
+.miss{list-style:none;margin:0;padding:0;display:grid;gap:.9rem}
+.miss li{padding-top:.8rem;border-top:1px solid var(--line)}
+.miss .s{display:block;font-weight:700}
+.miss small{display:block;color:var(--ink-2);font-size:.92rem;margin-top:.15rem}
+.tfl{display:grid;gap:.9rem;margin-top:1rem}
+.tfc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem}
+.tfc .st{margin:0 0 .8rem;font-weight:700}
+.tfc .st span{color:var(--ink-2);font-weight:400;margin-right:.4rem}
+
+/* writing */
+.wq{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.25rem;margin-top:1rem}
+.wq h3{margin:0 0 .3rem;font-size:1.2rem}
+.wq .pr{margin:0 0 .6rem}
+.use{margin:0 0 .75rem;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:.4rem}
+.use li{font-size:.9rem;border:1px solid var(--line-strong);border-radius:999px;padding:.1rem .7rem;background:var(--bg)}
+textarea{width:100%;min-height:8.5rem;padding:.7rem .8rem;border:1.5px solid var(--line-strong);border-radius:8px;background:var(--bg);resize:vertical;line-height:1.5}
+.wmeta{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:.5rem;color:var(--ink-2);font-size:.92rem}
+.wmeta .wc{font-variant-numeric:tabular-nums}
+.scan{margin-top:.8rem}
+.scan:empty{display:none}
+.counts{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin:0 0 .6rem;padding:0;list-style:none}
+.counts li{font-variant-numeric:tabular-nums}
+.prev{padding:.7rem .8rem;border:1px solid var(--line);border-radius:8px;white-space:pre-wrap;line-height:1.7;overflow-wrap:anywhere}
+.note{color:var(--ink-2);font-size:.9rem;margin:.5rem 0 0}
+.toast{color:var(--ok);font-weight:700}
+@media (prefers-reduced-motion: reduce){.bar span{transition:none}}
+</style>
+
+<div class="app">
+  <header>
+    <p class="eyebrow">Grammar Review &amp; Recovery · Simple tenses</p>
+    <h1>Simple tenses, piece by piece</h1>
+    <p class="hint">Present, past and future. Learn the pattern, drill it, test the hard forms, then write.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Pages">
+    <button class="tab" role="tab" id="tab-1" aria-selected="true" aria-controls="p1" data-p="1"><b>1 · Patterns</b><small>BE and verbs</small></button>
+    <button class="tab" role="tab" id="tab-2" aria-selected="false" aria-controls="p2" data-p="2"><b>2 · Practice</b><small>4 levels</small></button>
+    <button class="tab" role="tab" id="tab-3" aria-selected="false" aria-controls="p3" data-p="3"><b>3 · Quiz</b><small>15 questions</small></button>
+    <button class="tab" role="tab" id="tab-4" aria-selected="false" aria-controls="p4" data-p="4"><b>4 · True / False</b><small>Rules review</small></button>
+    <button class="tab" role="tab" id="tab-5" aria-selected="false" aria-controls="p5" data-p="5"><b>5 · Writing</b><small>5 questions</small></button>
+  </div>
+
+  <section class="page" id="p1" role="tabpanel" aria-labelledby="tab-1">
+    <div class="seg" role="group" aria-label="Verb type">
+      <button id="m-be" aria-pressed="true">Verb BE</button>
+      <button id="m-verb" aria-pressed="false">Other verbs</button>
+    </div>
+    <p class="mode-note" id="modeNote"></p>
+    <div class="legend" aria-label="Colour key">
+      <span class="l"><span class="h-a">helper</span><small>am / does / did / will</small></span>
+      <span class="l"><span class="h-b">work</span><small>base verb</small></span>
+      <span class="l"><span class="h-s">-s ending</span></span>
+      <span class="l"><span class="h-e">-ed ending</span></span>
+      <span class="l"><span class="h-i">irregular</span></span>
+    </div>
+    <div id="pat"></div>
+  </section>
+
+  <section class="page" id="p2" role="tabpanel" aria-labelledby="tab-2" hidden>
+    <p class="hint">Work alone, top to bottom. The levels get harder. Type your answer and press Check. Contractions are fine (doesn't or does not).</p>
+    <div class="ptop"><p>Solved <b id="pdone">0</b> of <b id="ptot">0</b></p></div>
+    <div class="bar"><span id="pbar" style="width:0%"></span></div>
+    <div id="prac"></div>
+  </section>
+
+  <section class="page" id="p3" role="tabpanel" aria-labelledby="tab-3" hidden>
+    <p class="hint">Fifteen questions on the forms that trip people up most. One answer each.</p>
+    <div id="mcq"></div>
+  </section>
+
+  <section class="page" id="p4" role="tabpanel" aria-labelledby="tab-4" hidden>
+    <p class="hint">Twelve rules. Decide if each one is true or false.</p>
+    <div class="ptop"><p>Answered <b id="tfn">0</b> of 12 · Correct <b id="tfc">0</b></p><button class="btn ghost sm" id="tfreset">Start over</button></div>
+    <div class="tfl" id="tfl"></div>
+  </section>
+
+  <section class="page" id="p5" role="tabpanel" aria-labelledby="tab-5" hidden>
+    <p class="hint">Write full sentences. Use the forms listed under each question. Press Scan my forms to see which helpers, -s, -ed and irregular verbs you used. The scan counts forms; it does not check accuracy.</p>
+    <div id="wr"></div>
+    <div class="brow"><button class="btn" id="copyAll">Copy all my answers</button><span class="toast" id="copyMsg" role="status"></span></div>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+function fmt(s){return s.replace(/\{(\w):([^}]*)\}/g,function(m,c,t){return '<span class="h-'+c+'">'+t+'</span>'})}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function store(k,v){try{if(v===undefined){return localStorage.getItem(k)}localStorage.setItem(k,v)}catch(e){return null}}
+
+/* ---------- tabs ---------- */
+function showPage(n){
+  $$(".tab").forEach(function(t){t.setAttribute("aria-selected",t.dataset.p===String(n))});
+  $$(".page").forEach(function(p){p.hidden=(p.id!=="p"+n)});
+  store("simple-tab",String(n));
+  window.scrollTo(0,0);
+}
+$$(".tab").forEach(function(t){t.addEventListener("click",function(){showPage(t.dataset.p)})});
+var st=store("simple-tab");if(st&&/^[1-5]$/.test(st)){showPage(st)}
+
+/* ---------- page 1: patterns ---------- */
+function T(name,cols,rows,rules){return {name:name,cols:cols,rows:rows,rules:rules}}
+var MODES={
+BE:{
+ note:"BE (am, is, are, was, were) is its own helper. It never needs do, does or did.",
+ tenses:[
+  T("Present",["I","YOU · WE · THEY","HE · SHE · IT"],[
+    ["Positive","I {a:am} at work.","They {a:are} at work.","She {a:is} at work."],
+    ["Negative","I {a:am not} at work.<small>I'm not</small>","We {a:aren't} at work.<small>we're not</small>","He {a:isn't} at work.<small>he's not</small>"],
+    ["Question","{a:Am} I at work?","{a:Are} you at work?","{a:Is} he at work?"]],
+   ["{a:am} goes only with I. {a:is} goes with he, she, it. {a:are} goes with you, we, they.",
+    "To make a question, swap the order: {a:Is} she late? Not <i>Does she be late?</i>",
+    "To make a negative, add not: She {a:is not} late. Short forms: isn't, aren't, I'm not."]),
+  T("Past",["I · HE · SHE · IT","YOU · WE · THEY"],[
+    ["Positive","I {a:was} at work.","They {a:were} at work."],
+    ["Negative","She {a:wasn't} at work.","You {a:weren't} at work."],
+    ["Question","{a:Was} he at work?","{a:Were} they at work?"]],
+   ["{a:was} goes with I, he, she, it. {a:were} goes with you, we, they. <i>You</i> is always {a:were}, even for one person.",
+    "Negative: {a:wasn't}, {a:weren't}. Question: swap the order: {a:Were} your parents home?",
+    "No <i>did</i> with BE: <i>Did she be late?</i> is wrong. Say {a:Was} she late?"]),
+  T("Future",["ALL PERSONS"],[
+    ["Positive","I {a:will} {b:be} at work. She {a:will} {b:be} at work."],
+    ["Negative","He {a:won't} {b:be} at work. They {a:won't} {b:be} at work."],
+    ["Question","{a:Will} you {b:be} at work? {a:Will} she {b:be} at work?"]],
+   ["{a:will} + {b:be} for every person. After will, use <i>be</i>, never am, is or are.",
+    "{a:won't} = will not. Question: {a:Will} + subject + {b:be}?",
+    "Contractions: I'll be, she'll be, they'll be."])
+ ],
+ traps:["<i>I am agree</i> → I {b:agree}. Agree is a verb, so it does not need am.",
+        "<i>She is works here</i> → She {b:work}{s:s} here. Use BE or an action verb, not both.",
+        "<i>They was late</i> → They {a:were} late. Check the subject first."],
+ irr:null
+},
+VERB:{
+ note:"Action verbs (work, go, pay) need a helper in negatives and questions: do, does, did or will.",
+ tenses:[
+  T("Present",["I · YOU · WE · THEY","HE · SHE · IT"],[
+    ["Positive","They {b:work} here.","She {b:work}{s:s} here."],
+    ["Negative","We {a:don't} {b:work} here.","He {a:doesn't} {b:work} here."],
+    ["Question","{a:Do} you {b:work} here?","{a:Does} she {b:work} here?"]],
+   ["Only he, she and it get the -s: {b:work}{s:s}. I, you, we and they use the base verb.",
+    "Spelling of the -s: most verbs +s ({b:work}{s:s}, {b:play}{s:s}); verbs ending in -ch, -sh, -ss, -x, -o +es (watch{s:es}, miss{s:es}, fix{s:es}, go{s:es}); consonant + y becomes -ies (stud{s:ies}, tr{s:ies}); irregular: {i:has}.",
+    "In negatives and questions the -s moves to the helper. He {a:doesn't} {b:work}. {a:Does} she {b:work}? Never <i>doesn't works</i> or <i>does she works</i>."]),
+  T("Past",["ALL PERSONS (I · YOU · WE · THEY · HE · SHE · IT)"],[
+    ["Positive: regular","I {b:work}{e:ed} on Friday."],
+    ["Positive: irregular","I {i:went} to work on Friday."],
+    ["Negative","<span class=\"ln\">He {a:didn't} {b:work} on Friday.</span><span class=\"ln\">He {a:didn't} {b:go} to work.</span>"],
+    ["Question","<span class=\"ln\">{a:Did} you {b:work} on Friday?</span><span class=\"ln\">{a:Did} you {b:go} to work?</span>"]],
+   ["Regular verbs add {e:ed}: work{e:ed}. Ends in -e: add {e:d} (mov{e:ed} is wrong; write move{e:d}). Consonant + y: -ied (tr{e:ied}). Short verb with consonant-vowel-consonant: double the last letter (stop → stop{e:ped}).",
+    "Say it: -ed is /t/ after worked, watched; /d/ after played, called; and an extra syllable /ɪd/ only after t or d (want{e:ed}, need{e:ed}).",
+    "Irregular verbs have no -ed. Learn them in groups (below).",
+    "The helper {a:did} carries the past. The main verb goes back to base, for regular and irregular verbs: She {a:didn't} {b:go}. {a:Did} you {b:see} it? Never <i>didn't went</i>."]),
+  T("Future",["ALL PERSONS"],[
+    ["Positive","He {a:will} {b:work} on Friday. I {a:will} {b:work} on Friday."],
+    ["Negative","He {a:won't} {b:work} on Friday."],
+    ["Question","{a:Will} they {b:work} on Friday?"]],
+   ["{a:will} + {b:base verb} for every person. No -s and no -ed after will: She {a:will} {b:call}, not <i>will calls</i>.",
+    "{a:won't} = will not. Question: {a:Will} + subject + {b:base verb}?",
+    "After when, as soon as, before and if, use the present simple for the future: I'll text you as soon as the plumber arrive{s:s}."])
+ ],
+ traps:["<i>She doesn't works</i> / <i>Did he went?</i> / <i>She will calls</i> → after a helper, the main verb is always the base verb.",
+        "Questions about the subject have no do/does/did: Who {b:pay}{s:s} the bill? What {b:happen}{e:ed}?",
+        "<i>He buyed</i> → He {i:bought}. Irregular verbs never take -ed."],
+ irr:[["Same in every form","cost · cut · hit · put · quit · set · let"],
+      ["Vowel change","sit → sat · drive → drove · write → wrote · begin → began · run → ran · give → gave · take → took · come → came · see → saw · know → knew · speak → spoke · break → broke"],
+      ["-ought / -aught","buy → bought · bring → brought · think → thought · catch → caught · teach → taught"],
+      ["Ends in -t","send → sent · spend → spent · leave → left · keep → kept · meet → met · feel → felt · lose → lost · build → built"],
+      ["Their own pattern","go → went · have → had · make → made · say → said · pay → paid · tell → told · sell → sold · get → got · find → found · hear → heard · stand → stood · understand → understood"]]
+}};
+var mode="BE";
+function renderPat(){
+  var M=MODES[mode];
+  $("#modeNote").textContent=M.note;
+  $("#m-be").setAttribute("aria-pressed",mode==="BE");
+  $("#m-verb").setAttribute("aria-pressed",mode==="VERB");
+  var h="";
+  M.tenses.forEach(function(t){
+    h+='<article class="tb"><h3>'+t.name+(mode==="BE"?" of BE":" simple")+'</h3><div class="tbl"><table class="pt"><thead><tr><th scope="col"></th>';
+    t.cols.forEach(function(c){h+='<th scope="col">'+c+'</th>'});
+    h+='</tr></thead><tbody>';
+    t.rows.forEach(function(r){
+      h+='<tr><th scope="row">'+r[0]+'</th>';
+      for(var i=1;i<r.length;i++){h+='<td data-l="'+t.cols[i-1]+'">'+fmt(r[i])+'</td>'}
+      h+='</tr>';
+    });
+    h+='</tbody></table></div><ul class="rules">';
+    t.rules.forEach(function(x){h+='<li>'+fmt(x)+'</li>'});
+    h+='</ul>';
+    if(mode==="VERB"&&t.name==="Past"){
+      h+='<div class="irr">';
+      M.irr.forEach(function(g){
+        h+='<div><h4>'+g[0]+'</h4><div class="chips">'+g[1].split(" · ").map(function(x){
+          return '<span class="chip">'+fmt(x.replace(/ → (\w+)/,' → {i:$1}'))+'</span>'}).join("")+'</div></div>';
+      });
+      h+='</div>';
+    }
+    h+='</article>';
+  });
+  h+='<div class="traps"><h3>Common traps</h3><ul>';
+  M.traps.forEach(function(x){h+='<li>'+fmt(x)+'</li>'});
+  h+='</ul></div>';
+  $("#pat").innerHTML=h;
+}
+$("#m-be").addEventListener("click",function(){mode="BE";renderPat()});
+$("#m-verb").addEventListener("click",function(){mode="VERB";renderPat()});
+renderPat();
+
+/* ---------- page 2: practice ---------- */
+function norm(t){
+  return t.toLowerCase().replace(/[’‘]/g,"'")
+    .replace(/won't/g,"will not").replace(/can't/g,"cannot").replace(/n't/g," not")
+    .replace(/'ll/g," will").replace(/'re/g," are").replace(/'m/g," am")
+    .replace(/[^a-z' ]/g," ").replace(/\s+/g," ").trim();
+}
+var LEVELS=[
+ {name:"Level 1 · Choose the right form",note:"One verb, one clue. Check the subject and the time marker.",blocks:[
+  {t:"My neighbor [[0]] his trash bins on the curb every Sunday night.",g:[{c:"put",a:["puts"],h:"He, she or it in the present: add an ending.",w:"Present simple + he: put{s:s}. (Put is also irregular in the past, but here it is present.)"}]},
+  {t:"The inspection sticker on my car [[0]] expired last month, so I paid a fine.",g:[{c:"be",a:["was"],h:"Last month is past. Sticker = it.",w:"Past BE with it: {a:was}."}]},
+  {t:"Next Saturday, we [[0]] to Cape Cod for my sister's birthday.",g:[{c:"drive",a:["will drive"],h:"Next Saturday points to the future. Use two words.",w:"Future: {a:will} {b:drive}."}]},
+  {t:"Dana and Luis [[0]] both in the kitchen when the smoke alarm went off.",g:[{c:"be",a:["were"],h:"Two people, past time.",w:"Past BE with they: {a:were}."}]},
+  {t:"My daughter [[0]] for her nursing exam at the library every Tuesday.",g:[{c:"study",a:["studies"],h:"Every Tuesday = present. Consonant + y.",w:"Consonant + y becomes -ies: stud{s:ies}."}]}
+ ]},
+ {name:"Level 2 · Negatives and questions",note:"Write the helper and the verb. Remember which verb goes back to base.",blocks:[
+  {t:"Our landlord [[0]] texts after 9 p.m.",g:[{c:"not / answer",a:["doesn't answer","does not answer"],h:"Negative present with he. Where does the -s go?",w:"{a:doesn't} {b:answer}: the helper takes the -s."}]},
+  {t:"[[0]] near Worcester now?",g:[{c:"your brother / live",a:["does your brother live"],h:"Question present, he. Helper first.",w:"{a:Does} your brother {b:live}...? Live stays base."}]},
+  {t:"I [[0]] at the meeting yesterday because my car broke down.",g:[{c:"not / be",a:["wasn't","was not"],h:"BE does not use did.",w:"{a:wasn't}: negative past of BE."}]},
+  {t:"[[0]] the electric bill before the due date?",g:[{c:"you / pay",a:["did you pay"],h:"Question, past. Use a helper.",w:"{a:Did} you {b:pay}...? Did shows the past, so pay stays base."}]},
+  {t:"The contractor [[0]] the bathroom before the holidays, so we'll host at your place.",g:[{c:"not / finish",a:["won't finish","will not finish"],h:"The sentence talks about the future.",w:"{a:won't} {b:finish}: future negative."}]}
+ ]},
+ {name:"Level 3 · Mixed tenses in context",note:"Read the whole text. The time markers tell you which tense to use.",blocks:[
+  {t:"<b>Priya's heating problem.</b> Last spring, Priya [[0]] a small apartment in Framingham. The landlord [[1]] friendly, but he [[2]] the heating quickly. Now Priya [[3]] the city inspector every week. If nothing changes, she [[4]] out next month.",g:[
+   {c:"rent",a:["rented"],h:"Last spring.",w:"Regular past: rent{e:ed}."},
+   {c:"be",a:["was"],h:"Past BE, he/she.",w:"{a:was}."},
+   {c:"not / fix",a:["didn't fix","did not fix"],h:"Past negative of an action verb.",w:"{a:didn't} {b:fix}."},
+   {c:"call",a:["calls"],h:"Now + every week = habit. Priya = she.",w:"Present + she: call{s:s}."},
+   {c:"move",a:["will move"],h:"Next month.",w:"{a:will} {b:move}."}]},
+  {t:"<b>After the gym.</b> Sam: [[0]] to the 6 a.m. class tomorrow? Ines: I [[1]] last week because my knee [[2]] after the hike. Sam: Coach Maya [[3]] great with injuries, though. Her class [[4]] on time too.",g:[
+   {c:"you / come",a:["will you come"],h:"Tomorrow. Question.",w:"{a:Will} you {b:come}...?"},
+   {c:"not / go",a:["didn't go","did not go"],h:"Last week. Negative.",w:"{a:didn't} {b:go}: go goes back to base."},
+   {c:"hurt",a:["hurt"],h:"Irregular. Past form.",w:"{i:hurt} is the same in the past."},
+   {c:"be",a:["is"],h:"Present, Maya = she.",w:"{a:is}."},
+   {c:"start",a:["starts"],h:"Present habit. Her class = it.",w:"Present + it: start{s:s}."}]}
+ ]},
+ {name:"Level 4 · Fix the sentence",note:"Each sentence has one mistake. Type the whole sentence correctly.",blocks:[
+  {fix:1,t:"My roommate don't wash his dishes.",g:[{c:"",a:["my roommate doesn't wash his dishes","my roommate does not wash his dishes"],h:"Check the helper for he/she/it.",w:"My roommate {a:doesn't} {b:wash} his dishes."}]},
+  {fix:1,t:"Did the bus arrived on time this morning?",g:[{c:"",a:["did the bus arrive on time this morning"],h:"One verb in the question carries the past.",w:"{a:Did} the bus {b:arrive}...? Base verb after did."}]},
+  {fix:1,t:"The manager will approves the refund tomorrow.",g:[{c:"",a:["the manager will approve the refund tomorrow"],h:"Look at the verb after will.",w:"will + {b:approve}: no -s."}]},
+  {fix:1,t:"Was your parents home when the pipe burst?",g:[{c:"",a:["were your parents home when the pipe burst"],h:"Check subject and BE form.",w:"{a:Were} your parents home...? Parents = they."}]},
+  {fix:1,t:"My sister buyed a used Subaru last fall.",g:[{c:"",a:["my sister bought a used subaru last fall"],h:"Is buy regular?",w:"My sister {i:bought}: irregular."}]},
+  {fix:1,t:"Do you be ready for the interview on Friday?",g:[{c:"",a:["are you ready for the interview on friday"],h:"Which verb is BE?",w:"{a:Are} you ready...? BE makes its own question."}]}
+ ]}
+];
+var solvedTotal=0,gapTotal=0;
+LEVELS.forEach(function(L){L.blocks.forEach(function(b){gapTotal+=b.g.length})});
+function updProg(){
+  $("#pdone").textContent=solvedTotal;$("#ptot").textContent=gapTotal;
+  $("#pbar").style.width=(gapTotal?solvedTotal/gapTotal*100:0)+"%";
+  LEVELS.forEach(function(L,li){
+    var n=0,tot=0;L.blocks.forEach(function(b){b.g.forEach(function(g){tot++;if(g.done)n++})});
+    $("#lc"+li).textContent=n+" / "+tot;
+  });
+}
+function renderPrac(){
+  var h="";
+  LEVELS.forEach(function(L,li){
+    h+='<div class="lvl"><div class="lvl-h"><h2>'+L.name+'</h2><span class="cnt" id="lc'+li+'">0 / 0</span></div><p class="lvl-n">'+L.note+'</p>';
+    L.blocks.forEach(function(b,bi){
+      var id=li+"-"+bi;
+      var body=b.t;
+      if(!b.fix){
+        b.g.forEach(function(g,gi){
+          var w=Math.max(5,Math.min(16,(g.a[0].length+3)));
+          body=body.replace("[["+gi+"]]",'<span class="gap"><input type="text" id="g'+id+'-'+gi+'" data-b="'+li+','+bi+','+gi+'" autocomplete="off" autocapitalize="off" spellcheck="false" style="width:'+w+'ch" aria-label="Answer '+(gi+1)+'"><span class="cue">'+(g.c?'('+g.c+')':'')+'</span></span>');
+        });
+        h+='<div class="blk" id="b'+id+'"><p class="t">'+body+'</p>';
+      }else{
+        h+='<div class="blk" id="b'+id+'"><p class="t bad">'+esc(b.t)+'</p><label class="gap wide"><input type="text" id="g'+id+'-0" data-b="'+li+','+bi+',0" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the correct sentence" aria-label="Corrected sentence"></label>';
+        /* label closed above */
+      }
+      h+='<div class="brow"><button class="btn sm chk" data-b="'+li+','+bi+'">Check</button><button class="btn ghost sm shw" data-b="'+li+','+bi+'">Show answer</button></div><div class="fbk" id="f'+id+'" role="status"></div></div>';
+    });
+    h+='</div>';
+  });
+  $("#prac").innerHTML=h;
+  $$(".chk").forEach(function(b){b.addEventListener("click",function(){check(b.dataset.b)})});
+  $$(".shw").forEach(function(b){b.addEventListener("click",function(){reveal(b.dataset.b)})});
+  $$(".gap input").forEach(function(i){i.addEventListener("keydown",function(e){if(e.key==="Enter"){var p=i.dataset.b.split(",");check(p[0]+","+p[1])}})});
+  updProg();
+}
+function check(key){
+  var p=key.split(","),li=+p[0],bi=+p[1],b=LEVELS[li].blocks[bi],id=li+"-"+bi;
+  var msgs=[],allOk=true,any=false;
+  b.g.forEach(function(g,gi){
+    var inp=$("#g"+id+"-"+gi);
+    if(g.done){msgs.push('<div>'+(b.g.length>1?(gi+1)+'. ':'')+fmt(g.w)+'</div>');return}
+    var v=norm(inp.value);
+    if(!v){allOk=false;return}
+    any=true;
+    var ok=g.a.some(function(a){return norm(a)===v});
+    if(ok){g.done=true;solvedTotal++;inp.className="ok";inp.readOnly=true;msgs.push('<div>'+(b.g.length>1?(gi+1)+'. ':'')+fmt(g.w)+'</div>')}
+    else{allOk=false;inp.className="no";msgs.push('<div>'+(b.g.length>1?(gi+1)+'. ':'')+'Not yet. '+g.h+'</div>')}
+  });
+  var f=$("#f"+id);
+  if(!any&&!msgs.length){f.className="fbk no";f.innerHTML="Type an answer first.";return}
+  f.className="fbk "+(allOk?"ok":"no");
+  f.innerHTML=(allOk?'<div><b>Correct.</b></div>':"")+msgs.join("");
+  updProg();
+}
+function reveal(key){
+  var p=key.split(","),li=+p[0],bi=+p[1],b=LEVELS[li].blocks[bi],id=li+"-"+bi,out=[];
+  b.g.forEach(function(g,gi){
+    var inp=$("#g"+id+"-"+gi);
+    if(!g.done){inp.value=g.a[0].replace(/^\w/,function(c){return b.fix?c.toUpperCase():c});inp.className="no";inp.readOnly=true}
+    out.push('<div>'+(b.g.length>1?(gi+1)+'. ':'')+'<b>'+esc(b.fix?inp.value+".":g.a[0])+'</b> – '+fmt(g.w)+'</div>');
+  });
+  var f=$("#f"+id);f.className="fbk rv";f.innerHTML=out.join("");
+}
+renderPrac();
+
+/* ---------- page 3: MCQ ---------- */
+var MCQ=[
+ {q:"Does your landlord ___ pets in the building?",o:["allow","allows","allowing","to allow"],w:"After do, does and did, the main verb is the base form. The -s is already on <b>does</b>."},
+ {q:"Last month, my brother ___ his job at the bank.",o:["quit","quitted","quits","quited"],w:"<b>Quit</b> is irregular and does not change in the past: quit – quit – quit."},
+ {q:"She ___ to a different pharmacy because it's cheaper.",o:["goes","gos","go","goies"],w:"Verbs ending in -o add -es with he, she, it: goes, does."},
+ {q:"Our daughter ___ to save money every month.",o:["tries","trys","try","tryes"],w:"Consonant + y becomes -ies: try → tries."},
+ {q:"The bus ___ suddenly, and everyone jumped.",o:["stopped","stoped","stopt","stopping"],w:"A short verb with consonant-vowel-consonant doubles its last letter: stop → stopped."},
+ {q:"Which verb has an extra syllable in the past tense?",o:["wanted","walked","played","cooked"],w:"-ed adds a syllable only after the sounds /t/ and /d/: want-ed. Walked, played and cooked have one syllable."},
+ {q:"I ___ my keys at the office yesterday.",o:["left","leaved","lefted","leave"],w:"Leave is irregular: leave – left – left."},
+ {q:"___ your neighbors home last night when the power went out?",o:["Were","Was","Did","Are"],w:"BE makes its own question. Neighbors = they, past: <b>Were</b>."},
+ {q:"We ___ at the airport on time because of the snow.",o:["weren't","wasn't","didn't be","don't"],w:"We + past BE = <b>weren't</b>. BE never uses did."},
+ {q:"Don't worry. The store ___ before 9 p.m.",o:["won't close","won't closes","not will close","doesn't will close"],w:"Future negative: <b>won't</b> + base verb. No -s after will."},
+ {q:"My sister ___ she should refinance the loan.",o:["doesn't think","don't think","doesn't thinks","not thinks"],w:"She needs <b>doesn't</b>, and the main verb stays base: think."},
+ {q:"Our building manager ___ a spare key for every unit.",o:["has","have","haves","is having"],w:"<b>Have</b> is irregular with he, she, it: has."},
+ {q:"Who ___ the electric bill in your house?",o:["pays","pay","do pay","does pays"],w:"<b>Who</b> is the subject, so there is no do/does. Who is singular, so the verb takes -s."},
+ {q:"I'll call you as soon as the plumber ___.",o:["arrives","will arrive","arrive","is arrive"],w:"After as soon as, when, before and if, use the present simple for the future."},
+ {q:"Where ___ your sister work before she moved to Boston?",o:["did","does","was","is"],w:"The time is past, so the question needs <b>did</b> + base verb (work)."}
+];
+(function(){
+  var root=$("#mcq"),i=0,score=0,miss=[],L=["A","B","C","D"];
+  function start(){i=0;score=0;miss=[];render()}
+  function render(){
+    if(i>=MCQ.length){return result()}
+    var it=MCQ[i],opts=shuffle(it.o.map(function(t,k){return {t:t,ok:k===0}}));
+    root.innerHTML='<div class="qtop"><p class="eyebrow">Question '+(i+1)+' of '+MCQ.length+'</p><p class="score">Score <b>'+score+'</b></p></div><div class="bar"><span style="width:'+(i/MCQ.length*100)+'%"></span></div><div class="panel"><p class="sent">'+esc(it.q).replace("___",'<span class="blank">______</span>')+'</p><div class="opts">'+opts.map(function(o,k){return '<button class="opt" data-ok="'+o.ok+'"><i>'+L[k]+'</i><span>'+esc(o.t)+'</span></button>'}).join("")+'</div><div id="mfb"></div></div>';
+    $$(".opt",root).forEach(function(b){b.addEventListener("click",function(){answer(b)})});
+  }
+  function answer(btn){
+    var ok=btn.dataset.ok==="true",it=MCQ[i];
+    $$(".opt",root).forEach(function(b){b.disabled=true;if(b.dataset.ok==="true")b.classList.add("right")});
+    if(ok){score++}else{btn.classList.add("wrong");miss.push(it)}
+    var last=i===MCQ.length-1;
+    $("#mfb").innerHTML='<div class="fb '+(ok?"ok":"no")+'" role="status"><p class="v">'+(ok?"Correct":"Not quite")+'</p><p>'+it.w+'</p><button class="btn" id="nxt">'+(last?"See results":"Next")+'</button></div>';
+    $("#nxt").focus();
+    $("#nxt").addEventListener("click",function(){i++;render()});
+  }
+  function result(){
+    var n=MCQ.length,msg=score>=13?"Strong. You control the tricky simple forms.":score>=9?"Good base. Review the items below.":"Go back to page 1 and reread the rules, then try again.";
+    root.innerHTML='<div class="panel res"><p class="eyebrow">Your result</p><h2>'+score+' / '+n+'</h2><p>'+msg+'</p>'+(miss.length?'<h3>Look again</h3><ul class="miss">'+miss.map(function(m){return '<li><span class="s">'+esc(m.q).replace("___","<span class=\"h-b\">"+esc(m.o[0])+"</span>")+'</span><small>'+m.w+'</small></li>'}).join("")+'</ul>':'')+'<div style="margin-top:1.25rem"><button class="btn" id="again">Try again</button></div></div>';
+    $("#again").addEventListener("click",start);
+  }
+  start();
+})();
+
+/* ---------- page 4: true / false ---------- */
+var TF=[
+ {s:"In “Does he work here?”, the verb work has no -s because does already shows the third person.",a:true,w:"Correct. The helper takes the -s; the main verb stays base."},
+ {s:"In the present simple, the -s ending is added after I, you, we and they.",a:false,w:"Only he, she and it take the -s."},
+ {s:"BE questions use do, does or did: “Did she be late?”",a:false,w:"BE makes its own question by swapping the order: Was she late?"},
+ {s:"Study becomes studies, but play becomes plays.",a:true,w:"Consonant + y → -ies. Vowel + y → just -s."},
+ {s:"After will, the verb takes -s with he, she, it: “She will calls.”",a:false,w:"After will the verb is always the base form: She will call."},
+ {s:"Irregular verbs keep their irregular form in the past negative: “He didn't went.”",a:false,w:"After didn't the verb returns to base: He didn't go."},
+ {s:"In a past question with an irregular verb, the main verb is still base: “Did you see it?”",a:true,w:"Did already shows the past."},
+ {s:"Stop becomes stoped in the past.",a:false,w:"Short verbs with consonant-vowel-consonant double the last letter: stopped."},
+ {s:"With you, the past of BE is were, even when you means one person.",a:true,w:"Was is only for I, he, she and it."},
+ {s:"“They don't be ready” is a correct negative.",a:false,w:"BE does not use don't. Say They aren't ready."},
+ {s:"In a question where who is the subject, we do not use do, does or did: “Who called you?”",a:true,w:"Who replaces the subject, so the verb follows directly."},
+ {s:"The -ed ending is always pronounced as an extra syllable.",a:false,w:"Only after /t/ or /d/ (wanted, needed). Worked and played have one syllable."}
+];
+(function(){
+  var n=0,c=0;
+  function build(){
+    n=0;c=0;$("#tfn").textContent=0;$("#tfc").textContent=0;
+    $("#tfl").innerHTML=TF.map(function(t,k){return '<div class="tfc" id="tf'+k+'"><p class="st"><span>'+(k+1)+'.</span>'+esc(t.s)+'</p><div class="tf"><button class="tfb" data-a="true">True</button><button class="tfb" data-a="false">False</button></div><div id="tff'+k+'" role="status"></div></div>'}).join("");
+    TF.forEach(function(t,k){
+      $$("#tf"+k+" .tfb").forEach(function(b){b.addEventListener("click",function(){
+        var ok=(b.dataset.a==="true")===t.a;
+        $$("#tf"+k+" .tfb").forEach(function(x){x.disabled=true;if((x.dataset.a==="true")===t.a)x.classList.add("right")});
+        if(!ok)b.classList.add("wrong");
+        n++;if(ok)c++;$("#tfn").textContent=n;$("#tfc").textContent=c;
+        $("#tff"+k).innerHTML='<div class="fb '+(ok?"ok":"no")+'"><p class="v">'+(ok?"Correct":"Not quite")+' · '+(t.a?"True":"False")+'</p><p>'+esc(t.w)+'</p></div>';
+      })});
+    });
+  }
+  $("#tfreset").addEventListener("click",function(){build();window.scrollTo(0,0)});
+  build();
+})();
+
+/* ---------- page 5: writing ---------- */
+var WQ=[
+ {t:"1. Someone you see every week",p:"Describe a neighbor, coworker or relative and what he or she does each week. Write at least five sentences.",u:["he / she + -s verbs","1 negative with doesn't","1 question with does"]},
+ {t:"2. Then and now",p:"Compare a place you lived before (an apartment, a room, a house) with where you live now. What was it like? What is it like now?",u:["was / were","is / are","1 negative with BE","1 question with BE"]},
+ {t:"3. When things went wrong",p:"Tell about the last time something went wrong: a delayed bus, a bank problem, a broken appliance. What happened? What did you do?",u:["3 irregular past verbs","2 regular -ed verbs","1 negative with didn't","1 question with did"]},
+ {t:"4. The next month",p:"Write about your plans or predictions for the next month: money, work, family or fun around Massachusetts.",u:["will + base verb","1 negative with won't","1 question with will"]},
+ {t:"5. A message about a problem",p:"Write a short message to a landlord, neighbor or manager about a problem. Say what usually happens, what happened this week, and what you will do next.",u:["present simple (habit)","past simple (this week)","future with will","1 question"]}
+];
+var IRR="went had saw bought thought took came said made got knew paid left met kept told gave ran wrote began lost sold sent spent drove cost put cut quit found heard felt sat stood understood brought taught ate drank forgot broke chose wore woke won built hurt read let set hit shut led met slept swam flew spoke".split(" ");
+var AUX=/^(do|does|did|don't|doesn't|didn't|will|won't|am|is|are|was|were|isn't|aren't|wasn't|weren't|i'm|you're|we're|they're|he's|she's|it's|i'll|you'll|he'll|she'll|we'll|they'll)$/;
+var NOT_ED={need:1,feed:1,speed:1,seed:1,bleed:1,breed:1,proceed:1,exceed:1,succeed:1,indeed:1,weed:1,hundred:1,bed:1,red:1,wed:1};
+function scan(text){
+  var out="",last=0,prev="",c={a:0,s:0,e:0,i:0},re=/[A-Za-z’']+/g,m;
+  while((m=re.exec(text))){
+    var raw=m[0],w=raw.toLowerCase().replace(/’/g,"'"),cls="";
+    if(AUX.test(w)){cls="a"}
+    else if(IRR.indexOf(w)>-1){cls="i"}
+    else if(/^[a-z]{3,}ed$/.test(w)&&!NOT_ED[w]){cls="e"}
+    else if((prev==="he"||prev==="she"||prev==="it")&&/s$/.test(w)&&!/ss$/.test(w)||w==="has"||w==="does"||w==="goes"){cls="s"}
+    out+=esc(text.slice(last,m.index));
+    if(cls){c[cls]++;out+='<span class="h-'+cls+'">'+esc(raw)+'</span>'}else{out+=esc(raw)}
+    last=m.index+raw.length;prev=w;
+  }
+  out+=esc(text.slice(last));
+  return {html:out,c:c};
+}
+function words(t){var m=t.match(/[A-Za-z’']+/g);return m?m.length:0}
+(function(){
+  var h="";
+  WQ.forEach(function(q,k){
+    h+='<article class="wq"><h3>'+q.t+'</h3><p class="pr">'+q.p+'</p><ul class="use" aria-label="Use these forms">'+q.u.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul><label class="eyebrow" for="w'+k+'">Your answer</label><textarea id="w'+k+'" spellcheck="true" placeholder="Start writing here"></textarea><div class="wmeta"><span class="wc" id="wc'+k+'">0 words</span><button class="btn ghost sm" data-k="'+k+'">Scan my forms</button></div><div class="scan" id="sc'+k+'" aria-live="polite"></div></article>';
+  });
+  $("#wr").innerHTML=h;
+  WQ.forEach(function(q,k){
+    var ta=$("#w"+k),v=store("simple-w"+k);if(v){ta.value=v;$("#wc"+k).textContent=words(v)+" words"}
+    ta.addEventListener("input",function(){$("#wc"+k).textContent=words(ta.value)+" words";store("simple-w"+k,ta.value)});
+  });
+  $$("#wr button[data-k]").forEach(function(b){b.addEventListener("click",function(){
+    var k=b.dataset.k,t=$("#w"+k).value;
+    if(!t.trim()){$("#sc"+k).innerHTML='<p class="note">Write a few sentences first.</p>';return}
+    var r=scan(t);
+    $("#sc"+k).innerHTML='<ul class="counts"><li><span class="h-a">helpers</span> '+r.c.a+'</li><li><span class="h-s">-s endings</span> '+r.c.s+'</li><li><span class="h-e">-ed endings</span> '+r.c.e+'</li><li><span class="h-i">irregular</span> '+r.c.i+'</li></ul><div class="prev">'+r.html+'</div><p class="note">Quick scan only. Read each highlighted form again: does the helper match the subject and the time, and is the main verb in the right form?</p>';
+  })});
+  $("#copyAll").addEventListener("click",function(){
+    var txt=WQ.map(function(q,k){return q.t+"\n"+$("#w"+k).value.trim()}).join("\n\n");
+    var msg=$("#copyMsg");
+    function ok(){msg.textContent="Copied.";setTimeout(function(){msg.textContent=""},2500)}
+    function fallback(){
+      var ta=document.createElement("textarea");ta.value=txt;ta.setAttribute("aria-hidden","true");ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+      var done=false;try{done=document.execCommand("copy")}catch(e){}
+      document.body.removeChild(ta);
+      if(done){ok()}else{msg.textContent="Select your answers and copy them manually."}
+    }
+    try{navigator.clipboard.writeText(txt).then(ok,fallback)}catch(e){fallback()}
+  });
+})();
+})();
+</script>
+
+</body></html>
