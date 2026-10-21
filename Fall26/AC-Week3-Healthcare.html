@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3 Warm-Up: Healthcare</title>
+<style>
+  :root{--navy:#1b2a4a;--navy-dark:#10192e;--green:#2f7a4f;--gold:#c9a227;--red:#a8342a;--paper:#faf7f0;--ink:#1c1c1c}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:linear-gradient(160deg,var(--navy),var(--navy-dark));font-family:'Helvetica Neue','Segoe UI',Arial,sans-serif;display:flex;justify-content:center;padding:22px 14px 30px}
+  .wrap{width:100%;max-width:680px}
+  .kicker{color:var(--gold);letter-spacing:2px;font-size:12px;font-weight:700;text-transform:uppercase;text-align:center;margin-bottom:5px}
+  .title{color:var(--paper);text-align:center;font-family:Georgia,Cambria,serif;font-size:26px;font-weight:700;margin:0 0 4px}
+  .subtitle{color:#b9c2d6;text-align:center;font-size:13px;margin-bottom:18px}
+  .card{background:var(--paper);border-radius:18px;padding:36px 28px 24px;box-shadow:0 20px 45px rgba(0,0,0,.35);position:relative;min-height:320px}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;border-radius:18px 18px 0 0;background:linear-gradient(90deg,var(--navy),var(--green),var(--gold),var(--red))}
+  .num{font-size:12px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:8px}
+  .qwrap{min-height:260px;display:flex;flex-direction:column;justify-content:center}
+  .question{font-family:Georgia,Cambria,serif;font-size:23px;line-height:1.5;color:var(--navy);text-align:center;font-weight:700}
+  .hint{text-align:center;color:#6e6e6e;font-size:14.5px;font-style:italic;margin-top:16px;line-height:1.6}
+  .talk{margin:20px auto 0;max-width:480px;border-left:4px solid var(--gold);background:#fff8e1;padding:9px 14px;border-radius:0 8px 8px 0;font-size:14px;line-height:1.5}
+  /* words */
+  .g{border-bottom:2px dotted var(--green);cursor:pointer;color:var(--navy);font-weight:700;position:relative}
+  .t{background:#fff3c4;border-bottom:2px solid var(--gold);cursor:pointer;color:var(--navy);font-weight:700;position:relative;padding:0 2px;border-radius:3px}
+  .hint .g{font-style:normal}
+  .tip{display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:5px 11px;border-radius:8px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:600;font-style:normal;white-space:nowrap;box-shadow:0 6px 16px rgba(0,0,0,.3);z-index:20}
+  .tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--navy)}
+  .open>.tip{display:block}
+  /* reading */
+  .rtitle{font-family:Georgia,serif;font-size:24px;font-weight:700;color:var(--navy);margin:2px 0 4px}
+  .rsub{font-size:13.5px;color:#666;margin-bottom:12px;line-height:1.5}
+  .rtext{font-size:16.5px;line-height:1.75;color:var(--ink)}
+  .rtext p{margin:0 0 10px}
+  .rtext h3{font-family:Georgia,serif;font-size:17px;color:var(--green);margin:16px 0 6px}
+  .rtext ul{margin:4px 0 10px;padding-left:20px}
+  .rtext li{margin:4px 0}
+  .rtext .t,.rtext .g{white-space:nowrap}
+  .box{border-radius:10px;padding:9px 13px;font-size:14px;line-height:1.5;margin:10px 0}
+  .box.red{background:#fbeceb;border-left:5px solid var(--red)}
+  .box.red b{color:var(--red)}
+  .note{font-size:12px;color:#777;margin-top:8px}
+  .legend{font-size:12px;color:#666;margin-bottom:10px}
+  .legend span{padding:1px 6px;border-radius:3px}
+  .controls{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+  button.nav{background:var(--navy);color:var(--paper);border:1px solid rgba(250,247,240,.35);padding:11px 22px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer}
+  button.nav:hover{background:var(--green)}
+  button.nav:disabled{opacity:.35;cursor:default}
+  .dots{display:flex;gap:8px}.dot{width:9px;height:9px;border-radius:50%;background:#55627f}.dot.active{background:var(--gold);transform:scale(1.25)}
+  .footer{text-align:center;color:#8793ad;font-size:12px;margin-top:14px}
+  @media(max-width:520px){.card{padding:30px 16px 20px}.question{font-size:21px}.rtext{font-size:15.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Approach ISC &middot; American Culture &amp; Civic Life</div>
+  <div class="title">Week 3 Warm-Up: Healthcare</div>
+  <div class="subtitle">Talk in small groups. Tap dotted words for Portuguese.</div>
+  <div class="card" id="card"></div>
+  <div class="controls"><button class="nav" id="back">&larr; Back</button><div class="dots" id="dots"></div><button class="nav" id="next">Next &rarr;</button></div>
+  <div class="footer" id="foot">Tap a dotted or gold word to see Portuguese and hear it.</div>
+</div>
+<script>
+/* ordinary glossed words (green dotted) */
+const GW={"public":"público","private":"privado","plan":"plano","health plan":"plano de saúde","expensive":"caro","cheap":"barato","cheaper":"mais barato",
+"pharmacy":"farmácia","medicine":"remédio","cold":"resfriado","last time":"a última vez","problem":"problema","health card":"cartão do plano de saúde",
+"chest":"peito","stomach":"estômago / barriga","arm":"braço","leg":"perna","eye":"olho","skin":"pele","face":"rosto","fever":"febre","pain":"dor",
+"breathing":"respiração","swollen":"inchado","weakness":"fraqueza","cut":"corte","bleeding":"sangrando","sore throat":"dor de garganta","flu shot":"vacina da gripe",
+"emergency":"emergência","spot":"mancha / pinta","hospital":"hospital"};
+/* target words (gold) */
+const GT={"insurance":"seguro-saúde","co-pay":"valor fixo por consulta","deductible":"franquia (você paga primeiro)","in-network":"credenciado (da rede)","out-of-network":"fora da rede",
+"marketplace":"mercado de planos de saúde","minute clinic":"clínica rápida (em farmácia)","urgent care":"pronto atendimento (urgência)","dental school":"faculdade de odontologia","dentist":"dentista"};
+const all=Object.assign({},GW,GT);
+const keys=Object.keys(all).sort((a,b)=>b.length-a.length);
+const re=new RegExp("(?<![\\w-])("+keys.map(k=>k.replace(/[-]/g,'\\-')).join("|")+")(?![\\w-])","gi");
+function mark(t){return t.replace(re,m=>{const k=m.toLowerCase();const isT=GT[k]!==undefined;return `<span class="${isT?'t':'g'}" data-say="${k}">${m}<span class="tip">${all[k]}</span></span>`;});}
+
+const Q=[
+ {q:"When was the last time you saw a doctor? What was the problem?",
+  h:"I saw a doctor ___ weeks ago. / I have a small problem with my ___."},
+ {q:"In Brazil, many people use a public hospital or a private health plan. What do you use? What about in the U.S.?",
+  h:"In Brazil, I use ___. / In the U.S., I don’t know yet."},
+ {q:"Do you have a health card in the U.S.? Who gave it to you? Is it easy to understand?",
+  h:"Yes, I have a card from my school. / No, I don’t have a card."},
+ {q:"You have a cold or a small problem. What do you do first: call a doctor, go to a pharmacy, take medicine at home, or ask a friend?",
+  h:"First, I go to the pharmacy. / I ask my friend."},
+ {q:"Is the dentist expensive in the U.S.? Is it cheap in Brazil? Do you know a cheaper option?",
+  h:"The dentist is very expensive here. / In Brazil, it is cheaper."}
+];
+const R=`<div class="rtitle">Healthcare in the U.S.: Know Your Options</div>
+<div class="rsub">Read. Then talk with your partner. Gold words are new this week.</div>
+<div class="rtext">
+<p>In the U.S., health care can be very expensive. Most people have <b>insurance</b>. Insurance helps you pay for the doctor, the hospital, and medicine.</p>
+<p>When you see a doctor, you pay a <b>co-pay</b>. This is a small amount, for example $20. You also have a <b>deductible</b>. This is the money you pay first, before the insurance starts to pay.</p>
+<p>Choose <b>in-network</b> doctors. They work with your insurance, so you pay less. <b>Out-of-network</b> doctors can cost much more. You can compare plans on the <b>marketplace</b>. In Massachusetts, it is the Health Connector website.</p>
+<h3>Where can I go?</h3>
+<ul>
+<li>A <b>minute clinic</b> is a small clinic inside a pharmacy. It is fast and cheaper. Go for a sore throat or a flu shot.</li>
+<li><b>Urgent care</b> is for a problem that cannot wait, but is not an emergency: a deep cut, a high fever, or ear pain.</li>
+<li>The <b>dentist</b> is often separate from your health plan, and it can be expensive. A cheaper option is a <b>dental school</b>. Students practice on patients, and a teacher watches. It costs less, but it takes more time.</li>
+</ul>
+<h3>See a doctor if you have more than a cold</h3>
+<p>A runny nose or a small headache is usually not serious. But go to a doctor soon if you have:</p>
+<ul>
+<li>strong pain in your <b>chest</b> or <b>stomach</b></li>
+<li>a <b>fever</b> for more than three days</li>
+<li>trouble <b>breathing</b></li>
+<li>a red, hot, <b>swollen</b> <b>leg</b></li>
+<li><b>weakness</b> in your <b>arm</b>, <b>leg</b>, or <b>face</b> that starts suddenly</li>
+<li>sudden pain in your <b>eye</b>, or you cannot see well</li>
+<li>a <b>cut</b> that keeps <b>bleeding</b></li>
+<li>a <b>spot</b> on your <b>skin</b> that changes</li>
+</ul>
+<div class="box red"><b>Emergency?</b> Call <b>911</b> right away for chest pain, trouble breathing, heavy bleeding, or sudden weakness. Remember: 911 is for emergencies.</div>
+<div class="note">This is general information, not medical advice.</div>
+</div>
+<div class="talk"><b>Talk:</b> Where do you go for a small problem? Which symptom was a surprise for you? Is it different in Brazil?</div>`;
+const total=Q.length+1;let cur=0;
+const card=document.getElementById('card'),dots=document.getElementById('dots'),back=document.getElementById('back'),next=document.getElementById('next');
+for(let i=0;i<total;i++){const d=document.createElement('div');d.className='dot';dots.appendChild(d)}
+function render(){
+  if(cur<Q.length){const c=Q[cur];
+    card.innerHTML=`<div class="num">WARM-UP ${cur+1} / ${Q.length}</div><div class="qwrap"><div class="question">${mark(c.q)}</div><div class="hint">${mark(c.h)}</div></div>`;
+  } else {
+    // wrap bold targets with highlighting via mark(); strip existing <b> after marking
+    card.innerHTML=`<div class="num">READING</div>`+mark(R).replace(/<b>(<span class="t"[^>]*>.*?<\/span>)<\/b>/g,'$1');
+  }
+  [...dots.children].forEach((x,i)=>x.classList.toggle('active',i===cur));
+  back.disabled=cur===0;next.textContent=cur===total-1?'Restart ↻':'Next →';
+}
+back.onclick=()=>{if(cur>0){cur--;render();window.scrollTo(0,0)}};
+next.onclick=()=>{cur=cur===total-1?0:cur+1;render();window.scrollTo(0,0)};
+const hasTTS=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+function pick(){const v=speechSynthesis.getVoices().filter(x=>/^en[-_]US/i.test(x.lang));return v.find(x=>/natural|premium|enhanced|neural/i.test(x.name))||v.find(x=>/samantha|aria|jenny|google us/i.test(x.name))||v[0];}
+function say(t){if(!hasTTS)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.8;const v=pick();if(v)u.voice=v;speechSynthesis.speak(u);}
+card.addEventListener('click',e=>{const w=e.target.closest('.g,.t');if(!w)return;const o=w.classList.contains('open');document.querySelectorAll('.open').forEach(x=>x.classList.remove('open'));if(!o)w.classList.add('open');say(w.dataset.say);e.stopPropagation();});
+document.addEventListener('click',()=>document.querySelectorAll('.open').forEach(x=>x.classList.remove('open')));
+if(hasTTS)speechSynthesis.getVoices(); else document.getElementById('foot').textContent='Tap a dotted or gold word to see Portuguese.';
+render();
+</script>
+</body>
+</html>
