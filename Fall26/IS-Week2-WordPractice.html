@@ -1,0 +1,578 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Week 2 Word Practice</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Lexend:wght@400;600;700&display=swap">
+<style>
+  /* Layout: one centered worksheet column under a green band; three tabbed pages, easiest to hardest. */
+  :root {
+    --bg: #EEF3EF;
+    --surface: #FFFFFF;
+    --field: #F3F7F4;
+    --ink: #13243A;
+    --muted: #4F6077;
+    --line: #CFDAD2;
+    --band: #1F5E29;
+    --band-ink: #FFFFFF;
+    --green: #2A7A34;
+    --green-soft: #E0F0E2;
+    --gold: #B8892B;
+    --gold-soft: #F8EFD6;
+    --ok: #1F7A3A;
+    --ok-soft: #DCF0E0;
+    --bad: #B4321F;
+    --bad-soft: #FBE4DF;
+    --btn-bg: #2A7A34;
+    --btn-ink: #FFFFFF;
+    --focus: #1C5DB5;
+    --font-display: "Lexend", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1914; --surface: #16251D; --field: #0F1B15; --ink: #E7EFEA; --muted: #A2B5AA;
+      --line: #2C4034; --band: #1B3A24; --band-ink: #E7EFEA; --green: #6FBF78; --green-soft: #1E3B27;
+      --gold: #D8B35C; --gold-soft: #3A3115; --ok: #7BD38A; --ok-soft: #1B3C26; --bad: #F09A8A;
+      --bad-soft: #442019; --btn-bg: #6FBF78; --btn-ink: #0E1914; --focus: #8DB8F5; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1914; --surface: #16251D; --field: #0F1B15; --ink: #E7EFEA; --muted: #A2B5AA;
+    --line: #2C4034; --band: #1B3A24; --band-ink: #E7EFEA; --green: #6FBF78; --green-soft: #1E3B27;
+    --gold: #D8B35C; --gold-soft: #3A3115; --ok: #7BD38A; --ok-soft: #1B3C26; --bad: #F09A8A;
+    --bad-soft: #442019; --btn-bg: #6FBF78; --btn-ink: #0E1914; --focus: #8DB8F5; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 17px; line-height: 1.5;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:disabled { cursor: default; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .wrap {
+    max-width: 880px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  /* header band */
+  .band { background: var(--band); color: var(--band-ink); border-bottom: 4px solid var(--gold); }
+  .band .wrap { padding-block: 20px 18px; }
+  .eyebrow { font-size: .76rem; letter-spacing: .09em; text-transform: uppercase; opacity: .85; }
+  h1 {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.6rem; line-height: 1.2;
+    margin: 6px 0 4px; text-wrap: balance;
+  }
+  .band p { margin: 0; opacity: .9; font-size: .98rem; }
+
+  /* step tabs */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-block: 14px 4px; }
+  .step {
+    position: relative; text-align: left; background: var(--surface);
+    border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 66px;
+    display: grid; gap: 4px; align-content: start; min-width: 0;
+  }
+  .step[aria-selected="true"] { border-color: var(--green); background: var(--green-soft); }
+  .step .t { font-family: var(--font-display); font-weight: 600; font-size: .98rem; }
+  .step .lv { display: flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--muted); }
+  .dots { display: inline-flex; gap: 3px; }
+  .dots i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--green); display: block; }
+  .dots i.on { background: var(--green); }
+  .badge {
+    position: absolute; top: 8px; right: 9px; font-size: .75rem; font-weight: 700;
+    font-variant-numeric: tabular-nums; color: var(--muted);
+  }
+  .badge.full { color: var(--ok); }
+
+  /* sheet */
+  .sheet {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px 18px 22px; margin-block: 10px 36px;
+  }
+  .sheet h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; line-height: 1.25; margin: 0 0 4px; }
+  .kicker { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+  .how { margin: 0 0 16px; color: var(--muted); max-width: 62ch; }
+  .msg { min-height: 1.6em; margin: 0 0 10px; font-size: .95rem; color: var(--muted); }
+
+  /* page 1: matching */
+  .match { display: grid; grid-template-columns: 1fr 1.45fr; gap: 12px; align-items: start; }
+  .col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .en, .tr {
+    position: relative; text-align: left; background: var(--surface);
+    border: 2px solid var(--line); border-radius: 10px; min-height: 58px; padding: 10px 12px;
+  }
+  .en { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; line-height: 1.25; }
+  .tr { font-size: .95rem; line-height: 1.3; display: grid; gap: 4px; align-content: center; }
+  .en[aria-pressed="true"] { border-color: var(--gold); background: var(--gold-soft); }
+  .en.ok, .tr.ok { border-color: var(--ok); background: var(--ok-soft); padding-right: 30px; }
+  .en.ok::after, .tr.ok::after { content: "\2713"; position: absolute; right: 10px; top: 8px; color: var(--ok); font-weight: 700; }
+  .tr.wrong { border-color: var(--bad); background: var(--bad-soft); animation: shake .4s; }
+  .tr.wrong::after { content: "\2717"; position: absolute; right: 10px; top: 8px; color: var(--bad); font-weight: 700; }
+  .tr.wrong { padding-right: 30px; }
+  .lang { display: block; }
+  .lang i {
+    font-style: normal; font-size: .66rem; font-weight: 700; letter-spacing: .06em;
+    background: var(--green-soft); color: var(--green); border-radius: 4px; padding: 1px 5px; margin-right: 6px;
+  }
+  .tr.ok .lang i { background: var(--surface); }
+  @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+  .read { margin-top: 20px; }
+  .read h3, .partb h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; margin: 0 0 6px; }
+  .read ul { list-style: none; padding: 0; margin: 0; }
+  .read li { padding: 10px 0; border-top: 1px solid var(--line); }
+  .read li:first-child { border-top: 0; }
+  .read:empty, .read ul:empty { display: none; }
+  mark.w { background: var(--green-soft); color: var(--ink); font-weight: 700; padding: 0 4px; border-radius: 4px; }
+
+  /* page 2: choose */
+  ol.qs, ol.lines { list-style: none; counter-reset: q; padding: 0; margin: 0; }
+  .q, .line { counter-increment: q; position: relative; padding: 14px 0 14px 42px; border-top: 1px solid var(--line); }
+  .q:first-child, .line:first-child { border-top: 0; }
+  .q::before, .line::before {
+    content: counter(q); position: absolute; left: 0; top: 14px; width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: .85rem;
+    background: var(--field); border: 1px solid var(--line); color: var(--muted);
+  }
+  .q.done::before { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+  .sent { margin: 0 0 10px; font-size: 1.08rem; line-height: 1.65; }
+  .blank {
+    display: inline-block; min-width: 9ch; text-align: center; border-bottom: 2px solid var(--muted);
+    margin: 0 2px; padding: 0 6px; color: transparent; user-select: none;
+  }
+  .blank.filled { color: var(--ok); border-color: var(--ok); font-weight: 700; user-select: auto; }
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt {
+    background: var(--surface); border: 2px solid var(--line); border-radius: 10px;
+    min-height: 46px; padding: 8px 16px; font-weight: 700;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--green); }
+  .opt.ok { border-color: var(--ok); background: var(--ok-soft); }
+  .opt.wrong { border-color: var(--bad); background: var(--bad-soft); text-decoration: line-through; }
+  .fb { margin: 6px 0 0; font-size: .9rem; min-height: 1.3em; color: var(--muted); }
+  .q.done .fb { color: var(--ok); }
+
+  /* page 3: write */
+  .tools { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 12px; }
+  .switch { display: inline-flex; gap: 8px; align-items: center; font-size: .95rem; cursor: pointer; }
+  .switch input { width: 20px; height: 20px; accent-color: var(--green); }
+  .bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; padding: 12px; background: var(--field); border-radius: 10px; }
+  .bank[hidden] { display: none; }
+  .chip { border: 1px dashed var(--muted); border-radius: 999px; padding: 3px 12px; font-size: .95rem; }
+  .intro { margin: 0 0 4px; font-style: italic; color: var(--muted); }
+  .line { line-height: 2.1; }
+  .gap {
+    font: inherit; color: var(--ink); background: var(--field); border: 2px solid var(--line);
+    border-radius: 6px; padding: 1px 8px; margin: 0 3px; max-width: 100%; vertical-align: baseline;
+  }
+  .gap::placeholder { color: var(--muted); opacity: .8; }
+  .gap.ok { border-color: var(--ok); background: var(--ok-soft); font-weight: 700; }
+  .gap.bad { border-color: var(--bad); background: var(--bad-soft); }
+  .gap.shown { border-color: var(--gold); background: var(--gold-soft); border-style: dashed; }
+  .hint { display: block; font-size: .88rem; line-height: 1.4; color: var(--bad); }
+  .hint[hidden] { display: none; }
+  .result { margin: 14px 0 0; font-weight: 700; min-height: 1.5em; }
+  .partb { margin-top: 26px; padding-top: 20px; border-top: 2px solid var(--line); }
+  .prompt { margin: 14px 0 0; }
+  .prompt label { display: block; font-family: var(--font-display); font-size: 1rem; line-height: 1.4; margin-bottom: 6px; }
+  .prompt textarea {
+    width: 100%; font: inherit; color: var(--ink); background: var(--field); border: 2px solid var(--line);
+    border-radius: 8px; padding: 8px 10px; resize: vertical; min-height: 64px;
+  }
+
+  /* shared */
+  .done-box {
+    margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: var(--ok-soft);
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; font-weight: 700;
+  }
+  .done-box[hidden] { display: none; }
+  .nav { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; margin-top: 22px; }
+  .btn {
+    min-height: 46px; padding: 9px 18px; border-radius: 10px; border: 2px solid var(--line);
+    background: var(--surface); font-weight: 700;
+  }
+  .btn.primary { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-ink); }
+  .btn:hover { filter: brightness(.96); }
+  .btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+
+  @media (max-width: 520px) {
+    h1 { font-size: 1.35rem; }
+    .step { padding: 8px 9px; }
+    .step .lv span.txt { display: none; }
+    .sheet { padding: 16px 14px 20px; }
+    .match { grid-template-columns: 1fr 1.5fr; gap: 8px; }
+    .q, .line { padding-left: 38px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tr.wrong { animation: none; } }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="eyebrow">Approach International Student Center &middot; Integrated Skills &middot; Independent Level</div>
+    <h1>Week 2 Word Practice: People and Places</h1>
+    <p>Twelve words for describing people and places, from back home and here.</p>
+  </div>
+</header>
+
+<nav class="wrap steps" id="steps" role="tablist" aria-label="Pages">
+  <button class="step" role="tab" id="tab1" aria-controls="p1" aria-selected="true" data-go="1">
+    <span class="t">1 &middot; Match</span>
+    <span class="lv"><span class="dots" aria-hidden="true"><i class="on"></i><i></i><i></i></span><span class="txt">Warm-up</span></span>
+    <span class="badge" id="b1">0/6</span>
+  </button>
+  <button class="step" role="tab" id="tab2" aria-controls="p2" aria-selected="false" data-go="2">
+    <span class="t">2 &middot; Choose</span>
+    <span class="lv"><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span><span class="txt">Practice</span></span>
+    <span class="badge" id="b2">0/8</span>
+  </button>
+  <button class="step" role="tab" id="tab3" aria-controls="p3" aria-selected="false" data-go="3">
+    <span class="t">3 &middot; Write</span>
+    <span class="lv"><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="txt">Challenge</span></span>
+    <span class="badge" id="b3">0/8</span>
+  </button>
+</nav>
+
+<main class="wrap">
+
+  <!-- PAGE 1 -->
+  <section class="sheet" id="p1" role="tabpanel" aria-labelledby="tab1">
+    <p class="kicker">Page 1 of 3 &middot; Warm-up</p>
+    <h2>Match the word with its meaning</h2>
+    <p class="how">Tap an English word. Then tap the Spanish and Portuguese meaning that matches it.</p>
+    <p class="msg" id="p1-msg" aria-live="polite">Start with any word on the left.</p>
+    <div class="match">
+      <div class="col" id="p1-left" aria-label="English words"></div>
+      <div class="col" id="p1-right" aria-label="Spanish and Portuguese meanings"></div>
+    </div>
+    <div class="read">
+      <h3 id="p1-read-h" hidden>Now read each word in a sentence</h3>
+      <ul id="p1-sentences"></ul>
+    </div>
+    <div class="done-box" id="p1-done" hidden>
+      <span id="p1-done-text"></span>
+      <button class="btn primary" type="button" data-go="2">Next: Page 2</button>
+    </div>
+    <div class="nav">
+      <button class="btn" type="button" id="p1-reset">Start over</button>
+      <button class="btn" type="button" data-go="2">Page 2 &rarr;</button>
+    </div>
+  </section>
+
+  <!-- PAGE 2 -->
+  <section class="sheet" id="p2" role="tabpanel" aria-labelledby="tab2" hidden>
+    <p class="kicker">Page 2 of 3 &middot; Practice</p>
+    <h2>Choose the best word</h2>
+    <p class="how">Read the sentence. Tap the word or phrase that fits the blank. If it is wrong, try another one.</p>
+    <ol class="qs" id="p2-list"></ol>
+    <div class="done-box" id="p2-done" hidden>
+      <span id="p2-done-text"></span>
+      <button class="btn primary" type="button" data-go="3">Next: Page 3</button>
+    </div>
+    <div class="nav">
+      <button class="btn" type="button" data-go="1">&larr; Page 1</button>
+      <button class="btn" type="button" id="p2-reset">Start over</button>
+    </div>
+  </section>
+
+  <!-- PAGE 3 -->
+  <section class="sheet" id="p3" role="tabpanel" aria-labelledby="tab3" hidden>
+    <p class="kicker">Page 3 of 3 &middot; Challenge</p>
+    <h2>Welcome to Maple Court</h2>
+    <p class="how">Type the missing word or phrase in each blank. The first letter helps you. Check the verb form, too.</p>
+    <div class="tools">
+      <label class="switch"><input type="checkbox" id="bank-toggle" checked> Show word bank</label>
+    </div>
+    <div class="bank" id="bank" aria-label="Word bank"></div>
+    <p class="intro">Welcome to Maple Court, the building where I have lived since March.</p>
+    <ol class="lines" id="p3-lines"></ol>
+    <div class="btns">
+      <button class="btn primary" type="button" id="p3-check">Check answers</button>
+      <button class="btn" type="button" id="p3-show">Show answers</button>
+      <button class="btn" type="button" id="p3-reset">Start over</button>
+    </div>
+    <p class="result" id="p3-result" aria-live="polite"></p>
+
+    <div class="partb">
+      <p class="kicker">Part B &middot; Your turn</p>
+      <h3>Finish each sentence with your own idea</h3>
+      <p class="how" style="margin-bottom:0">Write it, then read it to a partner. Your partner asks one question. No score here.</p>
+      <div class="prompt">
+        <label for="pb1">A place near my home, where&hellip;, is a hidden gem.</label>
+        <textarea id="pb1" rows="2" placeholder="A place near my home, where ..."></textarea>
+      </div>
+      <div class="prompt">
+        <label for="pb2">I look up to a person whose&hellip;</label>
+        <textarea id="pb2" rows="2" placeholder="I look up to a person whose ..."></textarea>
+      </div>
+      <div class="prompt">
+        <label for="pb3">A room or a place which feels cozy to me is&hellip;</label>
+        <textarea id="pb3" rows="2" placeholder="A place which feels cozy to me is ..."></textarea>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn" type="button" data-go="2">&larr; Page 2</button>
+      <button class="btn" type="button" data-go="1">Back to Page 1</button>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  function shuffle(a) {
+    var b = a.slice();
+    for (var i = b.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = b[i]; b[i] = b[j]; b[j] = t;
+    }
+    return b;
+  }
+  function norm(s) { return String(s).toLowerCase().replace(/[^a-z]/g, ''); }
+
+  /* ---------- navigation ---------- */
+  function show(n, scroll) {
+    for (var i = 1; i <= 3; i++) {
+      $('#p' + i).hidden = (i !== n);
+      $('#tab' + i).setAttribute('aria-selected', i === n ? 'true' : 'false');
+    }
+    try { history.replaceState(null, '', '#page-' + n); } catch (e) {}
+    if (scroll) { try { $('#steps').scrollIntoView({ block: 'start' }); } catch (e) {} }
+  }
+  document.addEventListener('click', function (e) {
+    var g = e.target.closest('[data-go]');
+    if (g) show(+g.dataset.go, true);
+  });
+  function setBadge(id, text, full) {
+    var b = $('#' + id); b.textContent = text; b.classList.toggle('full', !!full);
+  }
+
+  /* ---------- PAGE 1: match ---------- */
+  var P1 = [
+    { en: 'down-to-earth', es: 'sencillo, humilde', pt: 'humilde, com os pés no chão',
+      s: 'My dentist, whose first job was washing cars, is very <mark class="w">down-to-earth</mark>.' },
+    { en: 'keep to yourself', es: 'ser reservado, mantenerse aparte', pt: 'ser reservado, ficar na sua',
+      s: 'At the laundromat, where everyone talks, Mr. Kim <mark class="w">keeps to himself</mark>.' },
+    { en: 'look up to', es: 'admirar, tomar como ejemplo', pt: 'admirar, ter como exemplo',
+      s: 'I <mark class="w">look up to</mark> my grandmother. She started a flower shop, which now has ten workers.' },
+    { en: 'get along with', es: 'llevarse bien con', pt: 'dar-se bem com',
+      s: 'I <mark class="w">get along with</mark> my neighbors, who often share food with me.' },
+    { en: 'a hidden gem', es: 'una joya escondida', pt: 'uma joia escondida',
+      s: 'The little shoe-repair shop behind the bus station, which opens at 7 a.m., is <mark class="w">a hidden gem</mark>.' },
+    { en: 'easygoing', es: 'tranquilo, relajado', pt: 'tranquilo, de boa',
+      s: 'My boss, whose door is always open, is very <mark class="w">easygoing</mark>.' }
+  ];
+  var s1 = { sel: null, done: 0, mistakes: 0 };
+
+  function initP1() {
+    s1 = { sel: null, done: 0, mistakes: 0 };
+    var left = $('#p1-left'), right = $('#p1-right');
+    left.innerHTML = ''; right.innerHTML = ''; $('#p1-sentences').innerHTML = '';
+    $('#p1-read-h').hidden = true; $('#p1-done').hidden = true;
+    $('#p1-msg').textContent = 'Start with any word on the left.';
+    P1.forEach(function (w, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'en'; b.dataset.i = i; b.textContent = w.en;
+      b.setAttribute('aria-pressed', 'false');
+      left.appendChild(b);
+    });
+    shuffle(P1.map(function (_, i) { return i; })).forEach(function (i) {
+      var w = P1[i], b = document.createElement('button');
+      b.type = 'button'; b.className = 'tr'; b.dataset.i = i;
+      b.innerHTML = '<span class="lang" lang="es"><i>ES</i>' + w.es + '</span>' +
+                    '<span class="lang" lang="pt"><i>PT</i>' + w.pt + '</span>';
+      right.appendChild(b);
+    });
+    setBadge('b1', '0/6', false);
+  }
+  $('#p1-left').addEventListener('click', function (e) {
+    var b = e.target.closest('button.en');
+    if (!b || b.disabled || b.classList.contains('ok')) return;
+    $$('#p1-left .en').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+    b.setAttribute('aria-pressed', 'true');
+    s1.sel = +b.dataset.i;
+    $('#p1-msg').textContent = 'Now find the meaning of "' + P1[s1.sel].en + '".';
+  });
+  $('#p1-right').addEventListener('click', function (e) {
+    var b = e.target.closest('button.tr');
+    if (!b || b.classList.contains('ok')) return;
+    if (s1.sel === null) { $('#p1-msg').textContent = 'Tap an English word first.'; return; }
+    var i = +b.dataset.i;
+    if (i === s1.sel) {
+      b.classList.add('ok'); b.disabled = true;
+      var l = $('#p1-left .en[data-i="' + i + '"]');
+      l.classList.add('ok'); l.disabled = true; l.setAttribute('aria-pressed', 'false');
+      var li = document.createElement('li'); li.innerHTML = P1[i].s;
+      $('#p1-sentences').appendChild(li);
+      $('#p1-read-h').hidden = false;
+      s1.done++; s1.sel = null;
+      setBadge('b1', s1.done + '/6', s1.done === 6);
+      $('#p1-msg').textContent = 'Yes! Pick the next word.';
+      if (s1.done === 6) {
+        $('#p1-msg').textContent = 'All six matched.';
+        $('#p1-done-text').textContent = s1.mistakes === 0 ? 'Perfect match. No mistakes.' :
+          'Done. Wrong taps: ' + s1.mistakes + '.';
+        $('#p1-done').hidden = false;
+        setBadge('b1', '✓', true);
+      }
+    } else {
+      s1.mistakes++;
+      b.classList.add('wrong');
+      setTimeout(function () { b.classList.remove('wrong'); }, 800);
+      $('#p1-msg').textContent = 'Not that one. Try another meaning for "' + P1[s1.sel].en + '".';
+    }
+  });
+  $('#p1-reset').addEventListener('click', initP1);
+
+  /* ---------- PAGE 2: choose ---------- */
+  var P2 = [
+    { pre: 'Ms. Reyes, whose students must wear uniforms and arrive before 8:00, is very', post: '.',
+      ans: 'strict', opts: ['strict', 'easygoing', 'cozy'] },
+    { pre: 'My cousin loves meeting new people at parties. He is very', post: '.',
+      ans: 'outgoing', opts: ['outgoing', 'hardworking', 'cozy'] },
+    { pre: 'The bakery, where the team starts at 4 a.m. and works until night, has very', post: 'people.',
+      ans: 'hardworking', opts: ['hardworking', 'lively', 'easygoing'] },
+    { pre: 'My sister never interrupts me when I talk. She is', post: '.',
+      ans: 'a good listener', opts: ['a good listener', 'a hidden gem', 'a lively person'] },
+    { pre: "My grandmother's kitchen, which has a small table and a warm yellow light, feels very", post: '.',
+      ans: 'cozy', opts: ['cozy', 'lively', 'outgoing'] },
+    { pre: 'On Saturdays, the community pool, where kids play and music is always on, is very', post: '.',
+      ans: 'lively', opts: ['lively', 'cozy', 'down-to-earth'] },
+    { pre: 'My neighbor, whose family owns three stores, still drives an old car and shops at the thrift store. He is very', post: '.',
+      ans: 'down-to-earth', opts: ['down-to-earth', 'outgoing', 'strict'] },
+    { pre: 'My math teacher worked two jobs and finished college at night. I really', post: 'her.',
+      ans: 'look up to', opts: ['look up to', 'get along with', 'look at'] }
+  ];
+  var s2 = { answered: 0, first: 0 };
+
+  function initP2() {
+    s2 = { answered: 0, first: 0 };
+    var list = $('#p2-list'); list.innerHTML = '';
+    P2.forEach(function (q, i) {
+      var li = document.createElement('li'); li.className = 'q'; li.dataset.i = i;
+      var opts = shuffle(q.opts).map(function (o) {
+        return '<button type="button" class="opt" data-v="' + o + '">' + o + '</button>';
+      }).join('');
+      li.innerHTML = '<p class="sent">' + q.pre + ' <span class="blank">xxxxxxxxx</span> ' + q.post + '</p>' +
+        '<div class="opts" role="group" aria-label="Choices for sentence ' + (i + 1) + '">' + opts + '</div>' +
+        '<p class="fb" aria-live="polite"></p>';
+      list.appendChild(li);
+    });
+    $('#p2-done').hidden = true;
+    setBadge('b2', '0/8', false);
+  }
+  $('#p2-list').addEventListener('click', function (e) {
+    var b = e.target.closest('button.opt');
+    if (!b || b.disabled) return;
+    var q = b.closest('.q'), item = P2[+q.dataset.i], fb = $('.fb', q);
+    if (b.dataset.v === item.ans) {
+      var bl = $('.blank', q); bl.textContent = item.ans; bl.classList.add('filled');
+      q.classList.add('done'); b.classList.add('ok');
+      $$('button.opt', q).forEach(function (x) { x.disabled = true; });
+      if (!q.dataset.slip) s2.first++;
+      s2.answered++;
+      fb.textContent = '✓ Yes!';
+      setBadge('b2', s2.answered + '/8', false);
+      if (s2.answered === P2.length) {
+        $('#p2-done-text').textContent = 'First try: ' + s2.first + ' of ' + P2.length + '.';
+        $('#p2-done').hidden = false;
+        setBadge('b2', '✓', true);
+      }
+    } else {
+      q.dataset.slip = '1';
+      b.classList.add('wrong'); b.disabled = true;
+      fb.textContent = 'Not quite. Try another one.';
+    }
+  });
+  $('#p2-reset').addEventListener('click', initP2);
+
+  /* ---------- PAGE 3: write ---------- */
+  var P3 = [
+    { pre: 'My apartment, which is on the third floor, is small but very ', post: '. It has a warm light and a soft couch.',
+      ans: ['cozy', 'cosy'], hint: 'Meaning: warm, small, and comfortable.' },
+    { pre: 'Our landlord, whose family has owned the building for 40 years, is ', post: '. He fixes things himself and never talks about money.',
+      ans: ['down-to-earth'], hint: 'Meaning: simple and honest; not proud. Three small words with hyphens.' },
+    { pre: 'The man in apartment 4 ', post: '. He never comes to the building parties.',
+      ans: ['keeps to himself'], hint: 'Three words. After "he", the verb needs -s.' },
+    { pre: 'I ', post: ' the other neighbors, so I always say hello.',
+      ans: ['get along with'], hint: 'Three words. Friendly relationship with someone.' },
+    { pre: 'Rosa, who drives a school bus, is the most ', post: ' person I know. She starts at 5 a.m.',
+      ans: ['hardworking'], hint: 'One word. Works a lot and does a good job.' },
+    { pre: 'I really ', post: ' her.',
+      ans: ['look up to'], hint: 'Three words. Admire and respect someone.' },
+    { pre: 'Her husband, Dev, is ', post: '. Nothing makes him angry.',
+      ans: ['easygoing'], hint: 'One word. Relaxed; does not worry easily.' },
+    { pre: 'The garden on the roof, where we all grow tomatoes, is a ', post: '. It is green, quiet, and free!',
+      ans: ['hidden gem'], hint: 'Two words. A great place that not many people know.' }
+  ];
+  var BANK = ['cozy', 'down-to-earth', 'keep to yourself', 'get along with', 'hardworking', 'look up to', 'easygoing', 'hidden gem'];
+
+  function initP3() {
+    var ol = $('#p3-lines'); ol.innerHTML = '';
+    P3.forEach(function (it, i) {
+      var longest = it.ans.reduce(function (m, a) { return Math.max(m, a.length); }, 0);
+      var li = document.createElement('li'); li.className = 'line'; li.dataset.i = i;
+      li.innerHTML = it.pre +
+        '<input class="gap" id="g' + i + '" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" ' +
+        'placeholder="' + it.ans[0].charAt(0) + '…" aria-label="Blank ' + (i + 1) + '" style="width:' + (longest + 4) + 'ch">' +
+        it.post + '<span class="hint" hidden></span>';
+      ol.appendChild(li);
+    });
+    var bank = $('#bank'); bank.innerHTML = '';
+    shuffle(BANK).forEach(function (w) {
+      var c = document.createElement('span'); c.className = 'chip'; c.textContent = w; bank.appendChild(c);
+    });
+    bank.hidden = !$('#bank-toggle').checked;
+    $('#p3-result').textContent = '';
+    setBadge('b3', '0/8', false);
+  }
+  $('#bank-toggle').addEventListener('change', function () { $('#bank').hidden = !this.checked; });
+  $('#p3-lines').addEventListener('input', function (e) {
+    var inp = e.target.closest('.gap'); if (!inp) return;
+    inp.classList.remove('ok', 'bad', 'shown');
+    var h = $('.hint', inp.closest('.line')); h.hidden = true;
+  });
+  $('#p3-lines').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.closest('.gap')) { e.preventDefault(); check(); }
+  });
+  function check() {
+    var right = 0;
+    P3.forEach(function (it, i) {
+      var inp = $('#g' + i), line = inp.closest('.line'), h = $('.hint', line);
+      var v = norm(inp.value);
+      var good = v && it.ans.some(function (a) { return norm(a) === v; });
+      inp.classList.remove('ok', 'bad', 'shown');
+      if (good) { inp.classList.add('ok'); h.hidden = true; right++; }
+      else { inp.classList.add('bad'); h.textContent = '✗ ' + it.hint; h.hidden = false; }
+    });
+    var r = $('#p3-result');
+    if (right === P3.length) { r.textContent = 'All 8 correct. Now try Part B below.'; setBadge('b3', '✓', true); }
+    else { r.textContent = right + ' of 8 correct. Fix the red boxes and check again.'; setBadge('b3', right + '/8', false); }
+  }
+  $('#p3-check').addEventListener('click', check);
+  $('#p3-show').addEventListener('click', function () {
+    P3.forEach(function (it, i) {
+      var inp = $('#g' + i);
+      var v = norm(inp.value);
+      var good = v && it.ans.some(function (a) { return norm(a) === v; });
+      if (!good) {
+        inp.value = it.ans[0]; inp.classList.remove('bad', 'ok'); inp.classList.add('shown');
+        $('.hint', inp.closest('.line')).hidden = true;
+      }
+    });
+    $('#p3-result').textContent = 'Answers shown in gold. Read the whole text aloud once.';
+  });
+  $('#p3-reset').addEventListener('click', initP3);
+
+  /* ---------- start ---------- */
+  initP1(); initP2(); initP3();
+  var m = (location.hash || '').match(/^#page-([123])$/);
+  show(m ? +m[1] : 1, false);
+})();
+</script>
+
+</body></html>
