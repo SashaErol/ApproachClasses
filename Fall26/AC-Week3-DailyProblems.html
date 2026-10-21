@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3 Dialogues: Daily Problems</title>
+<style>
+  :root{--navy:#1b2a4a;--navy-dark:#10192e;--green:#2f7a4f;--gold:#c9a227;--red:#a8342a;--paper:#faf7f0;--ink:#1c1c1c;}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:linear-gradient(160deg,var(--navy),var(--navy-dark));font-family:'Helvetica Neue','Segoe UI',Arial,sans-serif;display:flex;justify-content:center;padding:22px 14px 30px}
+  .wrap{width:100%;max-width:720px}
+  .kicker{color:var(--gold);letter-spacing:2px;font-size:12px;font-weight:700;text-transform:uppercase;text-align:center;margin-bottom:5px}
+  .title{color:var(--paper);text-align:center;font-family:Georgia,Cambria,serif;font-size:26px;font-weight:700;margin:0 0 4px}
+  .subtitle{color:#b9c2d6;text-align:center;font-size:13px;margin-bottom:16px;line-height:1.45}
+  .card{background:var(--paper);border-radius:18px;padding:30px 24px 22px;box-shadow:0 20px 45px rgba(0,0,0,.35);position:relative}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;border-radius:18px 18px 0 0;background:linear-gradient(90deg,var(--navy),var(--green),var(--gold),var(--red))}
+  .num{font-size:12px;font-weight:700;color:var(--green);letter-spacing:1px}
+  .dtitle{font-family:Georgia,serif;font-size:24px;font-weight:700;color:var(--navy);margin:2px 0 4px}
+  .situation{font-size:14px;color:#555;line-height:1.5;margin-bottom:10px}
+  .roles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .role{font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:999px;color:#fff}
+  .role.a{background:var(--navy)}.role.b{background:var(--green)}
+  .line{display:flex;gap:9px;margin:9px 0;align-items:flex-start}
+  .badge{flex:0 0 auto;width:26px;height:26px;border-radius:50%;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .line.a .badge{background:var(--navy)}.line.b .badge{background:var(--green)}
+  .bubble{font-size:16.5px;line-height:1.6;color:var(--ink);background:#fff;border:1px solid #e4ddc9;border-radius:12px;padding:6px 12px}
+  .line.a .bubble{border-left:4px solid var(--navy)}.line.b .bubble{border-left:4px solid var(--green)}
+  .w{background:#fff3c4;border-bottom:2px solid var(--gold);cursor:pointer;font-weight:700;color:var(--navy);position:relative;padding:0 2px;border-radius:3px;white-space:nowrap}
+  .w:hover{background:#ffe99a}
+  .w .tip{display:none;position:absolute;top:128%;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:5px 11px;border-radius:8px;font-size:13px;font-weight:600;font-style:normal;white-space:nowrap;box-shadow:0 6px 16px rgba(0,0,0,.3);z-index:20}
+  .w .tip::before{content:"";position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:var(--navy)}
+  .w.open .tip{display:block}
+  .w.open{background:#ffe99a}
+  .hint{font-size:12px;color:#777;margin:2px 0 8px}
+  .chips{margin-top:14px;border-top:1px dashed #cfc8b4;padding-top:10px}
+  .chips h4{margin:0 0 6px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#777}
+  .chip{display:inline-flex;align-items:center;gap:5px;margin:3px 4px 3px 0;padding:4px 10px;border-radius:999px;border:1.5px solid var(--navy);background:#fff;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer}
+  .chip:hover{background:#fff3c4}
+  .chip em{font-style:normal;font-size:10px;font-weight:700;color:#fff;border-radius:6px;padding:1px 5px}
+  .chip em.w1{background:var(--green)}.chip em.w2{background:#b8921a}.chip em.w3{background:var(--red)}
+  .legend{font-size:11.5px;color:#777;margin-top:4px}
+  .your{margin-top:14px;background:var(--navy);color:var(--paper);border-radius:12px;padding:11px 15px;font-size:14px;line-height:1.5}
+  .your b{color:var(--gold)}
+  .your ul{margin:4px 0 0;padding-left:18px}
+  .controls{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+  button.nav{background:var(--navy);color:var(--paper);border:1px solid rgba(250,247,240,.35);padding:11px 22px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer}
+  button.nav:hover{background:var(--green)}
+  button.nav:disabled{opacity:.35;cursor:default}
+  .dots{display:flex;gap:8px}
+  .dot{width:9px;height:9px;border-radius:50%;background:#55627f}
+  .dot.active{background:var(--gold);transform:scale(1.25)}
+  .footer{text-align:center;color:#8793ad;font-size:12px;margin-top:14px}
+  body.no-tts .footer .au{display:none}
+  @media(max-width:520px){.card{padding:26px 14px 18px}.bubble{font-size:15.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Approach ISC &middot; American Culture &amp; Civic Life</div>
+  <div class="title">Week 3: Daily Problems</div>
+  <div class="subtitle">Read with a partner. Then switch roles. Tap a gold word to hear it and see Portuguese.</div>
+  <div class="card" id="card"></div>
+  <div class="controls">
+    <button class="nav" id="back">&larr; Back</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav" id="next">Next &rarr;</button>
+  </div>
+  <div class="footer"><span class="au">Audio uses your device&rsquo;s English voice. </span>Gold = target words (Week 1, Week 2, and a few new ones).</div>
+</div>
+<script>
+/* glossary: word -> [Portuguese, week tag (1,2,3 = new)] */
+const G={
+ "notice":["aviso",2],"parking permit":["autorização de estacionamento",1],"permit":["autorização",1],
+ "careful":["cuidado / cuidadoso",1],"leasing office":["administração do prédio",2],"form":["formulário",1],
+ "parking lot":["estacionamento",2],"neighbors":["vizinhos",1],"neighbor":["vizinho(a)",1],"block":["quarteirão",2],"blocks":["quarteirões",2],
+ "help":["ajuda / ajudar",1],"appointment":["consulta / hora marcada",1],"insurance":["seguro (saúde)",3],
+ "pharmacy":["farmácia",2],"far from":["longe de",2],"near":["perto de",2],"route":["rota / estrada",2],
+ "gas station":["posto de gasolina",2],"support":["apoio / suporte",1],"bill":["conta (a pagar)",3],
+ "charge":["cobrança",3],"service":["serviço",2],"complaint":["reclamação",2],"customer support":["atendimento ao cliente",1],
+ "technician":["técnico(a)",3],"package":["encomenda / pacote",3],"neighborhood":["bairro",2],
+ "small talk":["conversa informal",1],"community":["comunidade",1],"comfortable":["à vontade / confortável",1],
+ "landlord":["proprietário(a) do imóvel",2],"maintenance":["manutenção",2],"account number":["número da conta",3],
+ "mail carrier":["carteiro(a)",3]
+};
+const keys=Object.keys(G).sort((a,b)=>b.length-a.length);
+const re=new RegExp("\\b("+keys.join("|")+")\\b","gi");
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function mark(t){return esc(t).replace(re,m=>{const k=m.toLowerCase();return `<span class="w" data-say="${k}">${m}<span class="tip">${G[k][0]}</span></span>`;});}
+
+const D=[
+ {t:"A Notice on My Car",
+  s:"Dana finds a notice on her car in the apartment parking lot. Her neighbor Chris helps her.",
+  a:"Dana",b:"Chris",
+  chips:["notice","parking permit","careful","leasing office","form","parking lot","neighbors","blocks","help"],
+  L:[["a","Hi, Chris! Look. There is a notice on my car."],
+     ["b","Oh no. What does it say?"],
+     ["a","It says I need a parking permit. I don’t have one."],
+     ["b","Do you park in the parking lot every day?"],
+     ["a","Yes, I do. I didn’t know the rule."],
+     ["b","Be careful. They can move your car, and it is expensive."],
+     ["a","Really? Where can I get a permit?"],
+     ["b","Go to the leasing office. It is two blocks from here."],
+     ["a","Is there a form?"],
+     ["b","Yes, there is. You write your name, your car, and your apartment number."],
+     ["a","Is the permit free?"],
+     ["b","No, it isn’t. I think it is ten dollars."],
+     ["a","What time is the office open?"],
+     ["b","From nine to five. Do you want me to go with you? I can help you."],
+     ["a","Yes, please! Thank you, Chris."],
+     ["b","No problem. That is what neighbors are for."]],
+  y:["Your car has a different problem. Make a new dialogue.","Ask your partner: Is there a parking lot near your home? Do you need a permit?"]},
+ {t:"Calling the Clinic",
+  s:"Sam needs a doctor’s appointment. Sam calls Valley Community Health Center.",
+  a:"Sam (patient)",b:"Receptionist",
+  chips:["appointment","form","insurance","pharmacy","route","gas station","blocks","near","far from","support","help"],
+  L:[["b","Good morning. Valley Community Health Center. How can I help you?"],
+     ["a","Hello. I need an appointment, please."],
+     ["b","We have an appointment on Thursday at ten thirty."],
+     ["a","Sorry, I work on Thursday. Is there an appointment on Friday?"],
+     ["b","Yes, there is one at two o’clock."],
+     ["a","Perfect. Do I need to bring something?"],
+     ["b","Yes. Please bring your ID and your insurance card."],
+     ["a","I have a student insurance card. Is that OK?"],
+     ["b","Yes, that is fine. Also, there is a new patient form. You can fill it out online."],
+     ["a","Can you send me the form by email? I need some support with the English."],
+     ["b","Of course. Our staff can help you at the clinic, too."],
+     ["a","Great. Where is the clinic? Is it far from Main Street?"],
+     ["b","No, it is near the library. Take Route 20 and turn right at the gas station."],
+     ["a","Is there a pharmacy near the clinic?"],
+     ["b","Yes. The pharmacy is two blocks from us."],
+     ["a","Thank you very much. See you Friday!"]],
+  y:["Call a barber, a school, or a dentist. Ask for an appointment.","Ask your partner: How do you get to your doctor? Is it near your home?"]},
+ {t:"A Wrong Charge",
+  s:"Pat has a problem with an internet bill. Pat calls customer support.",
+  a:"Pat (customer)",b:"Agent",
+  chips:["bill","charge","service","complaint","customer support","account number","technician","notice","form","help"],
+  L:[["b","Thank you for calling customer support. How can I help you?"],
+     ["a","Hello. I have a problem with my bill."],
+     ["b","What is the problem?"],
+     ["a","There is a charge for fifty dollars. I don’t understand it. My service is thirty dollars a month."],
+     ["b","Let me check. Can I have your name and account number, please?"],
+     ["a","Yes. My name is Pat Morgan. The account number is 4 8 2 1."],
+     ["b","Thank you, Ms. Morgan. I see it. There is a charge for a new modem."],
+     ["a","But I didn’t ask for a new modem. I want to make a complaint."],
+     ["b","I’m sorry about that. Did a technician come to your apartment?"],
+     ["a","Yes, last week. He checked the internet, but he did not give me a new modem."],
+     ["b","I see. I can remove the charge. You will see it on your next bill."],
+     ["a","Can you send me a notice by email? I want to keep it."],
+     ["b","Yes, I will send it today. There is also a short form about our service."],
+     ["a","OK. Thank you. You were very helpful."],
+     ["b","Is there anything else I can help you with?"],
+     ["a","No, that’s all. Have a nice day!"]],
+  y:["Make a different bill problem: electricity, phone, or a store.","Ask your partner: Do you check your bill every month? Is it easy or difficult?"]},
+ {t:"A Package for My Neighbor",
+  s:"Lee finds a package at the door that is for the neighbor, Jordan. They meet and make small talk.",
+  a:"Lee",b:"Jordan (new neighbor)",
+  chips:["package","neighbor","neighborhood","small talk","community","comfortable","landlord","maintenance","leasing office","near","blocks","parking lot"],
+  L:[["a","Hello! Sorry to bother you. I live in apartment 5B."],
+     ["b","Hi! Nice to meet you. I’m Jordan."],
+     ["a","I’m Lee. The mail carrier left a package at my door, but it is for you."],
+     ["b","Oh, thank you! I’m waiting for this package."],
+     ["a","No problem. Are you new in the neighborhood?"],
+     ["b","Yes. I moved here two weeks ago. I’m still learning the neighborhood."],
+     ["a","Welcome! There is a good grocery store near here. It is two blocks from the parking lot."],
+     ["b","Great. Is it safe at night?"],
+     ["a","Yes, it is quiet. People are friendly, and the community is nice."],
+     ["b","Good. I already feel comfortable here."],
+     ["a","If you have a problem in your apartment, call maintenance."],
+     ["b","And the landlord?"],
+     ["a","He is nice, but go to the leasing office first. They help with everything."],
+     ["b","Thanks for the tips! Would you like some coffee? Sorry, my dog, Dino, is friendly."],
+     ["a","I love dogs. Yes, please. Thank you!"]],
+  y:["Meet a new neighbor. Do small talk: where are you from, what do you like here?","Ask your partner: Do you know your neighbors? Do you talk to them?"]}
+];
+const wk={1:'W1',2:'W2',3:'New'};
+let cur=0;
+const card=document.getElementById('card'),dots=document.getElementById('dots'),back=document.getElementById('back'),next=document.getElementById('next');
+D.forEach((_,i)=>{const d=document.createElement('div');d.className='dot';dots.appendChild(d)});
+function render(){
+  const d=D[cur];
+  card.innerHTML=`<div class="num">DIALOGUE ${cur+1} / ${D.length} &middot; about 1&ndash;2 min</div>
+   <div class="dtitle">${esc(d.t)}</div><div class="situation">${esc(d.s)}</div>
+   <div class="roles"><span class="role a">A: ${esc(d.a)}</span><span class="role b">B: ${esc(d.b)}</span></div>
+   ${d.L.map(l=>`<div class="line ${l[0]}"><div class="badge">${l[0].toUpperCase()}</div><div class="bubble">${mark(l[1])}</div></div>`).join('')}
+   <div class="chips"><h4>Target words (tap to listen)</h4>${d.chips.map(c=>`<span class="chip" data-say="${c}">${c}<em class="w${G[c][1]}">${wk[G[c][1]]}</em></span>`).join('')}
+   <div class="legend">W1 = Week 1 &nbsp;&middot;&nbsp; W2 = Week 2 &nbsp;&middot;&nbsp; New = new word this week</div></div>
+   <div class="your"><b>Your turn.</b> Switch roles, then try:<ul>${d.y.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+  [...dots.children].forEach((x,i)=>x.classList.toggle('active',i===cur));
+  back.disabled=cur===0; next.textContent=cur===D.length-1?'Restart ↻':'Next →';
+}
+back.onclick=()=>{if(cur>0){cur--;render();window.scrollTo(0,0)}};
+next.onclick=()=>{cur=cur===D.length-1?0:cur+1;render();window.scrollTo(0,0)};
+
+const hasTTS=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+if(!hasTTS) document.body.classList.add('no-tts');
+function pick(){const v=speechSynthesis.getVoices().filter(x=>/^en[-_]US/i.test(x.lang));
+  return v.find(x=>/natural|premium|enhanced|neural/i.test(x.name))||v.find(x=>/samantha|aria|jenny|google us/i.test(x.name))||v[0];}
+function say(t){if(!hasTTS)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.8;const v=pick();if(v)u.voice=v;speechSynthesis.speak(u);}
+card.addEventListener('click',e=>{
+  const w=e.target.closest('.w'),c=e.target.closest('.chip');
+  if(w){const o=w.classList.contains('open');document.querySelectorAll('.w.open').forEach(x=>x.classList.remove('open'));if(!o)w.classList.add('open');say(w.dataset.say);e.stopPropagation();}
+  else if(c){say(c.dataset.say);}
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.w'))document.querySelectorAll('.w.open').forEach(x=>x.classList.remove('open'))});
+if(hasTTS)speechSynthesis.getVoices();
+render();
+</script>
+</body>
+</html>
