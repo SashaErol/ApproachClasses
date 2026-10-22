@@ -1,0 +1,478 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Perfect Tenses Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: sticky tab bar, one wide reading column; every concept = a timeline + dense examples */
+:root{
+  --bg:#F5F7FB; --card:#FFFFFF; --ink:#14213D; --ink2:#51607C; --line:#D5DCEA;
+  --blue:#2457D6; --blue-t:#E3EBFF; --now:#D6336C; --now-t:#FFE3EC; --amber:#E8A200; --amber-t:#FFF1C2;
+  --good:#1B7F4B; --good-t:#DDF4E7; --bad:#B42318; --bad-t:#FDE3E0;
+  --f-d:"Bricolage Grotesque","Arial Black",system-ui,sans-serif;
+  --f-b:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1424; --card:#161E33; --ink:#E7ECF8; --ink2:#9AA8C6; --line:#2A3555;
+  --blue:#8FADFF; --blue-t:#1E2D5C; --now:#FF86AE; --now-t:#4A1E32; --amber:#F6C945; --amber-t:#4A3B0C;
+  --good:#6FD39B; --good-t:#13392A; --bad:#FF9B90; --bad-t:#4B1C18; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1424; --card:#161E33; --ink:#E7ECF8; --ink2:#9AA8C6; --line:#2A3555;
+  --blue:#8FADFF; --blue-t:#1E2D5C; --now:#FF86AE; --now-t:#4A1E32; --amber:#F6C945; --amber-t:#4A3B0C;
+  --good:#6FD39B; --good-t:#13392A; --bad:#FF9B90; --bad-t:#4B1C18; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 var(--f-b);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:1000px;margin:0 auto}
+header{padding:22px 0 8px}
+h1{font:800 clamp(30px,5vw,46px)/1.05 var(--f-d);margin:0 0 6px;letter-spacing:-.02em;text-wrap:balance}
+.sub{color:var(--ink2);margin:0;max-width:62ch}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);margin-bottom:22px}
+nav .row{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+nav button{flex:none;font:700 15px var(--f-b);padding:9px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+nav button[aria-selected="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) nav button[aria-selected="true"]{color:#0E1424}}
+:root[data-theme="dark"] nav button[aria-selected="true"]{color:#0E1424}
+button:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+h2{font:800 clamp(24px,3.4vw,32px)/1.1 var(--f-d);margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
+h3{font:800 21px/1.2 var(--f-d);margin:0 0 6px;text-wrap:balance}
+.lead{color:var(--ink2);margin:0 0 18px;max-width:68ch}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:18px;min-width:0}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.grid>.card{margin:0}
+.formula{display:inline-block;font:700 19px var(--f-b);background:var(--blue-t);color:var(--ink);padding:5px 12px;border-radius:8px;margin:2px 0 10px}
+.tag{display:inline-block;font:700 12px var(--f-b);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:4px}
+ul.ex{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+ul.ex li{padding-left:16px;position:relative}
+ul.ex li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--blue)}
+.ha{font-weight:700;background:var(--blue-t);padding:0 4px;border-radius:4px}
+.hp{font-weight:700;background:var(--amber-t);padding:0 4px;border-radius:4px}
+.ht{font-weight:700;color:var(--now);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.note{background:var(--amber-t);border-radius:10px;padding:10px 14px;margin:12px 0 0;font-size:16.5px}
+.sig{margin-top:10px;font-size:16px;color:var(--ink2)}
+.sig b{color:var(--ink)}
+.tlw{margin:8px 0 4px;overflow-x:auto}
+svg.tl{display:block;width:100%;min-width:430px;height:auto;max-width:720px}
+.ax{stroke:var(--ink2);stroke-width:2.5}
+.dA{fill:var(--blue)} .dR{fill:var(--amber);stroke:var(--ink);stroke-width:1.5}
+.dH{fill:var(--card);stroke:var(--blue);stroke-width:2.5;stroke-dasharray:4 3}
+.spn{fill:var(--blue)} .spn.dash{opacity:.3}
+.lnk{fill:none;stroke:var(--now);stroke-width:2.5}
+.nl{stroke:var(--now);stroke-width:3} .nt{fill:var(--now);font:800 16px var(--f-b);letter-spacing:.08em}
+.rng{fill:none;stroke:var(--ink2);stroke-width:1.5;stroke-dasharray:6 5}
+.ed{fill:var(--ink2);font:700 12px var(--f-b);letter-spacing:.12em}
+svg text{fill:var(--ink);font:700 15px var(--f-b)} svg text.t2{fill:var(--ink2);font-weight:400;font-size:14px}
+svg text.nt{fill:var(--now);font:800 16px var(--f-b)} svg text.ed{fill:var(--ink2);font:700 12px var(--f-b)}
+.mA{fill:var(--ink2)} .mL{fill:var(--now)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+.tw{overflow-x:auto}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+th{font:700 13px var(--f-b);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 9px;font-size:16px;white-space:nowrap}
+.cmp{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.cmp>div{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.ok{color:var(--good);font-weight:700} .no{color:var(--bad);font-weight:700}
+.mk{display:flex;gap:10px 14px;align-items:flex-start;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line)}
+.mk .w{flex:1 1 280px;min-width:0}
+.mk .r{flex:1 1 280px;min-width:0}
+.mk .r small{display:block;color:var(--ink2);font-size:15px}
+.mk .w span.x{color:var(--bad);font-weight:700;margin-right:6px}
+.mk .r span.v{color:var(--good);font-weight:700;margin-right:6px}
+.mk .w q{quotes:none;text-decoration:line-through;text-decoration-color:var(--bad);text-decoration-thickness:2px}
+.fx{font:700 14px var(--f-b);padding:6px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;flex:none}
+.tools{display:flex;justify-content:flex-end;margin-bottom:6px}
+.pt{display:inline-block;font-size:14px;background:var(--now-t);border-radius:6px;padding:1px 7px;margin-top:3px}
+.pair{display:flex;gap:6px 12px;flex-wrap:wrap;align-items:baseline}
+.big{font:800 22px/1.3 var(--f-d)}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="mA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path class="mA" d="M0 0L10 5L0 10z"/></marker>
+<marker id="mL" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="mL" d="M0 0L10 5L0 10z"/></marker>
+</defs></svg>
+
+<div class="wrap">
+<header>
+  <h1>Perfect Tenses Lab</h1>
+  <p class="sub">Present perfect, past perfect and future perfect on a timeline. Start with the big picture, then go deep on present perfect.</p>
+</header>
+<nav><div class="row" id="tabs" role="tablist"></div></nav>
+<main id="panels"></main>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const fmt=s=>s.replace(/\{([apt]):([^}]*)\}/g,(m,k,t)=>'<span class="h'+k+'">'+t+'</span>');
+const X=p=>30+p*5.4;
+function TL(items,alt){
+  let s='<div class="tlw"><svg class="tl" viewBox="0 0 600 132" role="img" aria-label="'+(alt||'Timeline')+'">';
+  s+='<text class="ed" x="30" y="16">PAST</text><text class="ed" x="570" y="16" text-anchor="end">FUTURE</text>';
+  s+='<line class="ax" x1="14" y1="70" x2="586" y2="70" marker-end="url(#mA)"/>';
+  items.forEach(it=>{
+    const x=X(it.x==null?0:it.x);
+    if(it.k==='range'){s+='<rect class="rng" x="'+X(it.a)+'" y="42" width="'+(X(it.b)-X(it.a))+'" height="56" rx="8"/>';}
+    if(it.k==='span'){const w=X(it.b)-X(it.a);s+='<rect class="spn'+(it.dash?' dash':'')+'" x="'+X(it.a)+'" y="63" width="'+w+'" height="14" rx="7"/>';
+      if(it.l)s+='<text x="'+(X(it.a)+w/2)+'" y="106" text-anchor="middle">'+it.l+'</text>';
+      if(it.l2)s+='<text class="t2" x="'+(X(it.a)+w/2)+'" y="124" text-anchor="middle">'+it.l2+'</text>';}
+    if(it.k==='dot'||it.k==='ref'||it.k==='hollow'){
+      s+='<circle class="'+(it.k==='dot'?'dA':it.k==='ref'?'dR':'dH')+'" cx="'+x+'" cy="70" r="8"/>';
+      if(it.l)s+='<text x="'+x+'" y="106" text-anchor="middle">'+it.l+'</text>';
+      if(it.l2)s+='<text class="t2" x="'+x+'" y="124" text-anchor="middle">'+it.l2+'</text>';}
+    if(it.k==='link'){const a=X(it.a),b=X(it.b);s+='<path class="lnk" d="M'+a+' 56 Q'+((a+b)/2)+' 2 '+(b-3)+' 56" marker-end="url(#mL)"/>';}
+    if(it.k==='now'){s+='<line class="nl" x1="'+x+'" y1="40" x2="'+x+'" y2="100"/><text class="nt" x="'+x+'" y="34" text-anchor="middle">NOW</text>';
+      if(it.l)s+='<text class="t2" x="'+x+'" y="118" text-anchor="middle">'+it.l+'</text>';}
+    if(it.k==='rl'){s+='<text class="t2" x="'+X(it.a)+'" y="'+(it.y||122)+'" text-anchor="middle">'+it.l+'</text>';}
+  });
+  return s+'</svg></div>';
+}
+const EX=a=>'<ul class="ex">'+a.map(t=>'<li>'+fmt(t)+'</li>').join('')+'</ul>';
+const NOTE=t=>'<div class="note">'+fmt(t)+'</div>';
+const SIG=t=>'<div class="sig"><b>Signals:</b> '+t+'</div>';
+const chips=a=>'<div class="chips">'+a.map(t=>'<span class="chip">'+t+'</span>').join('')+'</div>';
+
+/* ---------- mistakes component ---------- */
+function MK(list){
+  return '<div class="tools"><button class="fx" data-all>Show all fixes</button></div>'+list.map(m=>
+   '<div class="mk"><div class="w"><span class="x">✗</span><q>'+m[0]+'</q>'+(m[3]?'<br><span class="pt">PT: '+m[3]+'</span>':'')+'</div>'+
+   '<button class="fx" data-fx aria-expanded="false">Show fix</button>'+
+   '<div class="r" hidden><span class="v">✓</span>'+fmt(m[1])+'<small>'+m[2]+'</small></div></div>').join('');
+}
+
+/* ---------- function cards (present perfect) ---------- */
+const FN=[
+ {n:'1. Life experience',f:'Something happened at some time in your life. The exact time does not matter.',
+  tl:[{k:'range',a:6,b:72},{k:'dot',x:16,l:'once'},{k:'dot',x:34,l:'twice'},{k:'dot',x:52,l:'again'},{k:'link',a:52,b:74},{k:'now',x:74}],
+  alt:'Several unspecified past events leading to now',
+  ex:['{a:Have} you {t:ever} {p:been} to Salem in October?','I’ve {t:never} {p:tried} a Fluffernutter, and I’m not planning to.','We’ve {p:driven} the Mohawk Trail {t:three times}, and it never gets old.','She’s {p:worked} as a nurse, a bartender and a real-estate agent {t:in her life}.'],
+  sig:'ever, never, before, once, twice, three times, so far, in my life',
+  note:'The moment you give a time (“last fall”), switch to past simple: “Yes, I went last fall.”'},
+ {n:'2. Past action, result now',f:'A recent action matters because of what it means right now.',
+  tl:[{k:'dot',x:52,l:'it happened',l2:'(no time given)'},{k:'link',a:52,b:74},{k:'now',x:74,l:'result: I can’t pay'}],
+  alt:'Past action linked to a present result',
+  ex:['I’ve {p:lost} my debit card, so I can’t pay for this.','The Red Line has {p:stopped} again. Let’s grab an Uber.','My landlord’s {p:raised} the rent, and I need to look for a cheaper place.','Oh no, I’ve {p:left} my phone in the car!'],
+  sig:'just, recently, already, lately, or no time word at all',
+  note:'Ask: “Does the speaker care about NOW?” If yes, present perfect.'},
+ {n:'3. Unfinished state (for / since)',f:'It started in the past and it is still true now.',
+  tl:[{k:'span',a:20,b:74,l:'for eight years'},{k:'rl',a:20,l:'since 2018',y:124},{k:'now',x:74}],
+  alt:'A state that began in the past and continues to now',
+  ex:['We’ve {p:lived} in Framingham {t:for} eight years.','She’s {p:been} my neighbor {t:since} 2019.','{t:How long} {a:have} you {p:had} your car? I’ve had it {t:for} about a year.','I haven’t {p:talked} to my brother {t:since} Thanksgiving.'],
+  sig:'for + length of time, since + starting point, how long…?, all my life',
+  note:'In Portuguese you say “Moro aqui há oito anos” (present). In English, use present perfect: “I’ve lived here for eight years.”'},
+ {n:'4. News and updates',f:'Headline in present perfect, details in past simple.',
+  tl:[{k:'dot',x:58,l:'headline'},{k:'link',a:58,b:74},{k:'now',x:74,l:'news is fresh'}],
+  alt:'Fresh news connected to now',
+  ex:['The city {a:has} {p:approved} new bike lanes on Main Street.','Gas prices {a:have} {p:dropped} by ten cents this week.','Heads up: the storm {a:has} {p:knocked} out power for 20,000 homes.','The vote {a:was} yesterday, and it {a:passed} 7 to 2. (details = past simple)'],
+  sig:'no time word, or just / this morning. Details: yesterday, at 6 a.m., last night',
+  note:'Pattern: “Have you heard? Our landlord has sold the building. He told us on Monday.”'},
+ {n:'5. Just, already, yet, still',f:'Small words that show how recent, early, or overdue something is.',
+  tl:[{k:'dot',x:58,l:'just / already'},{k:'now',x:72},{k:'hollow',x:90,l:'not yet'}],
+  alt:'Something done before now, and something not yet done',
+  ex:['I’ve {t:just} {p:seen} your email. Give me a minute.','She’s {t:already} {p:paid} the deposit.','We haven’t {p:signed} the lease {t:yet}.','I {t:still} haven’t {p:heard} back from the bank. It’s been two weeks.'],
+  sig:'just = a moment ago · already = earlier than expected · yet = until now (questions, negatives) · still = longer than expected',
+  note:'In everyday American English, past simple is also normal here: “Did you eat yet?” “I already paid.” Use present perfect in writing and exams.'},
+ {n:'6. Unfinished time period',f:'The time period you are talking about is not over yet.',
+  tl:[{k:'range',a:34,b:92},{k:'dot',x:46},{k:'dot',x:60},{k:'link',a:60,b:74},{k:'now',x:74},{k:'rl',a:63,l:'this week (still going)',y:120}],
+  alt:'Events inside a time period that includes now',
+  ex:['I’ve had three coffees {t:today}, and it’s only 10 a.m.','We’ve been to the gym twice {t:this week}.','It’s rained a lot {t:this month}.','{t:So far}, I’ve saved $400 {t:this year}.'],
+  sig:'today, this week / month / year, so far, up to now, in the last few days, lately, recently',
+  note:'Compare: “I’ve had three coffees today” (today isn’t over) and “I had three coffees yesterday” (yesterday is finished).'},
+ {n:'7. First time, third time, best ever',f:'Counting repeated experiences, or ranking them, up to now.',
+  tl:[{k:'dot',x:20,l:'1st'},{k:'dot',x:38,l:'2nd'},{k:'dot',x:56,l:'3rd'},{k:'link',a:56,b:76},{k:'now',x:76}],
+  alt:'Numbered repeated events up to now',
+  ex:['This is the {t:third time} I’ve {p:called} customer service this week.','It’s the {t:first time} she’s {p:driven} on I-90 in the snow.','That’s the {t:best} pizza I’ve {t:ever} {p:had}.','He’s the {t:funniest} person I’ve {t:ever} {p:met}.'],
+  sig:'It’s the first / second / last time… · the best / worst / most … I’ve ever…',
+  note:'Pattern: It’s / This is + the first (…) + <b>present perfect</b>. Not “It’s the first time I am driving.”'},
+ {n:'8. Change over time',f:'Something is different now compared with before.',
+  tl:[{k:'dot',x:24,l:'before'},{k:'link',a:24,b:74},{k:'now',x:74,l:'different'}],
+  alt:'Change from an earlier time to now',
+  ex:['Rent in Boston {a:has} {p:gone} up a lot.','Her English {a:has} {p:improved} so much this year.','Prices {a:have} {p:doubled} {t:since} 2020.','I’ve {p:gotten} a lot more confident on the phone.'],
+  sig:'grow, rise, drop, improve, change, get / become + since, over the last…',
+  note:'US English: <b>gotten</b> = become or obtain (“Your English has gotten better”). <b>Got</b> = have/possess (“I’ve got two kids”).'}
+];
+
+/* ---------- panels ---------- */
+const P={};
+
+P.big=()=>`
+<h2>Perfect = “before a reference point”</h2>
+<p class="lead">All three perfect tenses use the same pattern: <b>have</b> in some form + <b>past participle</b>. What changes is the reference point you measure from.</p>
+<div class="grid">
+ <div class="card"><span class="tag">Present perfect</span><div class="formula">have / has + V3</div>
+  ${TL([{k:'dot',x:30,l:'past action'},{k:'link',a:30,b:72},{k:'now',x:72,l:'reference'}],'Present perfect timeline')}
+  ${EX(['I’ve {p:lived} in Worcester for six years.','The T {a:has} {p:stopped}. We need a ride.'])}
+  <div class="sig"><b>Reference point:</b> NOW</div></div>
+ <div class="card"><span class="tag">Past perfect</span><div class="formula">had + V3</div>
+  ${TL([{k:'dot',x:30,l:'earlier'},{k:'link',a:30,b:60},{k:'ref',x:60,l:'we got there'},{k:'now',x:84}],'Past perfect timeline')}
+  ${EX(['When we got to the outlet, the sale {a:had} {p:ended}.','I couldn’t get in because I’d {p:left} my keys inside.'])}
+  <div class="sig"><b>Reference point:</b> a moment in the past</div></div>
+ <div class="card"><span class="tag">Future perfect</span><div class="formula">will have + V3</div>
+  ${TL([{k:'now',x:16},{k:'dot',x:44,l:'done'},{k:'link',a:44,b:68},{k:'ref',x:68,l:'Friday'}],'Future perfect timeline')}
+  ${EX(['By Friday, I’ll {a:have} {p:paid} off my card.','They won’t {a:have} {p:finished} the roof by October.'])}
+  <div class="sig"><b>Reference point:</b> a moment in the future</div></div>
+</div>
+<div class="card"><h3>One verb, three reference points</h3>
+ <div class="tw"><table><tr><th>Reference</th><th>Sentence</th><th>Meaning</th></tr>
+ <tr><td><b>NOW</b></td><td>${fmt('I’ve {p:finished} my taxes.')}</td><td>Done. I’m free now.</td></tr>
+ <tr><td><b>Past point</b></td><td>${fmt('By 8 p.m. yesterday, I’d {p:finished} my taxes.')}</td><td>Done before that past moment.</td></tr>
+ <tr><td><b>Future point</b></td><td>${fmt('By April 15, I’ll {a:have} {p:finished} my taxes.')}</td><td>It will be done before that deadline.</td></tr></table></div>
+</div>
+<div class="card"><h3>Colour key on this page</h3>
+ <p style="margin:0">${fmt('{a:Auxiliary} (have / has / had / will have) · {p:Past participle} · {t:Time marker}')}</p></div>`;
+
+P.forms=()=>`
+<h2>Present perfect: all the forms</h2>
+<p class="lead">One pattern, one rule: after <b>have / has</b> the verb is always the <b>past participle (V3)</b>.</p>
+<div class="card"><div class="formula">have / has + V3</div>
+ <div class="tw"><table>
+ <tr><th></th><th>Positive</th><th>Negative</th><th>Question</th></tr>
+ <tr><td><b>I / you / we / they</b></td><td>${fmt('I {a:have} {p:seen} it.<br>I’ve {p:seen} it.')}</td><td>${fmt('We {a:haven’t} {p:seen} it.<br>We {a:have} {t:never} {p:seen} it.')}</td><td>${fmt('{a:Have} you {p:seen} it?')}</td></tr>
+ <tr><td><b>he / she / it</b></td><td>${fmt('She {a:has} {p:seen} it.<br>She’s {p:seen} it.')}</td><td>${fmt('She {a:hasn’t} {p:seen} it.<br>She {a:has} {t:never} {p:seen} it.')}</td><td>${fmt('{a:Has} she {p:seen} it?')}</td></tr>
+ </table></div>
+ <div class="cmp" style="margin-top:14px">
+  <div><b>Short answers</b>${EX(['Have you paid? — Yes, I {a:have}. / No, I {a:haven’t}.','Has he called? — Yes, he {a:has}. / No, he {a:hasn’t}.'])}${NOTE('Never end a short answer with a contraction: “Yes, I have.” not “Yes, I’ve.”')}</div>
+  <div><b>Wh- questions</b>${EX(['{t:How long} {a:have} you {p:lived} here?','{t:What} {a:has} she {p:done} this time?','{t:Who} {a:has} {p:taken} my charger? (Who = subject, so “has”)','{t:Why} {a:haven’t} they {p:replied}?'])}</div>
+  <div><b>Negative questions</b>${EX(['{a:Haven’t} you {p:heard}? The store’s closing.','{a:Hasn’t} the package {p:arrived} yet?'])}${NOTE('Used when you expect a “yes” or you are surprised.')}</div>
+  <div><b>With “be”: been</b>${EX(['I’ve {p:been} to Maine twice.','{a:Has} the road {p:been} closed all week?','They {a:haven’t} {p:been} here since March.'])}</div>
+ </div>
+</div>
+
+<div class="card"><h3>Careful: ’s can mean “is” or “has”</h3>
+ ${EX(['She’s {p:finished} = she <b>has</b> finished. (’s + V3)','She’s finishing = she <b>is</b> finishing. (’s + -ing)','He’s been waiting = he <b>has</b> been waiting.','He’s tired = he <b>is</b> tired. (’s + adjective)'])}</div>
+
+<div class="card"><h3>Past participles (V3)</h3>
+ <p class="lead" style="margin-bottom:8px"><b>Regular:</b> verb + -ed. Watch spelling: <span class="chip">work → worked</span> <span class="chip">study → studied</span> <span class="chip">stop → stopped</span> <span class="chip">plan → planned</span> <span class="chip">love → loved</span></p>
+ <div class="grid">
+  <div><b>Same in all forms</b>${chips(['put → put','cut → cut','set → set','hit → hit','let → let','cost → cost','quit → quit','shut → shut'])}</div>
+  <div><b>V2 and V3 the same</b>${chips(['buy → bought','bring → brought','catch → caught','teach → taught','think → thought','find → found','make → made','pay → paid','sell → sold','send → sent','spend → spent','lose → lost','keep → kept','leave → left','meet → met','win → won','hold → held','hear → heard','tell → told','build → built','have → had'])}</div>
+  <div><b>Ending in -n / -en</b>${chips(['see → seen','give → given','take → taken','break → broken','choose → chosen','drive → driven','eat → eaten','fall → fallen','forget → forgotten','write → written','speak → spoken','steal → stolen','know → known','grow → grown','show → shown','throw → thrown','fly → flown','wear → worn'])}</div>
+  <div><b>Vowel changes</b>${chips(['begin → begun','drink → drunk','sing → sung','swim → swum','ring → rung','run → run','come → come','become → become'])}</div>
+  <div><b>The big three to remember</b>${chips(['be → been','do → done','go → gone/been','get → gotten (US)'])}</div>
+ </div>
+ ${NOTE('V2 is not always V3. went ≠ gone, saw ≠ seen, did ≠ done, ate ≠ eaten, wrote ≠ written.')}
+</div>`;
+
+P.uses=()=>`
+<h2>Present perfect: every function</h2>
+<p class="lead">The speaker is always looking at the past <b>from now</b>. The pink arrow shows the connection.</p>`+
+FN.map(f=>`<div class="card"><h3>${f.n}</h3><p style="margin:0 0 4px">${f.f}</p>${TL(f.tl,f.alt)}${EX(f.ex)}${SIG(f.sig)}${NOTE(f.note)}</div>`).join('');
+
+P.tricky=()=>`
+<h2>Tricky parts</h2>
+<p class="lead">Where advanced learners slip. Read the rule, then look at the timeline.</p>
+
+<div class="card"><h3>1. Finished time = past simple</h3>
+ <p style="margin:0">If you say <b>when</b> it happened, the action is cut off from now.</p>
+ <div class="cmp" style="margin-top:10px">
+  <div><span class="tag">Present perfect: time not stated</span>
+   ${TL([{k:'dot',x:48,l:'?'},{k:'link',a:48,b:72},{k:'now',x:72}],'Unspecified time')}
+   ${EX(['I’ve {p:visited} Plymouth.','{a:Has} he {p:called}?'])}</div>
+  <div><span class="tag">Past simple: time stated</span>
+   ${TL([{k:'dot',x:44,l:'July 2023'},{k:'now',x:72}],'Specific finished time')}
+   ${EX(['I visited Plymouth {t:last July}.','He called {t:ten minutes ago}.'])}</div>
+ </div>
+ <div class="sig"><b>Finished-time words (past simple only):</b> yesterday, last week, in 2018, two days ago, when I was a kid, at 5 p.m., on Monday · <b>When did…?</b> What time did…?</div>
+ ${NOTE('Natural flow: “{a:Have} you ever {p:been} to Plymouth?” “Yes, I {a:have}. We went last July and saw the Mayflower II.” The first answer is present perfect. The details switch to past simple.')}</div>
+
+<div class="card"><h3>2. For, since and ago</h3>
+ <div class="tw"><table><tr><th>Word</th><th>Followed by</th><th>Example</th></tr>
+ <tr><td><b>for</b></td><td>length of time</td><td>${fmt('I’ve {p:worked} here {t:for} four years.')}</td></tr>
+ <tr><td><b>since</b></td><td>starting point (date, event, past-simple clause)</td><td>${fmt('I’ve {p:worked} here {t:since} 2022 / {t:since} I moved to Lowell.')}</td></tr>
+ <tr><td><b>ago</b></td><td>length of time + past simple</td><td>${fmt('I started here {t:four years ago}.')}</td></tr></table></div>
+ ${EX(['It’s been two years {t:since} we moved. (It’s been … since + past simple)','I haven’t seen her {t:since} she changed jobs.','She’s lived here {t:all her life}.'])}
+ ${NOTE('Not “since three years” and not “during three years.” Use <b>for three years</b>.')}</div>
+
+<div class="card"><h3>3. How long…? and When…?</h3>
+ <div class="cmp">
+  <div><b>How long</b> asks about duration up to now:${EX(['{t:How long} {a:have} you {p:lived} here?','{t:How long} {a:has} she {p:had} that car?'])}</div>
+  <div><b>When</b> asks for a finished point:${EX(['{t:When} did you move here?','{t:What time} did the store open?'])}</div>
+ </div>${NOTE('Never “When have you moved here?” “When” needs the past simple.')}</div>
+
+<div class="card"><h3>4. Been vs. gone</h3>
+ <div class="cmp">
+  <div><span class="tag">been = went and came back</span>${EX(['I’ve {p:been} to the bank. (I’m back.)','Has she ever {p:been} to Boston?','We’ve {p:been} in the US for three years.'])}</div>
+  <div><span class="tag">gone = went and is still away</span>${EX(['Lisa’s {p:gone} to the bank. (She’s there now.)','Where’s Pedro? He’s {p:gone} to get coffee.','My keys have {p:gone}! (disappeared)'])}</div>
+ </div></div>
+
+<div class="card"><h3>5. Where do the small words go?</h3>
+ <div class="tw"><table><tr><th>Word</th><th>Position</th><th>Example</th></tr>
+ <tr><td>already</td><td>between have and V3 (or at the end for emphasis)</td><td>${fmt('I’ve {t:already} {p:paid}. / I’ve {p:paid} {t:already}!')}</td></tr>
+ <tr><td>just</td><td>between have and V3</td><td>${fmt('She’s {t:just} {p:left}.')}</td></tr>
+ <tr><td>yet</td><td>end of questions and negatives</td><td>${fmt('Have you {p:eaten} {t:yet}? We haven’t {p:eaten} {t:yet}.')}</td></tr>
+ <tr><td>still</td><td>before haven’t / hasn’t</td><td>${fmt('I {t:still} haven’t {p:received} it.')}</td></tr>
+ <tr><td>ever / never</td><td>between have and V3</td><td>${fmt('Have you {t:ever} {p:tried} it? I’ve {t:never} {p:tried} it.')}</td></tr>
+ <tr><td>recently / lately</td><td>end, or between have and V3</td><td>${fmt('I’ve been busy {t:lately}. / I’ve {t:recently} {p:moved}.')}</td></tr></table></div>
+ ${NOTE('“Never” is already negative. Say “I’ve never tried it” or “I haven’t ever tried it,” not “I haven’t never.”')}</div>
+
+<div class="card"><h3>6. State verbs stay simple</h3>
+ <p style="margin:0">Verbs that describe states (<b>know, have, be, like, own, belong, understand, want</b>) do not take the continuous form.</p>
+ ${EX(['I’ve {p:known} her since college. ✓','I’ve been knowing her since college. ✗','We’ve {p:had} this couch for ten years. ✓'])}
+ ${NOTE('With <b>live, work, study, wait</b> both are possible: “I’ve lived / I’ve been living here for years.” We practice the continuous form later today.')}</div>
+
+<div class="card"><h3>7. After when, once, until, as soon as, before</h3>
+ <p style="margin:0">For the future, use present perfect (not “will have”) to show something finished first.</p>
+ ${EX(['I’ll call you {t:as soon as} I’ve {p:landed}.','Don’t sign {t:until} you’ve {p:read} the whole contract.','{t:Once} you’ve {p:finished}, send me a message.','{t:When} I’ve {p:saved} enough, I’ll buy a house.'])}</div>
+
+<div class="card"><h3>8. Passive and “been” forms</h3>
+ <div class="formula">have / has + been + V3</div>
+ ${EX(['The bridge {a:has} {p:been} closed since Monday.','We {a:haven’t} {p:been} told anything yet.','{a:Have} you {p:been} paid?','All the tickets {a:have} {p:been} sold.'])}
+ ${NOTE('If the subject receives the action, you need “been.” “The package has delivered” is incorrect. Say “has <b>been</b> delivered.”')}</div>`;
+
+P.errors=()=>`
+<h2>Common mistakes: fix it together</h2>
+<p class="lead">Read the sentence aloud, ask the class for the fix, then reveal. “PT” marks an influence from Portuguese.</p>`+
+`<div class="card"><h3>A. Finished-time words</h3>`+MK([
+ ['I have seen him yesterday.','I {t:saw} him yesterday.','“Yesterday” is finished time, so use past simple.'],
+ ['We have moved here two years ago.','We moved here two years ago. / We’ve lived here for two years.','“Ago” always goes with past simple.'],
+ ['When have you started your job?','{t:When did} you start your job?','“When” needs past simple. “How long have you worked there?” is also fine.'],
+ ['Last weekend I have gone to Salem.','Last weekend I {t:went} to Salem.','Last weekend is finished time.']
+])+`</div>`+
+`<div class="card"><h3>B. For / since and Portuguese transfer</h3>`+MK([
+ ['I live here since 2019.','I’{a:ve} {p:lived} here since 2019.','English needs present perfect for “started in the past, true now.”','Moro aqui desde 2019.'],
+ ['I am in the US since three years.','I’ve {p:been} in the US {t:for} three years.','Use “for” with a length of time, and present perfect.','Estou nos EUA há três anos.'],
+ ['I have three years in this company.','I’ve {p:worked} here {t:for} three years.','Do not use “have” to count time.','Tenho três anos na empresa.'],
+ ['I’m working here for two years.','I’ve {p:worked} (or been working) here {t:for} two years.','Present continuous does not connect to a duration.'],
+ ['She has lived here since five years.','She’s lived here {t:for} five years.','Since = starting point. For = length.'],
+ ['I know him since 2015.','I’ve {p:known} him since 2015.','Verb “know” is a state, so present perfect simple.']
+])+`</div>`+
+`<div class="card"><h3>C. Wrong verb form</h3>`+MK([
+ ['I have went to the outlets twice.','I’ve {p:been} to the outlets twice.','V2 (went) cannot follow have. Use been/gone.'],
+ ['She has ate already.','She’s already {p:eaten}.','eat → ate → eaten.'],
+ ['Have you ever did karaoke?','Have you ever {p:done} karaoke?','do → did → done.'],
+ ['He hasn’t finish yet.','He hasn’t {p:finished} yet.','V3 after have/has, always.'],
+ ['Did you ever been to Maine?','{a:Have} you ever {p:been} to Maine?','Do not mix did and been.'],
+ ['I haven’t never tried it.','I’ve {t:never} {p:tried} it. / I haven’t {t:ever} tried it.','Never already means “not ever.”'],
+ ['“Have you paid?” “Yes, I’ve.”','Yes, I {a:have}.','Short answers use the full form.']
+])+`</div>`+
+`<div class="card"><h3>D. Been / gone, little words, passive</h3>`+MK([
+ ['“Is Lisa home?” “No, she has been to work.”','No, she’s {p:gone} to work.','Gone = she is not here now.'],
+ ['I have paid yet.','I haven’t paid {t:yet}. / I’ve {t:already} paid.','“Yet” goes with negatives and questions.'],
+ ['I haven’t received still.','I {t:still} haven’t received it.','“Still” goes before haven’t.'],
+ ['The package has delivered.','The package has {p:been} delivered.','Passive = have + been + V3.'],
+ ['The road has closed since Monday.','The road has {p:been} closed since Monday.','A state that continues needs the passive state: has been closed.'],
+ ['I’ll call you when I will have arrived.','I’ll call you when I {p:arrive} / when I’ve {p:arrived}.','No future tense after “when.”']
+])+`</div>`;
+
+P.past=()=>`
+<h2>Past perfect</h2>
+<p class="lead">The past of the past. Use it to step back from a past moment to something that happened earlier.</p>
+<div class="card"><div class="formula">had + V3</div>
+ <div class="tw"><table><tr><th>Positive</th><th>Negative</th><th>Question</th></tr>
+ <tr><td>${fmt('I / you / he / she / we / they {a:had} {p:left}.<br>She’d {p:left}.')}</td><td>${fmt('They {a:hadn’t} {p:left}.')}</td><td>${fmt('{a:Had} you {p:left}? Yes, I {a:had}. / No, I {a:hadn’t}.')}</td></tr></table></div>
+ ${NOTE('Same form for every person. <b>’d</b> can mean “had” or “would.” Look at the next word: ’d + V3 = had (“I’d left”), ’d + base verb = would (“I’d leave”).')}</div>
+
+<div class="card"><h3>1. Earlier past</h3>
+ ${TL([{k:'dot',x:28,l:'sale ended'},{k:'link',a:28,b:58},{k:'ref',x:58,l:'we arrived'},{k:'now',x:86}],'Earlier event before a past reference')}
+ ${EX(['By the time we got to the outlet, the best deals {a:had} {p:sold} out.','When I called, my neighbor {a:had} {t:already} {p:left} for work.','I couldn’t open the door because I’d {p:left} my keys inside.'])}
+ ${SIG('by the time, when, before, after, already, just, until, by then')}</div>
+
+<div class="card"><h3>2. The reason for a past situation</h3>
+ ${EX(['He looked exhausted. He’d {p:worked} two shifts in a row.','She was thrilled. She’d {t:just} {p:closed} on her first house.','The lawn was soaked because it {a:had} {p:rained} all night.'])}</div>
+
+<div class="card"><h3>3. Reported speech</h3>
+ ${TL([{k:'dot',x:26,l:'I paid'},{k:'ref',x:56,l:'she said it'},{k:'now',x:84}],'Backshift in reported speech')}
+ ${EX(['“I’ve already sent the money.” → She said she’d {t:already} {p:sent} the money.','“I didn’t see your email.” → He told me he {a:hadn’t} {p:seen} it.'])}</div>
+
+<div class="card"><h3>4. First time / never before</h3>
+ ${EX(['It was the {t:first time} I {a:had} {t:ever} {p:seen} snow.','I’d {t:never} {p:driven} on I-93 before that morning.','They’d {t:never} {p:met} before the wedding.'])}</div>
+
+<div class="card"><h3>5. Third conditional and wishes</h3>
+ ${EX(['If I {a:had} {p:read} the lease, I wouldn’t have signed it.','If she’d {p:left} earlier, she wouldn’t have missed the train.','I wish I’d {p:started} saving earlier.'])}</div>
+
+<div class="card"><h3>6. How long, up to a past moment</h3>
+ ${TL([{k:'span',a:14,b:56,l:'for ten years'},{k:'ref',x:56,l:'2020'},{k:'now',x:86}],'Duration up to past reference')}
+ ${EX(['By 2020 we’d {p:lived} in Lowell {t:for} ten years.','She’d {p:been} a teacher {t:since} 2005 when she changed careers.'])}</div>
+
+<div class="card"><h3>Tricky parts</h3>
+ <b>Order changes the meaning</b>
+ <div class="cmp" style="margin-top:8px">
+  <div>${TL([{k:'ref',x:34,l:'I got home'},{k:'dot',x:62,l:'pizza came'}],'Two events in sequence')}${EX(['When I got home, the pizza arrived. (first I got home, then the pizza)'])}</div>
+  <div>${TL([{k:'dot',x:34,l:'pizza came'},{k:'ref',x:62,l:'I got home'}],'Earlier event first')}${EX(['When I got home, the pizza {a:had} {p:arrived}. (the pizza was already there)'])}</div>
+ </div>
+ ${NOTE('Telling events in order? Use past simple. “I got up, made coffee and left.” Use past perfect only for the step back.')}
+ ${NOTE('With <b>before / after</b>, the order is clear, so past simple is fine: “After I finished work, I went shopping.” Past perfect is also correct.')}
+ ${NOTE('Not with <b>ago</b>: “Two years ago I had moved” is incorrect.')}
+</div>
+
+<div class="card"><h3>Common mistakes</h3>`+MK([
+ ['When I arrived, the movie already started.','When I arrived, the movie {a:had} already {p:started}.','Earlier event needs past perfect.'],
+ ['I had saw her before the party.','I {a:had} {p:seen} her before the party.','had + V3, never V2.'],
+ ['After I had finished, I had gone home.','After I {a:had} {p:finished}, I went home.','Only the earlier action needs “had.”'],
+ ['If I would have known, I would have come.','If I {a:had} {p:known}, I would have come.','No “would” in the if-clause.'],
+ ['Before I moved here, I have lived in São Paulo.','Before I moved here, I {a:had} {p:lived} in São Paulo.','Both are past, so step back with “had.”'],
+ ['She said she has already paid.','She said she {a:had} already {p:paid}.','Reported speech shifts back one step.']
+])+`</div>`;
+
+P.future=()=>`
+<h2>Future perfect</h2>
+<p class="lead">Standing at a future moment and looking back: “It will be finished by then.”</p>
+<div class="card"><div class="formula">will have + V3</div>
+ <div class="tw"><table><tr><th>Positive</th><th>Negative</th><th>Question</th></tr>
+ <tr><td>${fmt('I / you / he / she / we / they {a:will have} {p:finished}.<br>I’ll {a:have} {p:finished}.')}</td><td>${fmt('They {a:won’t have} {p:finished}.')}</td><td>${fmt('{a:Will} you {a:have} {p:finished}? Yes, I {a:will}. / No, I {a:won’t}.')}</td></tr></table></div>
+ ${NOTE('In speech, “will have” often sounds like “will’ve” (/wɪləv/). Informal: “I’m going to have finished…” is possible but less common.')}</div>
+
+<div class="card"><h3>1. Finished before a deadline</h3>
+ ${TL([{k:'now',x:16},{k:'dot',x:44,l:'paid off'},{k:'link',a:44,b:70},{k:'ref',x:70,l:'Friday'}],'Completed before a future deadline')}
+ ${EX(['{t:By} Friday, I’ll {a:have} {p:paid} off my credit card.','They won’t {a:have} {p:finished} the roof {t:by} October.','{a:Will} you {a:have} {p:saved} enough {t:by} June?'])}
+ ${SIG('by + time, by the time, before, in two weeks, by then')}</div>
+
+<div class="card"><h3>2. Milestones and duration</h3>
+ ${TL([{k:'span',a:12,b:50,l:'ten years'},{k:'now',x:30},{k:'ref',x:68,l:'next June'}],'Duration reaching a future point')}
+ ${EX(['{t:In June}, we’ll {a:have} {p:lived} in Lowell {t:for} ten years.','{t:Next month} she’ll {a:have} {p:been} at the clinic {t:for} a year.','By 2030, I’ll {a:have} {p:worked} here {t:for} fifteen years.'])}</div>
+
+<div class="card"><h3>3. A confident guess about now</h3>
+ <p style="margin:0">“Will have” can also mean “probably has,” a prediction about something already finished.</p>
+ ${EX(['Don’t call her now. She’ll {a:have} {p:left} for work already.','You’ll {a:have} {p:heard} the news by now.','They’ll {a:have} {p:landed} by this point.'])}</div>
+
+<div class="card"><h3>4. Two future events, one before the other</h3>
+ ${EX(['{t:By the time} the guests arrive, I’ll {a:have} {p:cooked} everything.','{t:Before} you get back, we’ll {a:have} {p:cleaned} the garage.'])}</div>
+
+<div class="card"><h3>Tricky parts</h3>
+ <div class="tw"><table><tr><th>By</th><th>Until</th></tr>
+ <tr><td>${fmt('{t:By} six, I’ll {a:have} {p:finished}. (done before six)')}</td><td>${fmt('I’ll be working {t:until} six. (continues up to six)')}</td></tr></table></div>
+ ${EX(['By the time you {t:arrive}, I’ll have left. (present simple after “by the time”)','Not: By the time you will arrive.'])}
+ <div class="cmp" style="margin-top:10px">
+  <div><b>Future simple</b>${EX(['I’ll finish at five. (a plan or promise)'])}</div>
+  <div><b>Future perfect</b>${EX(['I’ll have finished by five. (completed before five)'])}</div>
+ </div>
+ ${NOTE('Ongoing action at a future moment is the future continuous: “At six I’ll <b>be cooking</b>.” We practice this next.')}</div>
+
+<div class="card"><h3>Common mistakes</h3>`+MK([
+ ['By the time you will arrive, I’ll have left.','By the time you {p:arrive}, I’ll have left.','No “will” in a time clause.'],
+ ['Until Friday, I’ll have finished the report.','{t:By} Friday, I’ll {a:have} {p:finished} the report.','By = deadline. Until = continues up to.'],
+ ['I will have been finish by noon.','I’ll {a:have} {p:finished} by noon.','will have + V3, nothing else.'],
+ ['She will have go by then.','She’ll {a:have} {p:gone} by then.','Past participle: gone.'],
+ ['When I’ll have saved enough, I’ll buy a car.','When I’ve {p:saved} enough, I’ll buy a car.','Present perfect (not will) after “when.”'],
+ ['In 2030 I will have 40 years old.','In 2030 I’ll {a:be} 40. / I’ll {a:have} {p:turned} 40.','English uses “be” for age, not “have.”','Em 2030 eu vou ter 40 anos.']
+])+`</div>`;
+
+/* ---------- tabs ---------- */
+const TABS=[['big','Big picture'],['forms','PP: forms'],['uses','PP: functions'],['tricky','PP: tricky parts'],['errors','PP: mistakes'],['past','Past perfect'],['future','Future perfect']];
+const tabs=document.getElementById('tabs'),panels=document.getElementById('panels');
+TABS.forEach(([id,l],i)=>{
+  const b=document.createElement('button');b.textContent=l;b.setAttribute('role','tab');b.dataset.t=id;b.id='tab-'+id;
+  tabs.appendChild(b);
+  const s=document.createElement('section');s.id='p-'+id;s.setAttribute('role','tabpanel');s.setAttribute('aria-labelledby','tab-'+id);s.hidden=true;s.innerHTML=P[id]();
+  panels.appendChild(s);
+});
+function show(id){
+  TABS.forEach(([t])=>{document.getElementById('p-'+t).hidden=t!==id;document.getElementById('tab-'+t).setAttribute('aria-selected',String(t===id));});
+  window.scrollTo({top:0});
+  try{localStorage.setItem('pl-tab',id)}catch(e){}
+}
+tabs.addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.t)});
+panels.addEventListener('click',e=>{
+  const f=e.target.closest('[data-fx]');
+  if(f){const r=f.nextElementSibling;r.hidden=!r.hidden;f.setAttribute('aria-expanded',String(!r.hidden));f.textContent=r.hidden?'Show fix':'Hide fix';return;}
+  const a=e.target.closest('[data-all]');
+  if(a){const card=a.closest('.card');const open=a.dataset.open!=='1';a.dataset.open=open?'1':'0';
+    card.querySelectorAll('[data-fx]').forEach(b=>{const r=b.nextElementSibling;r.hidden=!open;b.setAttribute('aria-expanded',String(open));b.textContent=open?'Hide fix':'Show fix'});
+    a.textContent=open?'Hide all fixes':'Show all fixes';}
+});
+let start='big';try{const s=localStorage.getItem('pl-tab');if(s&&P[s])start=s}catch(e){}
+show(start);
+</script>
+
+</body></html>
