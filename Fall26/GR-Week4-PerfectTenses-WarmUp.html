@@ -1,0 +1,189 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Perfect Tenses Warm-Up</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: one talk card at a time, Next button at the bottom, a sixth card with grammar flags. Same cranberry-and-ink identity as the other Grammar Review pages. */
+:root{
+  --bg:#F2F4F8;
+  --card:#FFFFFF;
+  --ink:#16213A;
+  --ink-2:#4A556C;
+  --line:#D9DEE8;
+  --line-strong:#B0BACC;
+  --accent:#A8153B;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F9E4EA;
+  --ok:#17724A;
+  --ok-soft:#E2F3EA;
+  --warn:#9A4A06;
+  --warn-soft:#FCEBD7;
+  --focus:#1B5FD6;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+    --line:#2B3857; --line-strong:#43547C;
+    --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+    --ok:#5FD39A; --ok-soft:#14352A; --warn:#F5A65B; --warn-soft:#3B2A14;
+    --focus:#7FB0FF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+  --line:#2B3857; --line-strong:#43547C;
+  --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+  --ok:#5FD39A; --ok-soft:#14352A; --warn:#F5A65B; --warn-soft:#3B2A14;
+  --focus:#7FB0FF;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:1.0625rem/1.55 var(--font-body);padding-block:1.25rem 2.5rem;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app{max-width:44rem;margin-inline:auto}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.eyebrow{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.top .step{font-variant-numeric:tabular-nums}
+.dots{display:flex;gap:.4rem;margin:.6rem 0 1.1rem}
+.dots span{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.dots span.on{background:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.4rem 1.4rem 1.5rem}
+.tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem}
+.tag{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .6rem;border-radius:999px;border:1.5px solid var(--line-strong);color:var(--ink-2)}
+.tag.lv{border-color:var(--accent);color:var(--accent)}
+.card h2{font-size:clamp(1.5rem,5.5vw,2rem);line-height:1.1;margin:0 0 .75rem}
+.main{font-family:var(--font-display);font-weight:600;font-size:clamp(1.25rem,4.6vw,1.6rem);line-height:1.3;margin:0 0 1rem;text-wrap:pretty}
+.more{margin:0 0 1.25rem;padding:0;list-style:none;display:grid;gap:.6rem}
+.more li{padding-left:1.1rem;position:relative}
+.more li::before{content:"";position:absolute;left:0;top:.65em;width:.5rem;height:2px;background:var(--accent)}
+.sub{margin:1.25rem 0 .5rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{border:1.5px solid var(--line-strong);border-radius:10px;padding:.3rem .75rem;background:var(--bg);font-style:italic}
+.chip.up{border-color:var(--accent);background:var(--accent-soft);font-style:normal;font-weight:700}
+.rw{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.4rem .9rem;font-size:.95rem}
+.rw li{min-width:0}
+.rw b{color:var(--accent)}
+.nav{display:flex;gap:.75rem;margin-top:1.25rem;flex-wrap:wrap}
+.btn{min-height:3.1rem;padding:.6rem 1.6rem;border-radius:8px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+.btn[hidden]{display:none}
+.lead{margin:0 0 1rem;color:var(--ink-2)}
+.flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.9rem}
+.flag{border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;background:var(--bg);min-width:0}
+.flag h3{margin:0 0 .15rem;font-size:1.1rem}
+.flag .use{margin:0 0 .6rem;color:var(--ink-2);font-size:.95rem}
+.flag .say{margin:0 0 .6rem;font-weight:700;overflow-wrap:anywhere}
+.slip{margin:0;padding:.5rem .65rem;border-radius:8px;background:var(--warn-soft);font-size:.95rem;overflow-wrap:anywhere}
+.slip + .slip{margin-top:.4rem}
+.slip s{color:var(--warn);text-decoration-thickness:2px}
+.slip b{color:var(--ok)}
+.fine{margin:1rem 0 0;color:var(--ink-2);font-size:.95rem}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <div class="top">
+    <p class="eyebrow">Grammar Review &amp; Recovery · Week 4 Warm-up</p>
+    <p class="eyebrow step" id="step">Card 1 of 5</p>
+  </div>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+  <article class="card" id="card" aria-live="polite"></article>
+  <div class="nav">
+    <button class="btn ghost" id="back" hidden>Back</button>
+    <button class="btn" id="next">NEXT</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var CARDS=[
+ {tag:"Family events",lv:"B2+",t:"The dinner that went wrong",
+  q:"Think of a family gathering where everything fell apart: a wedding, a holiday dinner, a reunion. What had happened before everyone sat down, and what had nobody realized?",
+  more:["Had somebody been holding a grudge for years?","Who had already said something they couldn't take back by dessert?","If you had known beforehand, would you have stayed home?"],
+  rw:[["take for granted","not value something enough"],["it all comes down to","the main point is"],["put off","delay something unpleasant"]],
+  st:["By the time dinner started, my aunt had already…","Nobody had warned me that…","I had never seen my dad so…","It turned out that they had been…","If I had known, I would have…"],
+  up:["It had been brewing for years.","That was the last straw."]},
+ {tag:"Money and growing up",lv:"B2+",t:"Who decided the deadline?",
+  q:"By the time you're 35, what should you have achieved: a house, a family, no debt? Who decided that, and had your parents achieved all of it by your age?",
+  more:["By 2040, will the housing market have crashed, or will it have gotten even worse?","What will you have given up by the time you reach that goal?","Which of these milestones has your generation already skipped?"],
+  rw:[["pay off","finish paying a debt"],["relocate","move to live somewhere new"],["I wouldn't be surprised if…","I think it could easily happen"]],
+  st:["By the time I'm 40, I'll have…","My parents had already… by my age","I'll never have saved enough to…","By then, prices will have…","Before I moved, I had never had to…"],
+  up:["The goalposts keep moving.","That's easier said than done."]},
+ {tag:"Life decisions",lv:"C1",t:"The decision you'd undo",
+  q:"Think of a decision that changed your life. What had you believed before you made it? Knowing what you know now, would you make the same choice?",
+  more:["What had you already given up by the time you realized it was a mistake?","Was there a moment when you had a chance to turn back?","Which decision do people regret the most: the one they made or the one they never made?"],
+  rw:[["I'm torn between…","I can't decide between two things"],["regret","feel sorry about the past"],["take for granted","not value something enough"]],
+  st:["Before I came to the US, I had never…","If I hadn't…, I wouldn't have…","By then I had already decided…","I wish I had…","Had I known, I would have…"],
+  up:["Hindsight is 20/20.","I don't regret it, but…"]},
+ {tag:"Social issues",lv:"C1",t:"The internet never forgets",
+  q:"By the time a child turns 18, their parents will have posted thousands of photos and stories about them online. Is that okay? What had stayed private in your own childhood that would be public today?",
+  more:["Should kids be allowed to delete what their parents posted, once they've grown up?","Before smartphones, had parents ever worried about this? Why not?","By the time today's kids are adults, what will have disappeared: privacy, or embarrassment?"],
+  rw:[["double-edged sword","something good and bad at once"],["game changer","something that changes everything"],["remains to be seen","we don't know yet"]],
+  st:["When I was a kid, nobody had…","By the time she's 18, her parents will have…","It never occurred to us that…","Before phones, people had…","By then, we'll have lost…"],
+  up:["It's a slippery slope.","The damage has already been done."]},
+ {tag:"Home and distance",lv:"C1",t:"Home, then and later",
+  q:"Before you left home, had you imagined your life would look like this? By the time you go back, what will have changed more: you, or the place?",
+  more:["Is it ever worth leaving your family and country behind?","By this time next year, what will you have accomplished that you're proud of?","What will you have missed by then that you can never get back?"],
+  rw:[["relocate","move to live somewhere new"],["I'm pretty sure we'll…","I strongly believe that we will"],["it all comes down to","the main point is"]],
+  st:["Before I left, I had always thought…","By the time I go back, I'll have…","I hadn't expected to miss…","By this time next year, I'll have…","They will have changed, and so will I"],
+  up:["You can't go home again.","I'm a different person now."]}
+];
+var FLAGS=[
+ {h:"Past perfect: form",u:"had + past participle, for every person",s:"I had seen it. She hadn't called. Had they left?",
+  x:[["I had saw it","I had seen it"],["She has already left when I arrived","She had already left when I arrived"],["Had you went?","Had you gone?"]]},
+ {h:"Earlier past",u:"The first of two past events",s:"By the time we got there, the party had ended.",
+  x:[["When I arrived, everyone already left","When I arrived, everyone had already left"],["After I had finished, I had gone home","After I had finished, I went home"]]},
+ {h:"Reasons and backstory",u:"What explains the past moment",s:"She was crying because she'd lost her job.",
+  x:[["He was angry because nobody told him","He was angry because nobody had told him"],["They hadn't see each other","They hadn't seen each other"]]},
+ {h:"Regrets",u:"Third conditional and wish",s:"If I had known, I would have come. I wish I had called.",
+  x:[["If I would have known","If I had known"],["I wish I would have called","I wish I had called"]]},
+ {h:"Future perfect",u:"Finished before a future time",s:"By Friday I'll have finished. Will you have paid it by June?",
+  x:[["She will have go","She will have gone"],["By 2030 I will have 40 years old","By 2030 I'll be 40"],["I will have been finish","I'll have finished"]]},
+ {h:"By, until and time clauses",u:"By = deadline. After by the time: present simple",s:"By the time you arrive, I'll have cooked.",
+  x:[["By the time you will arrive","By the time you arrive"],["Until Friday I'll have paid it","By Friday I'll have paid it"],["When I'll have saved enough","When I've saved enough"]]}
+];
+var $=function(s){return document.querySelector(s)};
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+var total=CARDS.length+1,i=0;
+var dots=$("#dots");
+for(var k=0;k<total;k++){dots.appendChild(document.createElement("span"))}
+function render(){
+  var c=$("#card"),h="";
+  if(i<CARDS.length){
+    var d=CARDS[i];
+    h+='<div class="tags"><span class="tag">'+esc(d.tag)+'</span><span class="tag lv">Level '+d.lv+'</span></div>';
+    h+='<h2>'+esc(d.t)+'</h2><p class="main">'+esc(d.q)+'</p><ul class="more">'+d.more.map(function(m){return '<li>'+esc(m)+'</li>'}).join("")+'</ul>';
+    h+='<p class="eyebrow sub">Words from earlier weeks</p><ul class="rw">'+d.rw.map(function(m){return '<li><b>'+esc(m[0])+'</b>: '+esc(m[1])+'</li>'}).join("")+'</ul>';
+    h+='<p class="eyebrow sub">You can start with</p><div class="chips">'+d.st.map(function(m){return '<span class="chip">'+esc(m)+'</span>'}).join("")+'</div>';
+    h+='<p class="eyebrow sub">Level up</p><div class="chips">'+d.up.map(function(m){return '<span class="chip up">'+esc(m)+'</span>'}).join("")+'</div>';
+    $("#step").textContent="Card "+(i+1)+" of 5";
+  }else{
+    h+='<div class="tags"><span class="tag">Wrap-up</span></div><h2>Grammar flags</h2><p class="lead">You just used these forms out loud. Check them before you move on, and correct each other kindly.</p><div class="flags">';
+    FLAGS.forEach(function(f){
+      h+='<section class="flag"><h3>'+esc(f.h)+'</h3><p class="use">'+esc(f.u)+'</p><p class="say">'+esc(f.s)+'</p>'+f.x.map(function(x){return '<p class="slip"><s>'+esc(x[0])+'</s> → <b>'+esc(x[1])+'</b></p>'}).join("")+'</section>';
+    });
+    h+='</div><p class="fine">After had and will have, the verb is always the past participle. “’d” can mean had or would: ’d + past participle = had (“I’d left”), ’d + base verb = would (“I’d leave”).</p>';
+    $("#step").textContent="Wrap-up";
+  }
+  c.innerHTML=h;
+  var ds=dots.children;for(var k=0;k<ds.length;k++){ds[k].className=(k<=i)?"on":""}
+  $("#back").hidden=(i===0);
+  $("#next").textContent=(i===total-1)?"START OVER":(i===total-2)?"NEXT: GRAMMAR FLAGS":"NEXT";
+  window.scrollTo(0,0);
+}
+$("#next").addEventListener("click",function(){i=(i===total-1)?0:i+1;render()});
+$("#back").addEventListener("click",function(){if(i>0){i--;render()}});
+render();
+})();
+</script>
+
+</body></html>
