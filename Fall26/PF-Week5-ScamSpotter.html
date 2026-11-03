@@ -1,0 +1,276 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Scam Spotter</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: one phone-style message screen at a time, with a game bar above and decision buttons below; the review puts the phone beside the explanation. */
+:root{
+  --bg:#F4F5F7; --card:#FFFFFF; --ink:#10294A; --muted:#51647A; --line:#D5DAE0; --soft:#EAEFF5;
+  --accent:#9C2519; --sky:#2F6FA3; --scam:#B3261E; --scam-bg:#FBE9E7; --real:#1C7A4B; --real-bg:#E3F4EA; --warn-bg:#FFF1C2;
+  --f-d:'Montserrat', Arial, sans-serif; --f-b:'Source Sans 3', Arial, sans-serif; --f-m:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --btn-ink:#FFFFFF; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1B31; --card:#12263F; --ink:#F4F5F7; --muted:#A9B9CB; --line:#2A486B; --soft:#1A3354;
+  --accent:#F08A7E; --sky:#6FA8D8; --scam:#F08A7E; --scam-bg:#3B1E26; --real:#5BC48A; --real-bg:#173A2C; --warn-bg:#4A3E12; --btn-ink:#0B1B31; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1B31; --card:#12263F; --ink:#F4F5F7; --muted:#A9B9CB; --line:#2A486B; --soft:#1A3354;
+  --accent:#F08A7E; --sky:#6FA8D8; --scam:#F08A7E; --scam-bg:#3B1E26; --real:#5BC48A; --real-bg:#173A2C; --warn-bg:#4A3E12; --btn-ink:#0B1B31; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-b);font-size:19px;line-height:1.45;margin:0;
+  padding-block:20px 48px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1{font-family:var(--f-d);font-weight:800;font-size:clamp(28px,5vw,42px);line-height:1.1;margin:0}
+h2{font-family:var(--f-d);font-weight:800;font-size:clamp(22px,3.5vw,28px);line-height:1.2;margin:0 0 8px}
+h3{font-family:var(--f-d);font-weight:600;font-size:18px;margin:0 0 6px}
+.eyebrow{font-weight:700;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.steps{display:flex;gap:8px;flex-wrap:wrap}
+.step{font-weight:700;font-size:14px;border:1px solid var(--line);border-radius:999px;padding:4px 14px;color:var(--muted)}
+.step.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.prog{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}.prog i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px}
+.two{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.btn{font-family:var(--f-d);font-weight:800;font-size:18px;border-radius:14px;border:2px solid var(--accent);background:var(--accent);color:var(--btn-ink);padding:14px 26px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.scam{background:var(--scam);border-color:var(--scam);color:var(--btn-ink)}
+.btn.real{background:var(--real);border-color:var(--real);color:var(--btn-ink)}
+.btn.choice{width:100%;text-align:left;font-family:var(--f-b);font-weight:600;font-size:18px;background:var(--card);color:var(--ink);border:2px solid var(--line);margin-top:10px}
+.btn.choice[aria-pressed="true"]{border-color:var(--sky);background:var(--soft)}
+.btn[disabled]{opacity:.45;cursor:default}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.decide{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:400px;margin:16px auto 0}
+.center{text-align:center}.muted{color:var(--muted)}.note{font-size:15px;color:var(--muted)}
+.pill{display:inline-block;font-weight:700;font-size:14px;border-radius:999px;padding:2px 12px}
+.pill.scam{background:var(--scam-bg);color:var(--scam)}.pill.real{background:var(--real-bg);color:var(--real)}
+.flag{display:grid;grid-template-columns:30px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.flag b.n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--scam);color:var(--btn-ink);font-size:14px}
+.flag.good b.n{background:var(--real)}
+.rf,.gs{display:inline}
+.review .rf{background:var(--warn-bg);border-bottom:2px solid var(--scam);border-radius:3px;padding:0 2px}
+.review .gs{background:var(--real-bg);border-bottom:2px solid var(--real);border-radius:3px;padding:0 2px}
+.review .rf::after,.review .gs::after{content:attr(data-k);font-size:11px;font-weight:800;vertical-align:super;margin-left:2px}
+.review .rf::after{color:var(--scam)}.review .gs::after{color:var(--real)}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.insight{background:var(--soft);border-radius:12px;padding:14px 16px;margin-top:14px}
+.checks{margin:0;padding-left:22px}.checks li{margin:6px 0}
+
+/* phone mockups use their own message colours (they imitate real apps) */
+.phone{width:100%;max-width:400px;margin:0 auto;border:8px solid #1d2733;border-radius:34px;overflow:hidden;background:#fff;font-family:var(--f-m);font-size:15.5px;line-height:1.35;color:#111;box-shadow:0 8px 28px rgba(0,0,0,.18)}
+.ph-top{padding:10px 14px;display:flex;gap:10px;align-items:center}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px;flex:none}
+.ph-top b{display:block;font-size:16px}.ph-top small{display:block;opacity:.8;font-size:12.5px}
+.thread{padding:12px 10px;display:flex;flex-direction:column;gap:7px;min-height:300px}
+.msg{max-width:84%;padding:7px 10px;border-radius:10px;position:relative;word-wrap:break-word}
+.msg .who{font-weight:700;font-size:13px;display:block;margin-bottom:2px}
+.msg .t{display:block;text-align:right;font-size:11px;opacity:.55;margin-top:2px}
+.fakeimg{margin-top:6px;border-radius:8px;background:#0E3B2B;color:#8CF0B8;padding:10px 12px;font-weight:700}
+.fakeimg small{display:block;color:#bfe9d1;font-weight:400}
+.wa .ph-top{background:#075E54;color:#fff}.wa .thread{background:#EFE7DD}.wa .msg{background:#fff;border-top-left-radius:2px;align-self:flex-start}.wa .msg.out{background:#DCF8C6;align-self:flex-end;border-top-left-radius:10px;border-top-right-radius:2px}
+.sms .ph-top{background:#F2F2F7;color:#111;justify-content:center;flex-direction:column;gap:0;border-bottom:1px solid #d8d8de}.sms .thread{background:#fff}.sms .msg{background:#E9E9EB;align-self:flex-start;border-radius:18px}.sms .msg.out{background:#0A84FF;color:#fff;align-self:flex-end}
+.ig .ph-top{background:#fff;color:#111;border-bottom:1px solid #e6e6e6}.ig .thread{background:#fff}.ig .msg{background:#EFEFEF;border-radius:18px;align-self:flex-start}.ig .msg.out{background:linear-gradient(135deg,#7a5cf5,#c13584);color:#fff;align-self:flex-end}
+.call .ph-top{background:#1c1c1e;color:#fff;flex-direction:column;text-align:center;padding:22px 14px 16px}.call .thread{background:#2c2c2e}.call .msg{background:#3a3a3c;color:#f2f2f7;align-self:flex-start}.call .msg.out{background:#0A84FF;align-self:flex-end}.call .av{width:54px;height:54px;font-size:20px;background:#636366!important}
+.mail{background:#fff}.mail .ph-top{background:#f6f6f6;color:#111;border-bottom:1px solid #e3e3e3;align-items:flex-start;flex-direction:column;gap:3px;padding:12px 14px}.mail .ph-top .subj{font-weight:700;font-size:17px}.mail .ph-top small{opacity:.75}
+.mail .body{padding:14px;min-height:300px}.mail .body p{margin:0 0 10px}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Personal Finances · Protect your money</div>
+    <h1>Scam Spotter</h1>
+  </header>
+  <div class="bar"><div class="steps" id="steps"></div><div class="note" id="count"></div></div>
+  <div class="prog"><i id="prog" style="width:0"></i></div>
+  <main id="view"></main>
+</div>
+
+<script>
+var CARDS = [
+ {id:1,ch:'wa',title:'Wall Street Latino VIP',sub:'148 members',answer:'scam',
+  msgs:[
+   {from:'Coach Ricardo',color:'#d35400',t:'9:14',html:'Good morning family. Results this week: members who joined Monday are up <b>8% in 7 days</b>. Screenshots below.',img:{big:'+$1,240.00',small:'Weekly profit +8.2%'}},
+   {from:'Daniela M.',color:'#8e44ad',t:'9:20',html:'Thank you Coach!! I put in $500 on Monday and I already withdrew $540. Best decision of my life'},
+   {from:'Coach Ricardo',color:'#d35400',t:'9:31',html:'<span class="rf" data-k="1">Guaranteed 8% every week.</span> Our private trading robot has never lost. <span class="rf" data-k="2">Only 3 spots left</span> for this week. Send your transfer to the account I give you privately, and <span class="rf" data-k="3">do not tell your bank it is for investing</span>, they will block it.'}],
+  flags:[
+   {k:1,t:'Guaranteed high returns',d:'No honest investment can guarantee profit. The S&P 500 has grown about 10% a year on average, with bad years. 8% a week is impossible to keep.'},
+   {k:2,t:'Pressure',d:'"Only 3 spots left" makes you act before you think. Real investments do not run out in one week.'},
+   {k:3,t:'Secrecy and private payment',d:'Telling you to hide it from your bank is a huge warning. Your bank is trying to protect you.'}],
+  why:'The screenshots and happy members are easy to fake, and some members may be part of the scam. Early members often really do get paid, but the money comes from new members, not from trading. This is a Ponzi scheme.',
+  todo:'Leave the group. Do not send money. Report the account to the app and to your bank if you already paid.'},
+ {id:2,ch:'mail',answer:'real',
+  from:'Benefits Team',addr:'benefits@brightpath-health.com',to:'to me',subj:'Open enrollment ends Friday, Nov 15',
+  body:'<p>Hi Maria,</p><p>Open enrollment ends <b>Friday, November 15</b>. If you want to change how much you put into your 401(k), <span class="gs" data-k="1">log in to the benefits portal from the company intranet</span> or visit HR in Room 210. We match 100% of your contribution up to 4% of your salary.</p><p><span class="gs" data-k="2">We will never ask for your password or Social Security number by email.</span> Questions? <span class="gs" data-k="3">Call HR at the number in the company directory.</span></p><p>Thank you,<br>HR Benefits Team</p>',
+  flags:[
+   {k:1,t:'You use your own door',d:'It sends you to a place you already know, not to a new link.'},
+   {k:2,t:'It warns you about scams',d:'Real organizations tell you what they will never ask.'},
+   {k:3,t:'You can verify it',d:'You can check by calling a number you already trust.'}],
+  why:'This message has a deadline, but the deadline is normal for benefits. It asks for no money, no password and no click. It matches something you expect from your employer.',
+  todo:'If you are not sure, go to the HR office or open the portal by typing the address yourself.'},
+ {id:3,ch:'sms',title:'NORTHBK',sub:'Text message',answer:'scam',
+  msgs:[{from:'',t:'2:47 PM',html:'Northbank ALERT: <span class="rf" data-k="1">Your account has been locked due to unusual activity.</span> <span class="rf" data-k="2">Verify within 2 hours or it will be closed:</span><br><span class="rf" data-k="3">http://northbank-secure-verify.co/login</span>'}],
+  flags:[
+   {k:1,t:'Scary surprise',d:'Fear is the scammer\'s favorite tool. You did nothing, and suddenly there is a crisis.'},
+   {k:2,t:'Short deadline',d:'Two hours is not enough time to check. That is the point.'},
+   {k:3,t:'Strange link',d:'A real bank link ends with the bank\'s own name, not "-secure-verify.co". Clicking opens a fake login page that steals your password.'}],
+  why:'Banks may text you alerts, but they do not ask you to log in through a link in a text message.',
+  todo:'Do not click. Call the number on the back of your card, or open your bank app yourself.'},
+ {id:4,ch:'wa',title:'Andres',sub:'online',answer:'scam',
+  msgs:[
+   {from:'',side:'in',t:'7:02 PM',html:'Primo!! Remember I told you? I joined the "LunaCoin Family Circle". <b>$900 this month</b> and I did nothing, look.',img:{big:'+$900.00',small:'LunaCoin wallet'}},
+   {from:'',side:'in',t:'7:03 PM',html:'You only pay $200 to enter. And <span class="rf" data-k="1">for every 3 friends you bring, you get $100 each</span>. We are all from the same community, it is safe.'},
+   {from:'',side:'out',t:'7:05 PM',html:'Really? Who runs it?'},
+   {from:'',side:'in',t:'7:06 PM',html:'<span class="rf" data-k="2">The group admin is very serious, I trust him.</span> Do it today, the price goes up tomorrow. <span class="rf" data-k="3">Don\'t tell my dad lol</span>'}],
+  flags:[
+   {k:1,t:'You are paid to recruit',d:'When the money comes from bringing new people, not from a real product or business, it is a pyramid scheme.'},
+   {k:2,t:'No real answer',d:'"Who runs it?" got "I trust him". You cannot check an owner, a license or an address.'},
+   {k:3,t:'Pressure and secrecy',d:'"Today" and "do not tell" are warning signs, even from a friend.'}],
+  why:'This is called affinity fraud: scams spread through families, churches and communities because we trust each other. Andres may sincerely believe it works. He may also lose his money.',
+  todo:'Do not join. Ask him kindly where the money comes from, and share what you learned. He may be a victim too.'},
+ {id:5,ch:'sms',title:'Summit Invest',sub:'App notification',answer:'real',
+  msgs:[{from:'',t:'Mon 9:00 AM',html:'Summit Invest: <span class="gs" data-k="1">Your monthly $200 deposit to your Roth IRA was processed on Nov 2.</span> <span class="gs" data-k="2">No action needed.</span> View your statement in the Summit app.'}],
+  flags:[
+   {k:1,t:'Matches what you set up',d:'You chose an automatic $200 monthly deposit. The message only reports it.'},
+   {k:2,t:'Asks you for nothing',d:'No link to click, no password, no payment, no deadline.'}],
+  why:'Boring is a good sign here. This is the automatic investing Ramit talks about in the book. A scam wants you to act. This message wants nothing.',
+  todo:'Check the amount in your app. If you did not set up this deposit, call your provider using the number on its website.'},
+ {id:6,ch:'call',title:'Unknown number',sub:'(202) 555-0147 · 03:12',answer:'scam',
+  msgs:[
+   {from:'Caller',side:'in',t:'',html:'This is Officer Daniels from the IRS. <span class="rf" data-k="1">You owe $4,860 in unpaid taxes and a warrant will be issued today.</span>'},
+   {from:'You',side:'out',t:'',html:'I never received any letter.'},
+   {from:'Caller',side:'in',t:'',html:'Do not hang up. To avoid arrest, <span class="rf" data-k="2">pay now with gift cards</span> and <span class="rf" data-k="3">do not tell anyone, not even your family.</span>'}],
+  flags:[
+   {k:1,t:'Threat of arrest',d:'Tax offices start with letters in the mail. They do not threaten arrest on the phone.'},
+   {k:2,t:'Gift cards',d:'No government office accepts gift cards. Only scammers ask for them, because they cannot be traced.'},
+   {k:3,t:'Secrecy',d:'A real problem does not need to stay secret.'}],
+  why:'This scam targets newcomers because fear of authorities is strong. The caller\'s number can be faked to look official.',
+  todo:'Hang up. Look up the real office number yourself and call it if you are worried.'},
+ {id:7,ch:'mail',answer:'real',
+  from:'Jordan Lee, CFP',addr:'jordan@leeparkplanning.com',to:'to me',subj:'Free intro call for students',
+  body:'<p>Hi Camila,</p><p>I am a fee-only financial planner. I give free 30-minute intro calls to students. <span class="gs" data-k="1">I will not sell you any product on the call.</span></p><p><span class="gs" data-k="2">You can check my license and record at BrokerCheck (brokercheck.finra.org). Search "Jordan Lee".</span> If you want a call, <span class="gs" data-k="3">choose a time on my website. No money is needed before we meet.</span></p><p>Best,<br>Jordan</p>',
+  flags:[
+   {k:1,t:'No selling, no pressure',d:'It offers help and does not push a purchase.'},
+   {k:2,t:'It invites you to check',d:'A real professional wants you to verify them, using a public regulator database.'},
+   {k:3,t:'No money first',d:'You pay nothing to start. You choose the time.'}],
+  why:'A stranger can be honest. What matters is whether you can verify the person and whether they ask for money or secrecy. Search the name in BrokerCheck before you answer.',
+  todo:'Verify the license first. Then decide.'},
+ {id:8,ch:'ig',title:'emma.fx.mentor',sub:'Active now',answer:'scam',
+  msgs:[
+   {from:'',side:'in',t:'',html:'Hey! I saw your post about saving for a house. I turned <span class="rf" data-k="1">$300 into $12k in 2 weeks</span> with my forex method.'},
+   {from:'',side:'in',t:'',html:'I help 10 students every month. You pay <span class="rf" data-k="2">$150 for my software license</span> and I <span class="rf" data-k="3">double it by Friday or refund 200%.</span> Send by Zelle or crypto, whatever is easier.'}],
+  flags:[
+   {k:1,t:'Unrealistic profit',d:'A 4,000% return in 2 weeks is a story, not a strategy. Even professionals do not do this.'},
+   {k:2,t:'You pay first',d:'You pay a fee to get something that is "free money". Real teachers do not need your money to prove they are good.'},
+   {k:3,t:'Impossible guarantee',d:'"Double it or refund 200%" cannot be backed by anyone.'}],
+  why:'This person messaged you first, found your post, and wants an untraceable payment. All three together are a strong warning.',
+  todo:'Block and report the account. Never pay by Zelle or crypto to a stranger. You usually cannot get the money back.'},
+ {id:9,ch:'mail',answer:'scam',
+  from:'National Student Aid Center',addr:'info@nsac-scholarships.net',to:'to me',subj:'Congratulations! Scholarship awarded: $5,000',
+  body:'<p>Dear Student,</p><p>Congratulations! <span class="rf" data-k="1">You have been selected for a $5,000 scholarship. You did not need to apply.</span></p><p>To release your funds, pay a <span class="rf" data-k="2">$149 processing fee by gift card or wire within 48 hours.</span> <span class="rf" data-k="3">Guaranteed or your money back.</span></p><p>National Student Aid Center</p>',
+  flags:[
+   {k:1,t:'You never applied',d:'You cannot win a contest you did not enter.'},
+   {k:2,t:'Fee and a short deadline',d:'A real scholarship pays you. You never pay to receive it. Gift cards and wire transfers are scammer favorites.'},
+   {k:3,t:'Guarantee',d:'Honest scholarships do not guarantee anything to a stranger.'}],
+  why:'This one targets students who are saving for college. A real scholarship comes from a school or an organization you can find and call.',
+  todo:'Delete it. Ask your school financial aid office about real scholarships.'}
+];
+var PROBLEMS = [
+ {t:'The first payout is real',s:'Your friend Andres shows you a screenshot: he really withdrew $900 from the "family circle". He asks you to join with just $200 as a test.',
+  o:[['Join with $200 as a test','Early payouts are often real. They are paid with new members\' deposits. A good test often becomes a bigger payment after the first small win.'],
+     ['Ask him: where does the money come from?','Good question. If the answer is "a secret robot" or "don\'t worry about it", you have your answer.'],
+     ['Search the group name with the word "scam"','A smart step. Also check regulator websites. No results does not mean safe, because new scams have no reviews yet.'],
+     ['Say nothing and stay away','You are safe, but Andres is still recruiting, and he may lose more than $200.']],
+  i:'A scam has to pay the first people for the story to spread. Proof of one payout is not proof of a business.',
+  q:'Is it your responsibility to warn him? How could you say it without ending the friendship?'},
+ {t:'Not every deadline is a scam',s:'Your real bank emails you: "Our 4.5% CD offer ends Friday." You were thinking of opening a CD.',
+  o:[['Click the link in the email and sign up now','Risky. Even if the offer is real, a link in an email can be fake. Open the bank site yourself.'],
+     ['Ignore all deadlines forever','Too strict. Real offers can have deadlines. You would miss real chances.'],
+     ['Open the bank\'s website or app yourself and look for the offer','A strong choice. If the offer is real, it will be there.'],
+     ['Call the number on the back of your card','A strong choice too. You use a door you already trust.']],
+  i:'A deadline alone is not proof of a scam. Danger grows when pressure comes together with a stranger, a strange payment method, and secrecy.',
+  q:'Which message in the game had a deadline but was still real? What made it different?'},
+ {t:'Mom\'s savings',s:'Your mother, 64, wants to put $8,000 into a "gold investment club" a friend from church recommended. She trusts the friend completely.',
+  o:[['Tell her it is obviously a scam','She may feel disrespected, and she may defend the friend. People rarely change their mind when they feel attacked.'],
+     ['Ask: "Can we check together?" and look up the company','Respectful and practical. You become her partner, not her teacher.'],
+     ['Ask her to start with $500 only','Reduces the damage, but may not stop the scam. She may add more later.'],
+     ['Ask the church friend for proof of the license','Smart. A real business answers easily. A scam gets angry or vague.']],
+  i:'Scammers often target older people and use trusted groups. Shame stops people from asking for help, and respect helps them listen.',
+  q:'How would you start this conversation in your language? In English? What changes?'},
+ {t:'I already sent money',s:'You sent $300 to a "trading coach". Now he says: "Your profit is $2,000, but you must pay $700 to release it."',
+  o:[['Pay the $700 to get the profit','This is the classic second trap. The fee will not release anything, and a third fee often follows.'],
+     ['Ask him to withdraw the profit first, then stop if he refuses','Good test. Scammers always have a new reason.'],
+     ['Stop, keep screenshots, and tell your bank right away','Strong. Banks sometimes can stop or recover transfers if you act fast.'],
+     ['Ask friends to join so you can recover the money','This turns you into part of the scam, and your friends lose money too.']],
+  i:'The money you already sent is gone, whether or not you send more. People continue because they hate to lose what they already paid.',
+  q:'Why do many people never report scams? What would make it easier to speak up?'},
+ {t:'Do the math',s:'The group promises 8% every week. You put in $1,000. If it were true, how much would you have after one year (52 weeks)?',
+  o:[['About $5,000','Closer, but money grows on money, so it would be much bigger.'],
+     ['About $54,700','Correct. 1.08 multiplied by itself 52 times is about 54.7. And $10,000 would become about $547,000.'],
+     ['About $1,080','That is only one week of growth.']],
+  i:'If someone could really make 8% a week, they would borrow money from a bank and get rich alone. They would not need your $1,000. The S&P 500 has averaged about 10% a YEAR.',
+  q:'Why do scammers ask for small amounts at first? And why is it important that you could not check the answer easily?'}
+];
+var RULES=['Who contacted whom? Be careful when a stranger starts the conversation.','Can they guarantee profits? Nobody can.','How do they want to be paid? Gift cards, crypto and private transfers are red flags.','Is there pressure or secrecy? "Hurry" and "do not tell" are red flags.','Can I check it myself? Use the real website, a regulator database, or a number you already trust.'];
+
+var S={phase:'intro',i:0,ans:[],p:0,pick:null};
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function initials(n){return n.split(/\s+/).map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();}
+var COLORS=['#128C7E','#6C5CE7','#E17055','#0984E3','#00A68C'];
+
+function phone(c,review){
+  var h='<div class="phone '+c.ch+(review?' review':'')+'" role="img" aria-label="Screenshot of a message">';
+  if(c.ch==='mail'){
+    h+='<div class="ph-top"><span class="subj">'+esc(c.subj)+'</span><small>From: <b style="display:inline">'+esc(c.from)+'</b> &lt;'+esc(c.addr)+'&gt;</small><small>'+esc(c.to)+'</small></div><div class="body">'+c.body+'</div></div>';return h;}
+  var col=COLORS[c.id%COLORS.length];
+  h+='<div class="ph-top"><span class="av" style="background:'+col+'">'+esc(initials(c.title))+'</span><span><b>'+esc(c.title)+'</b><small>'+esc(c.sub)+'</small></span></div>';
+  if(c.ch==='sms')h=h.replace('<span class="av" style="background:'+col+'">'+esc(initials(c.title))+'</span>','');
+  h+='<div class="thread">';
+  c.msgs.forEach(function(m){
+    h+='<div class="msg'+(m.side==='out'?' out':'')+'">'+(m.from?'<span class="who"'+(m.color?' style="color:'+m.color+'"':'')+'>'+esc(m.from)+'</span>':'')+m.html+(m.img?'<div class="fakeimg">'+esc(m.img.big)+'<small>'+esc(m.img.small)+'</small></div>':'')+(m.t?'<span class="t">'+esc(m.t)+'</span>':'')+'</div>';});
+  return h+'</div></div>';}
+
+function steps(){var a=[['sort','1 Sort'],['review','2 Explain'],['think','3 Think']],cur={intro:-1,sort:0,review:1,think:2,end:2}[S.phase];
+  $('steps').innerHTML=a.map(function(x,i){return '<span class="step'+(i===cur?' on':'')+'">'+x[1]+'</span>';}).join('');
+  var total={sort:CARDS.length,review:CARDS.length,think:PROBLEMS.length}[S.phase],n={sort:S.i,review:S.i,think:S.p}[S.phase];
+  $('count').textContent=total?(S.phase==='sort'?'Message ':S.phase==='review'?'Message ':'Problem ')+(n+1)+' of '+total:'';
+  $('prog').style.width=total?Math.round((n+(S.phase==='sort'?0:1))/total*100)+'%':(S.phase==='end'?'100%':'0');}
+
+function render(){steps();var v=$('view'),h='';
+ if(S.phase==='intro'){
+  h='<div class="card"><h2>Real message or scam?</h2><p>You will see 9 messages that people really receive. Some are scams and some are real. Decide quickly, then we will look at the answers together.</p>'+
+   '<div class="list"><div class="row"><span><b>1. Sort</b> each message: Scam or Real</span><span class="note">6 min</span><span></span></div><div class="row"><span><b>2. Explain</b> the red flags and good signs</span><span class="note">5 min</span><span></span></div><div class="row"><span><b>3. Think</b> about 5 hard problems with a partner</span><span class="note">4 min</span><span></span></div></div>'+
+   '<p class="note" style="margin-top:12px">Play alone or in pairs. Decide with your partner before you press. The names and companies in these messages are made up.</p><div style="margin-top:12px"><button class="btn" id="go">Start</button></div></div>';}
+ else if(S.phase==='sort'){var c=CARDS[S.i];
+  h='<div>'+phone(c,false)+'<p class="center muted" style="margin:14px 0 0">What would you do with this message?</p><div class="decide"><button class="btn scam" data-a="scam">Scam</button><button class="btn real" data-a="real">Real</button></div></div>';}
+ else if(S.phase==='review'){var c=CARDS[S.i],mine=S.ans[S.i],ok=mine===c.answer;
+  h='<div class="two"><div>'+phone(c,true)+'</div><div class="card"><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span class="pill '+c.answer+'">'+(c.answer==='scam'?'SCAM':'REAL')+'</span><span class="note">You said: <b>'+(mine==='scam'?'Scam':'Real')+'</b> '+(ok?'(correct)':'(not this time)')+'</span></div>'+
+   '<h2 style="margin-top:10px">'+(c.answer==='scam'?'Red flags':'Good signs')+'</h2>'+c.flags.map(function(f){return '<div class="flag'+(c.answer==='real'?' good':'')+'"><b class="n">'+f.k+'</b><div><b>'+esc(f.t)+'.</b> '+esc(f.d)+'</div></div>';}).join('')+
+   '<div class="insight"><b>Why it works.</b> '+esc(c.why)+'</div><div class="insight" style="background:var(--real-bg)"><b>What to do.</b> '+esc(c.todo)+'</div></div></div>'+
+   '<div style="display:flex;justify-content:space-between;margin-top:14px"><button class="btn ghost" id="prev"'+(S.i===0?' disabled':'')+'>Back</button><button class="btn" id="nxt">'+(S.i===CARDS.length-1?'Think about it':'Next message')+'</button></div>';}
+ else if(S.phase==='think'){var p=PROBLEMS[S.p];
+  h='<div class="card"><div class="eyebrow">Think about it</div><h2>'+esc(p.t)+'</h2><p>'+esc(p.s)+'</p>'+p.o.map(function(o,i){return '<button class="btn choice" data-o="'+i+'" aria-pressed="'+(S.pick===i)+'">'+esc(o[0])+'</button>';}).join('');
+  if(S.pick!==null)h+='<div class="insight"><b>'+esc(p.o[S.pick][0])+'.</b> '+esc(p.o[S.pick][1])+'</div><div class="insight" style="background:var(--warn-bg)"><b>Remember.</b> '+esc(p.i)+'</div><div class="insight"><b>Talk with your partner.</b> '+esc(p.q)+'</div>';
+  h+='</div><div style="display:flex;justify-content:space-between;margin-top:14px"><button class="btn ghost" id="pp"'+(S.p===0?' disabled':'')+'>Back</button><button class="btn" id="pn"'+(S.pick===null?' disabled':'')+'>'+(S.p===PROBLEMS.length-1?'Finish':'Next problem')+'</button></div>';}
+ else{var sc=CARDS.filter(function(c,i){return S.ans[i]===c.answer;}).length;
+  h='<div class="card"><h2>Your 5 questions before you send money</h2><ol class="checks">'+RULES.map(function(r){return '<li>'+esc(r)+'</li>';}).join('')+'</ol><div class="insight">You identified <b>'+sc+' of '+CARDS.length+'</b> messages correctly. Anyone can be fooled. These scams are made by professionals. The goal is to stop and check.</div>'+
+   '<p class="note" style="margin-top:12px">If you are scammed in the United States, tell your bank right away and report it at reportfraud.ftc.gov.</p><div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap"><button class="btn" id="again">Play again</button><button class="btn ghost" id="rev">Review the answers</button></div></div>';}
+ v.innerHTML=h;}
+
+document.addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;
+  if(b.id==='go'){S.phase='sort';S.i=0;S.ans=[];}
+  else if(b.dataset.a){S.ans[S.i]=b.dataset.a;if(S.i<CARDS.length-1)S.i++;else{S.phase='review';S.i=0;}}
+  else if(b.id==='nxt'){if(S.i<CARDS.length-1)S.i++;else{S.phase='think';S.p=0;S.pick=null;}}
+  else if(b.id==='prev'){S.i--;}
+  else if(b.dataset.o!==undefined){S.pick=+b.dataset.o;}
+  else if(b.id==='pn'){if(S.p<PROBLEMS.length-1){S.p++;S.pick=null;}else S.phase='end';}
+  else if(b.id==='pp'){S.p--;S.pick=null;}
+  else if(b.id==='again'){S={phase:'intro',i:0,ans:[],p:0,pick:null};}
+  else if(b.id==='rev'){S.phase='review';S.i=0;}
+  else return;
+  render();window.scrollTo(0,0);});
+render();
+</script>
+
+</body></html>
