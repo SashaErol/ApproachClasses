@@ -1,0 +1,188 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Chapter 3 Warm-ups</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: one centered question card at a time, big question first, follow-ups below, Back/Next pinned under the card. */
+:root{
+  --bg:#F4F5F7; --card:#FFFFFF; --ink:#10294A; --muted:#51647A;
+  --accent:#9C2519; --sky:#2F6FA3; --chip:#E3ECF5; --line:#D5DAE0; --hero:#10294A; --hero-ink:#F4F5F7; --hero-soft:#C5D2E0;
+  --font-display:'Montserrat', Arial, sans-serif; --font-body:'Source Sans 3', Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1B31; --card:#12263F; --ink:#F4F5F7; --muted:#A9B9CB;
+  --accent:#F08A7E; --sky:#6FA8D8; --chip:#1D3857; --line:#2A486B; --hero:#1B3A63; --hero-ink:#F4F5F7; --hero-soft:#C5D2E0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1B31; --card:#12263F; --ink:#F4F5F7; --muted:#A9B9CB;
+  --accent:#F08A7E; --sky:#6FA8D8; --chip:#1D3857; --line:#2A486B; --hero:#1B3A63; --hero-ink:#F4F5F7; --hero-soft:#C5D2E0; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:20px;line-height:1.45;
+  padding-block:24px 40px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--font-display);font-weight:800;font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.count{font-size:17px;color:var(--muted);font-weight:600}
+.dots{display:flex;gap:10px}
+.dot{flex:1;height:10px;border-radius:5px;border:0;background:var(--line);cursor:pointer;padding:0}
+.dot[aria-current="true"]{background:var(--accent)}
+.dot.done{background:var(--sky)}
+.dot:focus-visible,.btn:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;animation:in .35s ease both}
+@keyframes in{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.card{animation:none}}
+.top{background:var(--hero);color:var(--hero-ink);padding:32px clamp(20px,5vw,44px) 36px;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-weight:700;font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--hero-soft)}
+.topic{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,5vw,40px);line-height:1.12;text-wrap:balance;margin:0}
+.main{font-family:var(--font-display);font-weight:600;font-size:clamp(21px,3.6vw,28px);line-height:1.3;margin:6px 0 0;text-wrap:pretty}
+.body{padding:28px clamp(20px,5vw,44px) 32px;display:flex;flex-direction:column;gap:24px}
+.label{font-weight:700;font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+ul.q{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+ul.q li{padding-left:22px;position:relative}
+ul.q li::before{content:"";position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:var(--sky)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:var(--chip);color:var(--ink);border-radius:999px;padding:6px 16px;font-weight:600;font-size:18px}
+.time{font-size:17px;color:var(--muted);margin:0}
+nav{display:flex;justify-content:space-between;gap:12px}
+.btn{font-family:var(--font-display);font-weight:800;font-size:18px;border-radius:14px;border:2px solid var(--ink);background:transparent;color:var(--ink);padding:14px 28px;cursor:pointer;min-width:120px}
+.btn.next{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn.next{color:#0B1B31}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.next{color:#0B1B31}}
+.btn[disabled]{opacity:.35;cursor:default}
+.end{text-align:center;padding:48px 24px;display:flex;flex-direction:column;gap:14px;align-items:center}
+.end h2{font-family:var(--font-display);font-weight:800;font-size:34px;margin:0}
+.end p{max-width:520px;color:var(--muted);margin:0}
+@media (max-width:480px){body{font-size:18px}.btn{padding:12px 18px;min-width:0;flex:1}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="brand">Chapter 3 · Get Ready to Invest</span>
+    <span class="count" id="count" aria-live="polite"></span>
+  </header>
+  <div class="dots" id="dots" role="tablist" aria-label="Warm-up topics"></div>
+  <main id="stage"></main>
+  <nav>
+    <button class="btn" id="back" type="button">Back</button>
+    <button class="btn next" id="next" type="button">Next</button>
+  </nav>
+</div>
+
+<script>
+var cards = [
+  {
+    topic: "Your dream retirement",
+    main: "You are 65. Describe a normal Tuesday: where do you live, who is with you, and what do you do?",
+    follow: [
+      "At what age do people usually stop working in your country? Do you want to stop at that age?",
+      "Is your dream realistic? About how much money would you need each month?",
+      "What do older people in your family do for money today?"
+    ],
+    words: ["retire", "retirement", "savings", "goal", "realistic"],
+    time: "Talk time: about 8 minutes"
+  },
+  {
+    topic: "Who takes care of older people?",
+    main: "In your country, who pays for older people when they stop working: the government, the family, or the person?",
+    follow: [
+      "Does your government pay older people a pension? Guess how much per month. Is it enough to live on?",
+      "In your family, do children support their parents when they get old? Is that fair?",
+      "Will your own children have to support you? Do you want that?"
+    ],
+    words: ["pension", "government", "support", "elderly", "afford"],
+    time: "Talk time: about 8 minutes"
+  },
+  {
+    topic: "Luck, plan, or fear?",
+    main: "The book says 21% of people who expect to get rich say it will happen by winning the lottery. What do people in your country hope for?",
+    follow: [
+      "What makes people afraid to start investing? Not enough money, scams, bad stories, or “I don’t understand”?",
+      "You have $200 extra this month and a credit card with 14% interest. Do you pay the card or start investing? Defend your choice.",
+      "If you could start with only $50 a month, would you? What is your first step?"
+    ],
+    words: ["lottery", "luck", "plan", "debt", "interest", "invest"],
+    time: "Talk time: about 10 minutes"
+  },
+  {
+    topic: "Free money and tax-free accounts",
+    main: "Your boss says: “Put $100 in a retirement account and I will add another $100.” Who says no? Why might someone say no?",
+    follow: [
+      "Have you ever received free money, like a bonus, a gift, or a big discount? What did you do with it?",
+      "Do you know any accounts where you do not pay tax on your savings or earnings? Do they exist at home?",
+      "If you do not know, guess: how might a tax-free account work, and why would a government offer one?"
+    ],
+    words: ["employer", "match", "tax", "tax-free", "account", "bonus"],
+    time: "Talk time: about 10 minutes"
+  },
+  {
+    topic: "A college fund for kids",
+    main: "Should parents save for their children’s college? Even if you have no kids, imagine you have a child. What would you do?",
+    follow: [
+      "How does college work in your country: free, paid with loans, or paid by the family?",
+      "When would you start saving: at birth, at school age, or never? About how much per month?",
+      "Should the child pay part of it? Why or why not?"
+    ],
+    words: ["tuition", "scholarship", "loan", "fund", "afford", "parents"],
+    time: "Talk time: about 8 minutes"
+  }
+];
+
+var i = 0, seen = {};
+var stage = document.getElementById('stage');
+var dots = document.getElementById('dots');
+var back = document.getElementById('back');
+var next = document.getElementById('next');
+var count = document.getElementById('count');
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+function buildDots(){
+  dots.innerHTML = '';
+  cards.forEach(function(c, n){
+    var b = document.createElement('button');
+    b.className = 'dot'; b.type = 'button';
+    b.setAttribute('aria-label', 'Topic ' + (n+1) + ': ' + c.topic);
+    b.onclick = function(){ go(n); };
+    dots.appendChild(b);
+  });
+}
+
+function render(){
+  var c = cards[i];
+  if (i >= cards.length){
+    count.textContent = 'All done';
+    stage.innerHTML = '<section class="card"><div class="end"><h2>Great talking, everyone.</h2><p>Pick one idea you heard from another group today and share it with the class.</p></div></section>';
+    back.disabled = false; next.textContent = 'Start again';
+  } else {
+    seen[i] = true;
+    count.textContent = 'Topic ' + (i+1) + ' of ' + cards.length;
+    stage.innerHTML =
+      '<section class="card" aria-live="polite">' +
+        '<div class="top"><span class="eyebrow">Talk in groups</span>' +
+        '<h1 class="topic">' + esc(c.topic) + '</h1>' +
+        '<p class="main">' + esc(c.main) + '</p></div>' +
+        '<div class="body">' +
+          '<div><p class="label">Keep talking</p><ul class="q">' + c.follow.map(function(f){return '<li>'+esc(f)+'</li>';}).join('') + '</ul></div>' +
+          '<div><p class="label">Words to help</p><div class="chips">' + c.words.map(function(w){return '<span class="chip">'+esc(w)+'</span>';}).join('') + '</div></div>' +
+          '<p class="time">' + esc(c.time) + '</p>' +
+        '</div>' +
+      '</section>';
+    back.disabled = (i === 0);
+    next.textContent = (i === cards.length - 1) ? 'Finish' : 'Next';
+  }
+  Array.prototype.forEach.call(dots.children, function(d, n){
+    d.classList.toggle('done', !!seen[n] && n !== i);
+    if (n === i) d.setAttribute('aria-current','true'); else d.removeAttribute('aria-current');
+  });
+}
+
+function go(n){ i = Math.max(0, Math.min(cards.length, n)); render(); window.scrollTo(0,0); }
+next.onclick = function(){ if (i >= cards.length){ seen = {}; go(0); } else go(i+1); };
+back.onclick = function(){ go(i-1); };
+document.addEventListener('keydown', function(e){
+  if (e.key === 'ArrowRight') next.click();
+  if (e.key === 'ArrowLeft' && !back.disabled) back.click();
+});
+buildDots(); render();
+</script>
+
+</body></html>
