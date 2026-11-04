@@ -1,0 +1,128 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Collocations Weeks 1–4</title>
+<style>
+:root{--navy:#1f3a5f;--gold:#e0a526;--green:#2e8b57;--red:#c0392b;--bg:#f6f3ec;--ink:#1d2433}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.4}
+.wrap{max-width:820px;margin:0 auto;padding:14px}
+header{display:flex;align-items:center;gap:10px}.logo{font-weight:800;letter-spacing:.08em;color:var(--navy);font-size:13px}
+.tag{margin-left:auto;font-size:12px;background:var(--navy);color:#fff;padding:3px 10px;border-radius:99px}
+.tabs{display:flex;gap:6px;margin:10px 0;overflow-x:auto}
+.tab{flex:1;min-width:44px;border:2px solid var(--navy);background:#fff;color:var(--navy);border-radius:10px;padding:6px 0;font-weight:800;font-size:16px;cursor:pointer}
+.tab.on{background:var(--navy);color:#fff}.tab.done{border-color:var(--green)}
+.card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 8px #0002}
+h1{margin:0 0 2px;font-size:22px;color:var(--navy)}.ins{margin:0 0 12px;color:#445}
+.sc{margin-top:12px;font-weight:700;color:var(--navy)}
+.nav{display:flex;justify-content:space-between;margin:12px 0}
+.nav button,.b{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:10px 20px;font-size:16px;font-weight:700;cursor:pointer}
+.nav button:disabled{opacity:.35}.nav button.go{background:var(--green)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.it{border:2px solid var(--navy);border-radius:10px;padding:10px;margin-bottom:8px;background:#fff;font-size:16px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.it.sel{background:var(--gold);border-color:var(--gold)}.it.ok{background:var(--green);border-color:var(--green);color:#fff;cursor:default}
+.it.bad{animation:sh .35s;border-color:var(--red)}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.sp{background:none;border:0;cursor:pointer;font-size:16px;padding:0 2px}
+.q{border:1px solid #ddd;border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.q .t{font-size:17px;margin-bottom:6px}.q .t b.blank{display:inline-block;min-width:70px;border-bottom:3px solid var(--navy);text-align:center}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.o{border:2px solid var(--navy);background:#fff;color:var(--navy);border-radius:10px;padding:7px 14px;font-size:16px;font-weight:700;cursor:pointer}
+.o.ok{background:var(--green);border-color:var(--green);color:#fff}.o.bad{background:#fbe3e0;border-color:var(--red);color:var(--red)}
+.aft{margin-top:6px;font-size:14px;color:#2a5;font-weight:600}
+.rule{background:#eef3f9;border-left:5px solid var(--navy);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:14.5px}
+.L{color:#1b7a46;font-weight:800}.S{color:#c0392b;font-weight:800}.se{color:#aaa;text-decoration:line-through;font-weight:700}
+.tiles{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.tile{border:2px solid var(--navy);border-radius:10px;padding:6px 12px;font-size:17px;font-weight:700;background:#fff;cursor:pointer}
+.tile.used{opacity:.25;pointer-events:none}
+.ans{min-height:46px;border:2px dashed var(--gold);border-radius:10px;padding:6px 10px;font-size:18px;font-weight:700;display:flex;gap:6px;flex-wrap:wrap;align-items:center;background:#fff7e0}
+.ph{border:1px solid #ddd;border-radius:12px;padding:8px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ph .e{font-size:19px;font-weight:700;flex:1;min-width:200px}.ph small{display:block;color:#666;font-weight:500;font-size:13px}
+.chk{font-size:20px;cursor:pointer;user-select:none;letter-spacing:3px}
+.spin{background:#fff7e0;border:2px dashed var(--gold);border-radius:14px;padding:12px;margin-top:12px;text-align:center}
+.spin .pair{font-size:20px;font-weight:800;color:var(--navy);margin:8px 0}
+.warn{display:none;background:#fbe3e0;border:2px solid var(--red);border-radius:10px;padding:8px;margin-bottom:10px;color:var(--red);font-weight:600;font-size:14px}
+@media(max-width:520px){.cols{gap:6px}.it{font-size:15px}}
+</style></head><body><div class="wrap">
+<header><span class="logo">APPROACH · English for Real Life</span><span class="tag">Weeks 1–4 · Collocations</span></header>
+<div class="tabs" id="tabs"></div><div class="card" id="card"></div>
+<div class="nav"><button id="bk">← Back</button><button id="nx">Next →</button></div></div>
+<script>
+const $=s=>document.querySelector(s);
+let voice=null,hasTTS=('speechSynthesis' in window);
+function pick(){try{const v=speechSynthesis.getVoices().filter(x=>/en[-_]US/i.test(x.lang));voice=v.find(x=>/natural|premium|enhanced|neural|samantha|google us/i.test(x.name))||v[0]||null}catch(e){}}
+try{pick();speechSynthesis.onvoiceschanged=pick}catch(e){}
+function say(t,r){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=r||.85;if(voice)u.voice=voice;speechSynthesis.speak(u)}catch(e){const w=$('#warn');if(w)w.style.display='block'}}
+function sh(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+const SC={};let cur=0;
+/* DATA */
+const M=[["enroll in a class","matricular-se em uma aula"],["make small talk","bater papo / conversa rápida"],["pay the rent","pagar o aluguel"],["take out the trash","levar o lixo para fora"],["buy health insurance","comprar seguro saúde"],["pay the deductible","pagar a franquia"],["take your temperature","medir a temperatura"],["drink plenty of water","beber bastante água"]];
+const SORT=[["make","/meɪk/",1],["line","/laɪn/",1],["side","/saɪd/",1],["home","/hoʊm/",1],["phone","/foʊn/",1],["safe","/seɪf/",1],["pill","/pɪl/",0],["rent","/rɛnt/",0],["sick","/sɪk/",0],["fix","/fɪks/",0],["hot","/hɑːt/",0],["lost","/lɔːst/",0]];
+const PAIRS=[["hop","hope"],["tap","tape"],["pin","pine"],["not","note"],["cut","cute"],["kit","kite"]];
+const VERB=[["I need to ___ a lease for my apartment.",["sign","do","put"],"sign","sign a lease","assinar um contrato de aluguel"],
+["Please ___ a complaint with the leasing office.",["do","file","hold"],"file","file a complaint","registrar uma reclamação"],
+["I want to ___ friends in my class.",["have","do","make"],"make","make friends","fazer amigos"],
+["You should ___ a flu shot every year.",["get","make","do"],"get","get a flu shot","tomar a vacina da gripe"],
+["Please ___ your coverage before you go.",["watch","check","see"],"check","check your coverage","verificar sua cobertura"],
+["I ___ one pill in the morning.",["eat","drink","take"],"take","take a pill","tomar um comprimido"],
+["We wait ___ line at the pharmacy.",["on","in","at"],"in","wait in line","esperar na fila"],
+["Ask the pharmacist about side ___.",["effects","results","works"],"effects","side effects","efeitos colaterais"]];
+const BUILD=[["get a flu shot","tomar a vacina da gripe"],["see an in-network doctor","consultar um médico da rede"],["go to urgent care","ir ao pronto atendimento"],["call the leasing office","ligar para o escritório de locação"],["take a break","fazer uma pausa"],["get plenty of rest","descansar bastante"]];
+const SAY=[["take your temperature",'t<span class="L">a</span>k<span class="se">e</span> your <span class="S">te</span>mperature',"TAYK yer TEM-pruh-chur"],
+["make small talk",'m<span class="L">a</span>k<span class="se">e</span> small talk',"MAYK smawl TAWK"],
+["wait in line",'w<span class="L">ai</span>t in l<span class="L">i</span>n<span class="se">e</span>',"WAYT in LYNE"],
+["stay at home",'stay at h<span class="L">o</span>m<span class="se">e</span>',"STAY at HOHM"],
+["side effects",'s<span class="L">i</span>d<span class="se">e</span> effects',"SYDE uh-FECTS"],
+["pay the rent",'pay the r<span class="S">e</span>nt',"PAY the RENT"],
+["take a pill",'t<span class="L">a</span>k<span class="se">e</span> a p<span class="S">i</span>ll',"TAYK uh PIL"],
+["fix the sink",'f<span class="S">i</span>x the s<span class="S">i</span>nk',"FIX the SINK"]];
+const ALL=[...M.map(x=>x[0]),...VERB.map(x=>x[3]),...BUILD.map(x=>x[0]),"make an appointment","fill out a form","pay a co-pay","have a fever","pick up a prescription","call 911"];
+/* helper score */
+function sc(k,ok,tot){SC[k]={ok,tot};renderTabs()}
+function scoreLine(k){const s=SC[k];return s?`First-try score: ${s.ok} / ${s.tot}`:''}
+function renderTabs(){$('#tabs').innerHTML=PG.map((p,i)=>`<button class="tab${i==cur?' on':''}${SC['p'+i]&&SC['p'+i].done?' done':''}" onclick="go(${i})">${i+1}</button>`).join('')}
+function frame(t,i,extra){return `<h1>${t}</h1><p class="ins">${i}</p><div class="warn" id="warn">Sound could not start. Open this file in Chrome or Safari and turn up the volume.</div>${extra||''}`}
+/* P1 match */
+function p1(){const key='p0';let L=sh(M),R=sh(M);for(let n=0;n<20&&R.some((x,i)=>x===L[i]);n++)R=sh(M);
+ let sel=null,done={},bad={};
+ $('#card').innerHTML=frame('Match to Portuguese','Tap the English phrase, then its Portuguese meaning.','<div class="cols" id="m"></div><div class="sc" id="s"></div>');
+ const draw=()=>{$('#m').innerHTML=`<div>${L.map(x=>`<div class="it${done[x[0]]?' ok':''}${sel===x[0]?' sel':''}" data-l="${x[0]}"><button class="sp" aria-label="listen">🔊</button>${x[0]}</div>`).join('')}</div><div>${R.map(x=>`<div class="it${done[x[0]]?' ok':''}" data-r="${x[0]}">${x[1]}</div>`).join('')}</div>`;
+  document.querySelectorAll('[data-l]').forEach(e=>{e.onclick=ev=>{const k=e.dataset.l;if(ev.target.classList.contains('sp')){say(k);return}if(done[k])return;sel=sel===k?null:k;if(sel)say(k);draw()}});
+  document.querySelectorAll('[data-r]').forEach(e=>{e.onclick=()=>{const k=e.dataset.r;if(done[k]||!sel)return;if(k===sel){done[k]=1;sel=null;draw();fin()}else{bad[sel]=1;const s0=sel;sel=null;draw();const el=document.querySelector(`[data-r="${k}"]`);el.classList.add('bad');setTimeout(()=>el.classList.remove('bad'),400)}}})};
+ const fin=()=>{const n=Object.keys(done).length;const ok=M.filter(x=>!bad[x[0]]).length;if(n==M.length){SC[key]={ok,tot:M.length,done:1};renderTabs()}$('#s').textContent=n==M.length?'🎉 '+scoreLine(key):`Matched: ${n} / ${M.length}`};
+ draw();fin()}
+/* P2 sort */
+function p2(){const key='p1';let st={},bad={};const W=sh(SORT);
+ $('#card').innerHTML=frame('Silent e: long or short?','Is the vowel LONG (says its letter name, with silent e) or SHORT? Tap 🔊 and listen first.',`<div class="rule"><b>Rule:</b> vowel + consonant + silent <b>e</b> = long vowel. <span class="L">make</span>, <span class="L">line</span>, <span class="L">home</span>. Without silent e = short vowel. <span class="S">pill</span>, <span class="S">rent</span>, <span class="S">hot</span>.</div><div id="w"></div><div class="sc" id="s"></div>`);
+ const draw=()=>{$('#w').innerHTML=W.map((w,i)=>`<div class="q"><div class="t"><button class="sp" onclick="say('${w[0]}')">🔊</button> <b>${w[0]}</b> ${st[i]?`<span class="aft">${w[1]}</span>`:''}</div><div class="opts"><button class="o${st[i]&&w[2]?' ok':''}" data-i="${i}" data-a="1" ${st[i]?'disabled':''}>LONG (silent e)</button><button class="o${st[i]&&!w[2]?' ok':''}" data-i="${i}" data-a="0" ${st[i]?'disabled':''}>SHORT</button></div></div>`).join('');
+  document.querySelectorAll('#w .o').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(+b.dataset.a===W[i][2]){st[i]=1;draw();fin()}else{bad[i]=1;b.classList.add('bad')}})};
+ const fin=()=>{const n=Object.keys(st).length;if(n==W.length){SC[key]={ok:W.length-Object.keys(bad).length,tot:W.length,done:1};renderTabs()}$('#s').textContent=n==W.length?'🎉 '+scoreLine(key):`Done: ${n} / ${W.length}`};draw();fin()}
+/* P3 hear */
+function p3(){const key='p2';let st={},bad={};const I=sh(PAIRS).map(p=>{const t=Math.random()<.5?0:1;return{p,t}});
+ $('#card').innerHTML=frame('Listen and choose','Tap 🔊 and listen. Which word do you hear? Listen for the vowel.','<div id="w"></div><div class="sc" id="s"></div>');
+ const draw=()=>{$('#w').innerHTML=I.map((x,i)=>{const o=sh(x.p);return`<div class="q"><div class="t"><button class="o" onclick="say('${x.p[x.t]}',.7)">🔊 Listen ${i+1}</button></div><div class="opts">${x.p.map((w,j)=>`<button class="o${st[i]&&j==x.t?' ok':''}" data-i="${i}" data-j="${j}" ${st[i]?'disabled':''}>${w}</button>`).join('')}</div>${st[i]?`<div class="aft">${x.p[0]} = short vowel · ${x.p[1]} = long vowel (silent e)</div>`:''}</div>`}).join('');
+  document.querySelectorAll('#w .opts .o').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(+b.dataset.j===I[i].t){st[i]=1;draw();fin()}else{bad[i]=1;b.classList.add('bad')}})};
+ const fin=()=>{const n=Object.keys(st).length;if(n==I.length){SC[key]={ok:I.length-Object.keys(bad).length,tot:I.length,done:1};renderTabs()}$('#s').textContent=n==I.length?'🎉 '+scoreLine(key):`Done: ${n} / ${I.length}`};draw();fin()}
+/* P4 verbs */
+function p4(){const key='p3';let st={},bad={};const I=VERB.map(v=>({v,o:sh(v[1])}));
+ $('#card').innerHTML=frame('Choose the right word','Collocations are word friends. Choose the best friend for the blank. Careful: Portuguese “fazer” is not always “do.”','<div id="w"></div><div class="sc" id="s"></div>');
+ const draw=()=>{$('#w').innerHTML=I.map((x,i)=>`<div class="q"><div class="t">${x.v[0].replace('___',st[i]?`<b class="blank" style="color:#2e8b57">${x.v[2]}</b>`:'<b class="blank">&nbsp;</b>')}</div><div class="opts">${x.o.map(w=>`<button class="o${st[i]&&w==x.v[2]?' ok':''}" data-i="${i}" data-w="${w}" ${st[i]?'disabled':''}>${w}</button>`).join('')}</div>${st[i]?`<div class="aft">✔ ${x.v[3]} = ${x.v[4]}</div>`:''}</div>`).join('');
+  document.querySelectorAll('#w .opts .o').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(b.dataset.w===I[i].v[2]){st[i]=1;say(I[i].v[3]);draw();fin()}else{bad[i]=1;b.classList.add('bad')}})};
+ const fin=()=>{const n=Object.keys(st).length;if(n==I.length){SC[key]={ok:I.length-Object.keys(bad).length,tot:I.length,done:1};renderTabs()}$('#s').textContent=n==I.length?'🎉 '+scoreLine(key):`Done: ${n} / ${I.length}`};draw();fin()}
+/* P5 build */
+function p5(){const key='p4';let idx=0,ok=0,bad=0,badThis=false,ans=[];const I=sh(BUILD);let tiles;
+ $('#card').innerHTML=frame('Build the phrase','Tap the words in the right order.','<div id="w"></div><div class="sc" id="s"></div>');
+ const draw=()=>{if(idx>=I.length){SC[key]={ok,tot:I.length,done:1};renderTabs();$('#w').innerHTML='';$('#s').textContent='🎉 '+scoreLine(key);return}
+  const it=I[idx];if(!tiles)tiles=sh(it[0].split(' ').map((w,i)=>({w,i})));
+  $('#w').innerHTML=`<p><b>${idx+1} / ${I.length}</b> · Portuguese: ${it[1]}</p><div class="ans">${ans.map(t=>`<span>${t.w}</span>`).join('')||'<span style="color:#aaa">…</span>'}</div><div class="tiles">${tiles.map(t=>`<button class="tile${ans.includes(t)?' used':''}" data-i="${t.i}">${t.w}</button>`).join('')}</div><button class="b" id="cl">Clear</button>`;
+  document.querySelectorAll('.tile').forEach((b,k)=>b.onclick=()=>{ans.push(tiles[k]);if(ans.length==tiles.length){const s=ans.map(t=>t.w).join(' ');if(s===it[0]){say(it[0]);if(!badThis)ok++;idx++;ans=[];tiles=null;badThis=false;setTimeout(draw,500)}else{badThis=true;ans=[]}}draw();$('#s').textContent=`Phrases done: ${idx} / ${I.length}`});
+  $('#cl').onclick=()=>{ans=[];draw()}};draw();$('#s').textContent=`Phrases done: 0 / ${I.length}`}
+/* P6 say */
+function p6(){let t=0,tot=0;Object.keys(SC).forEach(k=>{if(SC[k].done){t+=SC[k].ok;tot+=SC[k].tot}});
+ $('#card').innerHTML=frame('Say it right, then talk','Say each phrase 3 times. Tap a box each time. <span class="L">Green</span> = long vowel. <span class="se">e</span> = silent e. <span class="S">Red</span> = short vowel.','<div id="w"></div><div class="spin"><b>Talk with a partner</b><div class="pair" id="pr">Tap the button</div><button class="b" id="sp">Spin 🎲</button><p style="margin:8px 0 0;font-size:14px">Use BOTH phrases in one true sentence. Example: “I <i>make small talk</i> at the <i>pharmacy</i>.” Then ask your partner a question.</p></div>'+(tot?`<div class="sc">Your total first-try score on pages 1–5: ${t} / ${tot}</div>`:''));
+ $('#w').innerHTML=SAY.map((s,i)=>`<div class="ph"><button class="sp" onclick="say('${s[0]}')">🔊</button><div class="e">${s[1]}<small>${s[2]}</small></div><span class="chk" data-n="0">☐☐☐</span></div>`).join('');
+ document.querySelectorAll('.chk').forEach(c=>c.onclick=()=>{let n=(+c.dataset.n+1)%4;c.dataset.n=n;c.textContent='☑'.repeat(n)+'☐'.repeat(3-n)});
+ $('#sp').onclick=()=>{const a=sh(ALL);$('#pr').textContent=a[0]+'  +  '+a[1]}}
+const PG=[p1,p2,p3,p4,p5,p6];
+function go(i){cur=i;renderTabs();PG[i]();$('#bk').disabled=i==0;$('#nx').disabled=i==PG.length-1;$('#nx').className=SC['p'+i]&&SC['p'+i].done?'go':'';scrollTo(0,0)}
+$('#bk').onclick=()=>go(cur-1);$('#nx').onclick=()=>go(cur+1);
+setInterval(()=>{$('#nx').className=(SC['p'+cur]&&SC['p'+cur].done)?'go':''},400);
+go(0);
+</script></body></html>
