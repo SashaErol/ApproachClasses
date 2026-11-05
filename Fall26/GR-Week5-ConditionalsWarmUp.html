@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Conditionals Warm-Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: one talk card at a time, Next button at the bottom. Same cranberry-and-ink identity as the other Grammar Review pages. */
+:root{
+  --bg:#F2F4F8;
+  --card:#FFFFFF;
+  --ink:#16213A;
+  --ink-2:#4A556C;
+  --line:#D9DEE8;
+  --line-strong:#B0BACC;
+  --accent:#A8153B;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F9E4EA;
+  --ok:#17724A;
+  --ok-soft:#E2F3EA;
+  --warn:#9A4A06;
+  --warn-soft:#FCEBD7;
+  --focus:#1B5FD6;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+    --line:#2B3857; --line-strong:#43547C;
+    --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+    --ok:#5FD39A; --ok-soft:#14352A; --warn:#F5A65B; --warn-soft:#3B2A14;
+    --focus:#7FB0FF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1527; --card:#17213A; --ink:#EAEEF7; --ink-2:#A5B0C7;
+  --line:#2B3857; --line-strong:#43547C;
+  --accent:#FF7A98; --accent-ink:#1B0710; --accent-soft:#3A1A28;
+  --ok:#5FD39A; --ok-soft:#14352A; --warn:#F5A65B; --warn-soft:#3B2A14;
+  --focus:#7FB0FF;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:1.0625rem/1.55 var(--font-body);padding-block:1.25rem 2.5rem;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app{max-width:44rem;margin-inline:auto}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.eyebrow{margin:0;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.top .step{font-variant-numeric:tabular-nums}
+.dots{display:flex;gap:.4rem;margin:.6rem 0 1.1rem}
+.dots span{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.dots span.on{background:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.4rem 1.4rem 1.5rem}
+.tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem}
+.tag{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .6rem;border-radius:999px;border:1.5px solid var(--line-strong);color:var(--ink-2)}
+.tag.lv{border-color:var(--accent);color:var(--accent)}
+.card h2{font-size:clamp(1.5rem,5.5vw,2rem);line-height:1.1;margin:0 0 .75rem}
+.main{font-family:var(--font-display);font-weight:600;font-size:clamp(1.25rem,4.6vw,1.6rem);line-height:1.3;margin:0 0 1rem;text-wrap:pretty}
+.more{margin:0 0 1.25rem;padding:0;list-style:none;display:grid;gap:.6rem}
+.more li{padding-left:1.1rem;position:relative}
+.more li::before{content:"";position:absolute;left:0;top:.65em;width:.5rem;height:2px;background:var(--accent)}
+.sub{margin:1.25rem 0 .5rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{border:1.5px solid var(--line-strong);border-radius:10px;padding:.3rem .75rem;background:var(--bg);font-style:italic}
+.chip.up{border-color:var(--accent);background:var(--accent-soft);font-style:normal;font-weight:700}
+.rw{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.4rem .9rem;font-size:.95rem}
+.rw li{min-width:0}
+.rw b{color:var(--accent)}
+.nav{display:flex;gap:.75rem;margin-top:1.25rem;flex-wrap:wrap}
+.btn{min-height:3.1rem;padding:.6rem 1.6rem;border-radius:8px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+.btn[hidden]{display:none}
+.lead{margin:0 0 1rem;color:var(--ink-2)}
+.flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.9rem}
+.flag{border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;background:var(--bg);min-width:0}
+.flag h3{margin:0 0 .15rem;font-size:1.1rem}
+.flag .use{margin:0 0 .6rem;color:var(--ink-2);font-size:.95rem}
+.flag .say{margin:0 0 .6rem;font-weight:700;overflow-wrap:anywhere}
+.slip{margin:0;padding:.5rem .65rem;border-radius:8px;background:var(--warn-soft);font-size:.95rem;overflow-wrap:anywhere}
+.slip + .slip{margin-top:.4rem}
+.slip s{color:var(--warn);text-decoration-thickness:2px}
+.slip b{color:var(--ok)}
+.fine{margin:1rem 0 0;color:var(--ink-2);font-size:.95rem}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+html{background:var(--bg)}
+</style>
+
+</head><body>
+<div class="app">
+  <div class="top">
+    <p class="eyebrow">Grammar Review &amp; Recovery · Conditionals Warm-up</p>
+    <p class="eyebrow step" id="step">Card 1 of 4</p>
+  </div>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+  <article class="card" id="card" aria-live="polite"></article>
+  <div class="nav">
+    <button class="btn ghost" id="back" hidden>Back</button>
+    <button class="btn" id="next">NEXT</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var CARDS=[
+ {tag:"Bad habits",lv:"B2+",t:"The habit you won't give up",
+  q:"If you could erase one bad habit from your life with a snap of your fingers, which one would you pick? And is there a habit you know is bad but you'd never really give up?",
+  more:["If you stopped scrolling at night, what would you do with that extra hour?","What would your family say if they saw you at your worst: late-night snacks, endless snooze, a messy car?","If a coworker had your habit, would it drive you crazy?","Which habit would you quit tomorrow if somebody paid you a thousand dollars?"],
+  rw:[["put off","delay something unpleasant"],["take for granted","not value something enough"],["it all comes down to","the main point is"]],
+  st:["If I could quit one thing, it would be…","I'd probably be much more… if I stopped…","My mom would be shocked if she knew that…","I'd give it up if…"],
+  up:["Old habits die hard.","I know it's not great, but…"]},
+ {tag:"Plans",lv:"B2+",t:"Wednesday, November 11",
+  q:"Veterans Day is on Wednesday. If you're free, what are you going to do? And if you had that day with no limits on money or time, what would the perfect Massachusetts day look like?",
+  more:["If the weather turns cold and rainy, what's your plan B?","If a friend invited you to something you really didn't feel like doing, would you go? What would you say?","Does your country have a day to honor soldiers or veterans? If an American friend came to visit then, what would you want to show them?","If you had the whole week off, would you travel, rest, or catch up on life?"],
+  rw:[["I'm torn between…","I can't decide between two things"],["a game changer","something that changes everything"],["I'm pretty sure we'll…","I strongly believe that we will"]],
+  st:["If I'm free on Wednesday, I'll probably…","If it rains, we could…","If I had a whole day with no limits, I'd…","I'd invite… because…"],
+  up:["I'm open to suggestions.","Count me in."]},
+ {tag:"Dreams",lv:"C1",t:"The dream that will never happen",
+  q:"What is a dream of yours that is practically impossible: playing in a World Cup final, living on a sailboat, becoming a famous singer? If it came true tomorrow, what would you do first, and what would you have to give up?",
+  more:["If money didn't matter at all, how would you spend an ordinary Tuesday?","If you could swap lives with anyone for a year, who would it be, and would you really want to come back?","Which unrealistic dream did you have as a child? If you had stuck with it, where would you be today?","If your dream came true, would it be a double-edged sword?"],
+  rw:[["a double-edged sword","something good and bad at once"],["a game changer","something that changes everything"],["remains to be seen","we don't know yet"]],
+  st:["If it were up to me, I'd…","I'd never have the nerve to…","If it came true, I'd probably…","I wouldn't change… even if…"],
+  up:["In my wildest dreams…","It's a long shot."]},
+ {tag:"Regrets",lv:"C1",t:"The moment you'd redo",
+  q:"If you could go back to one moment in your life and change one decision, which would it be? What do you think would have happened next? (Choose a light one if you prefer.)",
+  more:["Is there something you wish you had said to someone? If you had said it, how would things be different?","If you hadn't moved to the US, where would you be now?","Are regrets useful, or would you be happier without any?","If you could see the result of every big choice in advance, would you want to?"],
+  rw:[["take for granted","not value something enough"],["put off","delay something unpleasant"],["it all comes down to","the main point is"]],
+  st:["If I could go back, I'd…","If I hadn't…, I wouldn't have…","I'd have been better off if…","I wish I had…"],
+  up:["Hindsight is 20/20.","No use crying over spilled milk."]}
+];
+var $=function(s){return document.querySelector(s)};
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+var total=CARDS.length,i=0;
+var dots=$("#dots");
+for(var k=0;k<total;k++){dots.appendChild(document.createElement("span"))}
+function render(){
+  var c=$("#card"),h="";
+  if(i<CARDS.length){
+    var d=CARDS[i];
+    h+='<div class="tags"><span class="tag">'+esc(d.tag)+'</span><span class="tag lv">Level '+d.lv+'</span></div>';
+    h+='<h2>'+esc(d.t)+'</h2><p class="main">'+esc(d.q)+'</p><ul class="more">'+d.more.map(function(m){return '<li>'+esc(m)+'</li>'}).join("")+'</ul>';
+    h+='<p class="eyebrow sub">Words from earlier weeks</p><ul class="rw">'+d.rw.map(function(m){return '<li><b>'+esc(m[0])+'</b>: '+esc(m[1])+'</li>'}).join("")+'</ul>';
+    h+='<p class="eyebrow sub">You can start with</p><div class="chips">'+d.st.map(function(m){return '<span class="chip">'+esc(m)+'</span>'}).join("")+'</div>';
+    h+='<p class="eyebrow sub">Level up</p><div class="chips">'+d.up.map(function(m){return '<span class="chip up">'+esc(m)+'</span>'}).join("")+'</div>';
+    $("#step").textContent="Card "+(i+1)+" of 4";
+  }
+  c.innerHTML=h;
+  var ds=dots.children;for(var k=0;k<ds.length;k++){ds[k].className=(k<=i)?"on":""}
+  $("#back").hidden=(i===0);
+  $("#next").textContent=(i===total-1)?"START OVER":"NEXT";
+  window.scrollTo(0,0);
+}
+$("#next").addEventListener("click",function(){i=(i===total-1)?0:i+1;render()});
+$("#back").addEventListener("click",function(){if(i>0){i--;render()}});
+render();
+})();
+</script>
+</body></html>
