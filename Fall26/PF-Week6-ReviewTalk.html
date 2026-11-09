@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Money Talk Warm-Ups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout idea: one big question per card, with discussion prompts and a vocabulary box under it. */
+:root{
+  --bg:#F4F5F7; --card:#FFFFFF; --ink:#10294A; --muted:#51647A; --line:#D5DAE0; --soft:#EAEFF5;
+  --accent:#9C2519; --sky:#2F6FA3; --btn-ink:#FFFFFF; --vocab:#FFF6D8; --vocabline:#E3C772;
+  --f-d:'Montserrat', Arial, sans-serif; --f-b:'Source Sans 3', Arial, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1B31; --card:#12263F; --ink:#F4F5F7; --muted:#A9B9CB; --line:#2A486B; --soft:#1A3354;
+  --accent:#F08A7E; --sky:#6FA8D8; --btn-ink:#0B1B31; --vocab:#2D2A17; --vocabline:#7A6A2A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1B31; --card:#12263F; --ink:#F4F5F7; --muted:#A9B9CB; --line:#2A486B; --soft:#1A3354;
+  --accent:#F08A7E; --sky:#6FA8D8; --btn-ink:#0B1B31; --vocab:#2D2A17; --vocabline:#7A6A2A; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-b);font-size:19px;line-height:1.45;padding:0 16px 48px}
+.wrap{max-width:900px;margin:0 auto}
+header{padding:20px 0 6px}
+.eyebrow{font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-d);font-weight:800;font-size:clamp(24px,5vw,34px);line-height:1.1;margin:2px 0 0;text-wrap:balance}
+.dots{display:flex;gap:8px;margin:14px 0 4px}
+.dot{font:inherit;font-weight:700;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.dot[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-top:10px}
+.topic{display:inline-block;font-family:var(--f-d);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.q{font-family:var(--f-d);font-weight:800;font-size:clamp(22px,4.2vw,30px);line-height:1.2;margin:0 0 6px;text-wrap:balance}
+.ctx{color:var(--muted);margin:0 0 14px;max-width:62ch}
+h2{font-family:var(--f-d);font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--sky);margin:18px 0 6px}
+ol.talk{margin:0;padding-left:24px} ol.talk li{margin:7px 0;max-width:62ch}
+.vocab{background:var(--vocab);border:1px solid var(--vocabline);border-radius:14px;padding:12px 16px;margin-top:18px}
+.vocab h2{margin-top:0;color:var(--accent)}
+.vocab dl{margin:0;display:grid;grid-template-columns:max-content 1fr;gap:6px 14px}
+.vocab dt{font-weight:700}
+.vocab dd{margin:0}
+.vocab dd i{display:block;color:var(--muted);font-size:17px}
+@media (max-width:560px){.vocab dl{grid-template-columns:1fr;gap:0}.vocab dd{margin-bottom:8px}}
+.phr{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.phr span{background:var(--soft);border-radius:999px;padding:4px 12px;font-size:17px}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:16px}
+.btn{font-family:var(--f-d);font-weight:800;font-size:16px;border-radius:12px;border:2px solid var(--accent);background:var(--accent);color:var(--btn-ink);padding:11px 24px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn[disabled]{opacity:.35;cursor:default}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Personal Finances · Chapters 1–3</div>
+  <h1>Money Talk Warm-Ups</h1>
+</header>
+<div class="dots" id="dots" role="tablist" aria-label="Questions"></div>
+<main id="card"></main>
+<div class="nav">
+  <button class="btn ghost" id="back">Back</button>
+  <button class="btn" id="next">Next</button>
+</div>
+</div>
+<script>
+var CARDS=[
+ {topic:'Credit cards · Chapter 1',
+  q:'Is a credit card a smart tool or a dangerous trap?',
+  ctx:'Some people never touch a credit card. Others use one for everything and collect points. There is no right answer. Give your opinion and your reasons.',
+  talk:[
+   'Do you have a credit card, or would you like one? What is the main reason?',
+   'Think about a time you bought something you could not really afford. What happened, and what did you learn?',
+   'The book says a card is great if you pay the full bill every month. Do you think most people can really do that? Why or why not?',
+   'In your country, how common are credit cards? Do people prefer cash, debit cards or payment apps?',
+   'Complete this sentence and explain: "A credit card is like a ______ because ______."'
+  ],
+  vocab:[
+   ['carry a balance','not pay the full bill, so you owe money next month','"I carry a balance, so I pay interest."'],
+   ['overspend','spend more than you can afford','"I always overspend on sale days."'],
+   ['perks','extra benefits, like points or cash back','"The perks are nice, but the fee is high."'],
+   ['maxed out','used all of your credit limit','"My card is maxed out again."'],
+   ['in the red','owing more than you have','"After the trip, my account was in the red."']
+  ],
+  phr:['In my opinion...','The way I see it...','I would argue that...','It depends on...','From my own experience...']},
+ {topic:'Banks and fees · Chapter 2',
+  q:'Would you change banks to save a few dollars a month?',
+  ctx:'The book says many people stay with a bank they dislike for twenty years, only because switching is a hassle. Is that laziness, or is it a reasonable choice?',
+  talk:[
+   'Do you stay with the same bank, phone company or app out of habit? What keeps you there?',
+   'If a friend showed you an account with no fees and more interest, how long would you think about it before switching?',
+   'The book suggests calling the bank and asking them to remove a fee. Would you feel comfortable doing that? What would you say?',
+   'Do you trust banks? Why or why not? Is it different in your country?',
+   'What is more important to you in a bank: low fees, good customer service, or a branch near your home? Rank them and defend your order.'
+  ],
+  vocab:[
+   ['hassle','something annoying that takes time and effort','"Changing banks is a real hassle."'],
+   ['hidden fees','costs that are hard to see until you pay','"Read the terms, there may be hidden fees."'],
+   ['stick with','keep using the same thing or person','"I stuck with my bank for ten years."'],
+   ['rip-off','something that costs far too much','"A $35 fee for that is a rip-off."'],
+   ['waive a fee','agree not to charge it','"They waived the fee because I asked politely."']
+  ],
+  phr:['I would rather...','I would never...','That is a fair point, but...','I see what you mean, however...','On the other hand...']},
+ {topic:'Investing early · Chapter 3',
+  q:'At 22, would you start saving for retirement, or enjoy your money now?',
+  ctx:'Retirement feels very far away. But the book says every dollar you invest early will be worth many more times later, because of compound interest and employer "free money". What would you do?',
+  talk:[
+   'When you picture yourself at 65, what do you see? Where do you live and what do you do all day?',
+   'If your employer offered free money when you save, would you take it, even if it means a smaller paycheck now? Why?',
+   'Is it selfish to spend your money on travel and fun in your twenties? Or is it selfish not to prepare for the future?',
+   'In your country, who takes care of older people: the government, the family, or the person himself or herself?',
+   'You can only pick one: $200 a month for a big trip every year, or $200 a month for your future. Which one and why?'
+  ],
+  vocab:[
+   ['nest egg','money saved for the future, especially for retirement','"He is building a nest egg for his old age."'],
+   ['put away','save','"I try to put away a little each month."'],
+   ['in the long run','over many years, not right now','"In the long run, starting early pays off."'],
+   ['tempting','something you really want to do, even if you should not','"A new phone is tempting, but I will wait."'],
+   ['live paycheck to paycheck','spend all your pay before the next one arrives','"Many families live paycheck to paycheck."']
+  ],
+  phr:['If I were you, I would...','What matters most to me is...','I am torn between... and...','Looking ahead...','To be honest...']},
+ {topic:'Credit scores · Chapter 1',
+  q:'Is a credit score a fair way to judge a person?',
+  ctx:'A three-digit number can decide your interest rate, your apartment and even some job applications. The score looks at how you paid in the past, not at who you are today.',
+  talk:[
+   'Do you know what a credit score is? Do you think you would have a good one? Why?',
+   'Is it fair that someone who is new in the country, with no credit history, starts with no score? How could this feel for an international student?',
+   'The score rewards people who borrow and pay on time. Do you think this makes people borrow more than they need? Explain.',
+   'Is there a similar system in your country, such as a list of people who do not pay? How does it work?',
+   'If you could add one more thing to the score (for example, paying rent on time), what would it be and why?'
+  ],
+  vocab:[
+   ['track record','how well someone has done something in the past','"She has a strong track record of paying on time."'],
+   ['creditworthy','likely to repay money that you borrow','"The bank decided he was creditworthy."'],
+   ['lender','a bank or company that gives you a loan','"The lender offered a lower rate."'],
+   ['build credit','create a history of borrowing and paying back','"I want to build credit before I buy a car."'],
+   ['fair / unfair','treating people equally, or not','"It seems unfair for newcomers."']
+  ],
+  phr:['One thing that bothers me is...','I partly agree because...','That depends on how you look at it.','Let me give you an example.','Do you agree with me?']}
+];
+var i=0;
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function render(){
+  var c=CARDS[i];
+  document.getElementById('dots').innerHTML=CARDS.map(function(_,k){return '<button class="dot" role="tab" aria-label="Question '+(k+1)+'" aria-current="'+(k===i)+'" data-k="'+k+'">'+(k+1)+'</button>';}).join('');
+  document.getElementById('card').innerHTML=
+   '<article class="card"><span class="topic">'+esc(c.topic)+'</span><h2 class="q" style="text-transform:none;letter-spacing:0;color:var(--ink);font-size:clamp(22px,4.2vw,30px);margin:0 0 6px">'+esc(c.q)+'</h2><p class="ctx">'+esc(c.ctx)+'</p>'+
+   '<h2>Talk about it</h2><ol class="talk">'+c.talk.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ol>'+
+   '<div class="vocab"><h2>Useful vocabulary</h2><dl>'+c.vocab.map(function(v){return '<dt>'+esc(v[0])+'</dt><dd>'+esc(v[1])+'<i>'+esc(v[2])+'</i></dd>';}).join('')+'</dl></div>'+
+   '<h2>Phrases for giving your opinion</h2><div class="phr">'+c.phr.map(function(p){return '<span>'+esc(p)+'</span>';}).join('')+'</div></article>';
+  document.getElementById('back').disabled=(i===0);
+  document.getElementById('next').disabled=(i===CARDS.length-1);
+  document.getElementById('next').textContent=(i===CARDS.length-2)?'Last question':'Next';
+}
+function go(k){if(k<0||k>=CARDS.length)return;i=k;render();window.scrollTo(0,0);}
+document.getElementById('back').onclick=function(){go(i-1);};
+document.getElementById('next').onclick=function(){go(i+1);};
+document.getElementById('dots').onclick=function(e){var b=e.target.closest('[data-k]');if(b)go(+b.getAttribute('data-k'));};
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')go(i+1);if(e.key==='ArrowLeft')go(i-1);});
+render();
+</script>
+</body>
+</html>
