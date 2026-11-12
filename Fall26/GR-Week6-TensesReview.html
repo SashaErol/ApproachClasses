@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tenses Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FA;--card:#FFFFFF;--ink:#0D1B2A;--ink2:#4B5B6E;--line:#D5DCE6;--navy:#0D1B2A;
+  --z:#17705F;--z-t:#D9F0EA;--pf:#215F96;--pf-t:#DCEBF8;--f:#215F96;--f-t:#DCEBF8;--s:#9E2419;--s-t:#F8DEDA;--sig:#FFE27A;
+  --ok:#17724A;--ok-t:#DDF2E6;--bad:#B3261E;--bad-t:#FBE3E1;
+  --f-d:"Bricolage Grotesque","Arial Black",system-ui,sans-serif;
+  --f-b:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1420;--card:#13202F;--ink:#E8EEF6;--ink2:#A5B4C6;--line:#263A50;--navy:#050B12;
+  --z:#6FD6BF;--z-t:#123A33;--f:#7DB8E8;--f-t:#17324A;--s:#FF9C90;--s-t:#4A1E1A;--sig:#6B5710;
+  --ok:#7ADBA6;--ok-t:#12382A;--bad:#FF9C93;--bad-t:#4A1D1A;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1420;--card:#13202F;--ink:#E8EEF6;--ink2:#A5B4C6;--line:#263A50;--navy:#050B12;
+  --z:#6FD6BF;--z-t:#123A33;--f:#7DB8E8;--f-t:#17324A;--s:#FF9C90;--s-t:#4A1E1A;--sig:#6B5710;
+  --ok:#7ADBA6;--ok-t:#12382A;--bad:#FF9C93;--bad-t:#4A1D1A;color-scheme:dark}
+html{background:var(--bg)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.55 var(--f-b);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:env(safe-area-inset-top,0px) 110px}
+.wrap{max-width:1000px;margin:0 auto}
+header{padding:22px 0 8px}
+.kick{font:700 13px var(--f-b);letter-spacing:.14em;text-transform:uppercase;color:var(--s);margin:0 0 4px}
+h1{font:800 clamp(32px,6vw,52px)/1 var(--f-d);margin:0 0 8px;letter-spacing:-.02em;text-wrap:balance}
+.sub{margin:0;color:var(--ink2);max-width:64ch}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);margin-bottom:22px}
+.row{display:flex;gap:8px;overflow-x:auto}
+.row button{flex:none;font:700 16px var(--f-b);padding:10px 16px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.row button[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+button{font-family:var(--f-b)}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--s);outline-offset:2px}
+h2{font:800 clamp(24px,3.6vw,32px)/1.1 var(--f-d);margin:0 0 6px;text-wrap:balance}
+h3{font:800 20px var(--f-d);margin:0 0 6px}
+.step{display:inline-block;font:800 13px var(--f-d);letter-spacing:.08em;text-transform:uppercase;background:var(--navy);color:#fff;border-radius:6px;padding:2px 9px;margin-bottom:6px}
+.lead{color:var(--ink2);margin:0 0 14px;max-width:66ch}
+section.ex{margin:0 0 34px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.card.z{border-top:7px solid var(--z)}.card.f{border-top:7px solid var(--f)}.card.s{border-top:7px solid var(--s)}
+.t0{font:800 13px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--z)}
+.t1{font:800 13px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--f)}
+.t2{font:800 13px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--s)}
+.formline{font:800 19px/1.35 var(--f-d);margin:6px 0 8px}
+.ifc{background:var(--f-t);border-radius:5px;padding:0 5px}.res{background:var(--s-t);border-radius:5px;padding:0 5px}
+.card.z .ifc{background:var(--z-t)}.card.z .res{background:var(--f-t)}
+.ex-s{margin:0 0 6px;font-size:18px}
+mark.flag{background:var(--sig);color:var(--ink);font-weight:700;border-radius:4px;padding:0 4px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 0}
+.chip{border-radius:999px;padding:2px 11px;font-size:16px;background:var(--sig);color:var(--ink);font-weight:700}
+table.tb{width:100%;border-collapse:collapse;font-size:17px}
+table.tb th,table.tb td{text-align:left;padding:8px 10px;border-bottom:1.5px solid var(--line);vertical-align:top}
+table.tb th{font:800 14px var(--f-b);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.scroll{overflow-x:auto}
+ul.rules{margin:0;padding-left:22px;display:grid;gap:6px}
+.wordbar{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.wordbar span{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:4px 10px;font-size:16px}
+.wordbar b{display:block;font-size:17px}
+.item{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px;min-width:0}
+.item .q{margin:0 0 8px}
+.item .n{display:inline-block;min-width:26px;font:800 15px var(--f-d);color:var(--ink2)}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px}
+.pick{font:700 16px var(--f-b);padding:8px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-align:left}
+.pick:hover:not(:disabled){border-color:var(--ink2)}
+.pick.good{background:var(--ok-t);border-color:var(--ok);color:var(--ink)}
+.pick.wrong{background:var(--bad-t);border-color:var(--bad);color:var(--ink)}
+.pick:disabled{cursor:default}
+.col{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.fb{margin:8px 0 0;font-size:17px;color:var(--ink2)}
+.fb b.ok{color:var(--ok)}.fb b.no{color:var(--bad)}
+select,input[type=text],textarea{font:17px var(--f-b);color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:5px 8px;max-width:100%}
+input[type=text]{width:min(100%,180px)}
+textarea{width:100%;min-height:84px;resize:vertical;line-height:1.5}
+select.ok,input.ok{background:var(--ok-t);border-color:var(--ok)}
+select.bad,input.bad{background:var(--bad-t);border-color:var(--bad)}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.btn{font:700 16px var(--f-b);padding:10px 18px;border-radius:10px;border:1.5px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.score{font:700 16px var(--f-b);color:var(--ink2)}.score b{color:var(--ink)}
+.out{margin-top:10px;padding:10px 14px;border-radius:10px;background:var(--bg);border:1.5px solid var(--line);font-size:17px}
+.out ul{margin:6px 0 0;padding-left:20px;display:grid;gap:3px}
+.out li.g::marker{color:var(--ok)}.out li.w::marker{color:var(--bad)}
+.scn{display:grid;gap:14px}
+.nextbar{display:flex;justify-content:space-between;gap:10px;margin-top:22px}
+#cheatbtn{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;font:700 16px var(--f-b);padding:12px 18px;border-radius:999px;border:0;background:var(--s);color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#cheat{position:fixed;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:19;max-width:640px;margin-left:auto;background:var(--card);border:2px solid var(--navy);border-radius:14px;padding:14px 16px;box-shadow:0 8px 30px rgba(0,0,0,.3);max-height:70vh;overflow:auto;font-size:17px}
+#cheat p{margin:0 0 8px}
+</style>
+<style>
+table.mx td,table.mx th{padding:8px 9px;font-size:16px}
+table.mx td.pf{background:var(--f-t)}table.mx td.pc{background:var(--z-t)}
+table.mx td small{display:block;color:var(--ink2);font-size:15px}
+table.mx{min-width:640px}
+</style></head><body>
+<div class="wrap">
+<header>
+  <p class="kick">Review · 12 tenses, focus on perfect and continuous</p>
+  <h1>Which tense, and why?</h1>
+  <p class="sub">About 20 minutes. Read the yellow flag words first: they point to the tense.</p>
+</header>
+<nav><div class="row" id="tabs" role="tablist"></div></nav>
+<main id="main"></main>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const F=t=>`<mark class="flag">${t}</mark>`;
+const PAGES=[['p1','Page 1 · Recognize'],['p2','Page 2 · Build and write']];
+let cur='p1';
+const EXPR=[['get the hang of','learn how to do something'],['run out of','have none left'],['catch up on','do what you missed'],['on the same page','in agreement'],['give it a shot','try it']];
+const NAME=[
+ {t:`${F('By the time')} we reached the cinema, the movie had ${F('already')} started.`,o:['past simple','past perfect','present perfect'],a:1,why:'Two past events; the movie started first. “By the time” + “already”: past perfect.'},
+ {t:`My neighbor has been renovating his porch ${F('since September')}.`,o:['present perfect','present perfect continuous','present continuous'],a:1,why:'“since” + an activity that started in the past and continues: present perfect continuous.'},
+ {t:`${F('This time next Friday')}, I will be flying to Denver.`,o:['future simple','future continuous','future perfect'],a:1,why:'“This time next Friday” = an action in progress at that moment: future continuous.'},
+ {t:`${F('At 7 p.m. last night')}, we were ${F('still')} waiting for the plumber.`,o:['past simple','past continuous','past perfect continuous'],a:1,why:'An action in progress at a moment in the past: past continuous.'},
+ {t:`Have you ${F('ever')} been to Cape Cod?`,o:['past simple','present perfect','present perfect continuous'],a:1,why:'“ever” asks about life experience, no finished time: present perfect.'},
+ {t:`${F('By next June')}, she will have saved enough for a down payment.`,o:['future simple','future continuous','future perfect'],a:2,why:'“By next June” = finished before that point in the future: future perfect.'},
+ {t:`We had been waiting ${F('for an hour')} ${F('when')} the bus finally came.`,o:['past continuous','past perfect continuous','past perfect'],a:1,why:'Duration (“for an hour”) up to a past moment: past perfect continuous.'},
+ {t:`${F('Listen!')} The neighbors are arguing ${F('again')}.`,o:['present simple','present continuous','present perfect continuous'],a:1,why:'“Listen!” = it is happening now: present continuous.'}
+];
+const SEL=[
+ {pre:`Sorry I’m late. I`,o:['looked','have been looking','am looking'],a:1,post:` for a parking spot ${F('for twenty minutes')}.`,why:'Duration up to now, and you can still see the result (you are late): present perfect continuous.'},
+ {pre:`${F('When Dana got home')}, she realized she`,o:['left','had left','has left'],a:1,post:' her keys at the office.',why:'Leaving the keys happened before she realized it: past perfect.'},
+ {pre:`${F('Look at')} your hands! You`,o:['worked','have been working','were working'],a:1,post:' in the garden.',why:'You can see the result of recent activity: present perfect continuous.'},
+ {pre:`${F('Don’t call at 8')}. We`,o:['will have','will be having','will have had'],a:1,post:` dinner ${F('then')}.`,why:'In progress at a future moment: future continuous.'},
+ {pre:`Her eyes were red because she`,o:['cried','had been crying','has cried'],a:1,post:` ${F('all night')}.`,why:'Activity before a past moment, with a visible result: past perfect continuous.'},
+ {pre:`${F('By the time')} the guests arrive, we`,o:['will clean','will have cleaned','are cleaning'],a:1,post:' the living room.',why:'Finished before a future moment: future perfect.'}
+];
+const TYPE=[
+ {s:[`Mia (live) `,{ok:['has lived']},` in Worcester ${F('since 2019')}, but she (not / get) `,{ok:['has not gotten','has not got']},` the hang of driving in snow ${F('yet')}.`]},
+ {s:[`${F('By the time')} Sam (get) `,{ok:['got']},' back, the store (run) ',{ok:['had run']},' out of fresh bread.']},
+ {s:[`“Why is your shirt wet?” “I (wash) `,{ok:['have been washing']},` the car ${F('for an hour')}, and I (not / finish) `,{ok:['have not finished']},` ${F('yet')}.”`]},
+ {s:[`${F('Next month')}, Priya (work) `,{ok:['will have been working']},` at the clinic ${F('for exactly ten years')}.`]},
+ {s:[`We (talk) `,{ok:['had been talking']},` ${F('for over an hour')} ${F('before')} we finally (get) `,{ok:['got']},' on the same page.']},
+ {s:[`I (never / ride) `,{ok:['have never ridden']},` a horse, so I (give) `,{ok:['will give','am going to give']},` it a shot at the farm ${F('next Saturday')}.`]}
+];
+const ERR=[
+ {o:['I live in Boston since 2020.','I have lived in Boston since 2020.','I am living in Boston since 2020.'],a:1,why:'“since 2020” needs the present perfect (have lived).'},
+ {o:['When I arrived, the concert already started.','When I arrived, the concert had already started.','When I arrived, the concert has already started.'],a:1,why:'The concert started before I arrived: past perfect.'},
+ {o:['She knows her landlord for years.','She has been known her landlord for years.','She has known her landlord for years.'],a:2,why:'“Know” is a state verb: present perfect simple, not continuous.'},
+ {o:['By the end of the month, I will work here for five years.','By the end of the month, I will have been working here for five years.','By the end of the month, I have worked here for five years.'],a:1,why:'“By the end of the month” + “for five years”: future perfect continuous.'},
+ {o:['Yesterday I have lost my wallet, so I borrowed some money.','Yesterday I lost my wallet, so I borrowed some money.','Yesterday I had been losing my wallet, so I borrowed some money.'],a:1,why:'“Yesterday” is a finished time: past simple, never present perfect.'}
+];
+const OWN=[
+ {id:'o1',ty:'pp',tag:'Past perfect',ask:'Describe a time you arrived somewhere and something had already happened. Start with “By the time…”.',fr:['By the time I got there, the …had already…']},
+ {id:'o2',ty:'ppc',tag:'Present perfect continuous',ask:'What have you been doing lately? Use “for”, “since” or “lately”.',fr:['I’ve been … since…','Lately I have been …ing…']},
+ {id:'o3',ty:'fp',tag:'Bonus · Future perfect',ask:'What will you have done by next summer? Use “by”.',fr:['By next summer, I will have…']}
+];
+function p1(){const c=(x,k='')=>`<td class="${k}">${x}</td>`;return `
+<span class="step">Remember</span><h2>The 12 tenses on one map</h2>
+<p class="lead">Perfect (blue) and continuous (green) are today’s focus. Yellow words are the flag words.</p>
+<div class="card"><div class="scroll"><table class="tb mx"><thead><tr><th></th><th>Past</th><th>Present</th><th>Future</th></tr></thead><tbody>
+<tr><th>Simple</th>${c('V2<small>yesterday, ago, in 2018</small>')}${c('V1 / V-s<small>usually, every day</small>')}${c('will + V<small>tomorrow, soon</small>')}</tr>
+<tr><th>Continuous</th>${c('was / were + V-ing<small>at 7 p.m. last night, while</small>','pc')}${c('am / is / are + V-ing<small>now, Listen!, these days</small>','pc')}${c('will be + V-ing<small>this time next Friday</small>','pc')}</tr>
+<tr><th>Perfect</th>${c('had + V3<small>by the time, already, before</small>','pf')}${c('have / has + V3<small>ever, never, yet, just, since</small>','pf')}${c('will have + V3<small>by next June, by the time</small>','pf')}</tr>
+<tr><th>Perfect continuous</th>${c('had been + V-ing<small>for an hour (before…), all night</small>','pf')}${c('have / has been + V-ing<small>for, since, lately, all morning</small>','pf')}${c('will have been + V-ing<small>by…, for ten years</small>','pf')}</tr>
+</tbody></table></div></div>
+<div class="grid" style="margin:14px 0 24px">
+ <div class="card"><h3>Careful with…</h3><ul class="rules">
+  <li><b>since</b> + a point (2019, Monday); <b>for</b> + a period (an hour).</li>
+  <li>Finished time (yesterday, ago, in 2020) = past simple, not present perfect.</li>
+  <li>State verbs (know, own, like, need) are not used in the continuous.</li>
+  <li>Perfect = result or number; perfect continuous = the activity and how long.</li></ul></div>
+ <div class="card"><h3>Expressions you will meet</h3><p class="wordbar">${EXPR.map(w=>`<span><b>${w[0]}</b>${w[1]}</span>`).join('')}</p></div>
+</div>
+<section class="ex"><span class="step">1.1</span><h2>Name the tense</h2><p class="lead">Use the flag words.</p>
+<div id="name">${NAME.map((s,i)=>`<div class="item" data-i="${i}"><p class="q"><span class="n">${i+1}.</span>${s.t}</p><div class="btnrow">${s.o.map((o,j)=>`<button class="pick" data-j="${j}">${o}</button>`).join('')}</div><div class="fb" hidden></div></div>`).join('')}</div>
+<p class="score" id="namescore">Score: <b>0</b> / ${NAME.length}</p></section>
+<section class="ex"><span class="step">1.2</span><h2>Choose the form</h2>
+<div id="sel">${SEL.map((s,i)=>`<div class="item" data-i="${i}"><p class="q"><span class="n">${i+1}.</span>${s.pre} <select>${['Choose…',...s.o].map(x=>`<option>${esc(x)}</option>`).join('')}</select>${s.post}</p><div class="fb" hidden></div></div>`).join('')}</div>
+<div class="ctl"><button class="btn" id="selcheck">Check answers</button><button class="btn ghost" id="selreset">Start over</button><span class="score" id="selscore"></span></div></section>
+<div class="nextbar"><span></span><button class="btn" data-tab="p2">Next: Build and write</button></div>`;}
+function p2(){return `
+<span class="step">Build and write</span><h2>Now you produce the tenses</h2>
+<section class="ex"><span class="step">2.1</span><h2>Type the verbs</h2><p class="lead">Use full forms (<i>have been</i>, not <i>’ve been</i>). Short negatives like <i>haven’t</i> are fine.</p>
+<div id="typ">${TYPE.map((d,i)=>`<div class="item" data-i="${i}"><p class="q"><span class="n">${i+1}.</span>${d.s.map(p=>typeof p==='string'?p:'<input type="text" aria-label="gap" autocomplete="off" autocapitalize="off" spellcheck="false">').join('')}</p><div class="fb" hidden></div></div>`).join('')}</div>
+<div class="ctl"><button class="btn" id="typcheck">Check answers</button><button class="btn ghost" id="typreset">Start over</button><span class="score" id="typscore"></span></div></section>
+<section class="ex"><span class="step">2.2</span><h2>Which sentence is correct?</h2>
+<div id="err">${ERR.map((s,i)=>`<div class="item" data-i="${i}"><div class="col">${s.o.map((o,j)=>`<button class="pick" data-j="${j}">${esc(o)}</button>`).join('')}</div><div class="fb" hidden></div></div>`).join('')}</div>
+<p class="score" id="errscore">Score: <b>0</b> / ${ERR.length}</p></section>
+<section class="ex"><span class="step">2.3</span><h2>Write your own</h2><p class="lead">One or two sentences each. The quick check is a helper, not a grade.</p>
+<div class="scn">${OWN.map(s=>`<div class="card f"><span class="t1">${s.tag}</span>
+<p style="margin:4px 0 6px;font-weight:700">${esc(s.ask)}</p>
+<div class="chips" style="margin:0 0 8px">${s.fr.map(f=>`<span class="chip" style="background:var(--bg);font-weight:400;border:1.5px solid var(--line)">${esc(f)}</span>`).join('')}</div>
+<textarea data-id="${s.id}" aria-label="${s.tag}" placeholder="Write here…"></textarea>
+<div class="ctl" style="margin-top:8px"><button class="btn" data-check="${s.id}">Quick check</button></div><div class="out" id="out-${s.id}" hidden></div></div>`).join('')}</div></section>
+<div class="nextbar"><button class="btn ghost" data-tab="p1">Back</button><span></span></div>`;}
+function norm(s){
+  s=s.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+  return s.replace(/\bwon't\b/g,'will not').replace(/\bcan't\b/g,'cannot').replace(/n't\b/g,' not').replace(/\s+/g,' ').trim();
+}
+function upd(id,n,t){const e=$('#'+id);if(e)e.innerHTML=`Score: <b>${n}</b> / ${t}`}
+function mcq(id,arr,sid){
+  let sc=0;
+  document.querySelectorAll('#'+id+' .item').forEach(it=>{
+    it.addEventListener('click',e=>{
+      const b=e.target.closest('.pick');if(!b||b.disabled)return;
+      const d=arr[+it.dataset.i],j=+b.dataset.j,ok=j===d.a;
+      it.querySelectorAll('.pick').forEach((x,k)=>{x.disabled=true;if(k===d.a)x.classList.add('good')});
+      if(!ok)b.classList.add('wrong');else sc++;
+      const f=it.querySelector('.fb');f.hidden=false;f.innerHTML=`<b class="${ok?'ok':'no'}">${ok?'Correct.':'Not quite.'}</b> ${d.why}`;
+      upd(sid,sc,arr.length);
+    });
+  });
+}
+function bind(){
+  if(cur==='p1'){
+    mcq('name',NAME,'namescore');
+    $('#selcheck').onclick=()=>{let ok=0;
+      document.querySelectorAll('#sel .item').forEach((it,i)=>{const d=SEL[i],s=it.querySelector('select'),good=s.value===d.o[d.a];
+        s.classList.toggle('ok',good);s.classList.toggle('bad',!good);
+        const f=it.querySelector('.fb');f.hidden=false;f.innerHTML=good?`<b class="ok">Correct.</b> ${d.why}`:`<b class="no">Not yet.</b> Check the flag words again.`;if(good)ok++;});
+      $('#selscore').innerHTML=`<b>${ok}</b> / ${SEL.length} correct`;};
+    $('#selreset').onclick=()=>{document.querySelectorAll('#sel select').forEach(s=>{s.selectedIndex=0;s.className=''});document.querySelectorAll('#sel .fb').forEach(f=>f.hidden=true);$('#selscore').textContent=''};
+  }
+  if(cur==='p2'){
+    mcq('err',ERR,'errscore');
+    $('#typcheck').onclick=()=>{let ok=0;
+      document.querySelectorAll('#typ .item').forEach((it,i)=>{
+        const gaps=TYPE[i].s.filter(p=>typeof p!=='string'),ins=it.querySelectorAll('input');let g=0;const wr=[];
+        gaps.forEach((gp,k)=>{const v=norm(ins[k].value),good=gp.ok.includes(v);ins[k].classList.toggle('ok',good);ins[k].classList.toggle('bad',!good);if(good)g++;else wr.push(gp.ok[0]);});
+        const f=it.querySelector('.fb');f.hidden=false;
+        f.innerHTML=g===gaps.length?'<b class="ok">Correct.</b>':`<b class="no">${g} of ${gaps.length}.</b> Re-read the yellow flag words.`;
+        if(g===gaps.length)ok++;});
+      $('#typscore').innerHTML=`<b>${ok}</b> / ${TYPE.length} sentences fully correct`;};
+    $('#typreset').onclick=()=>{document.querySelectorAll('#typ input').forEach(i=>{i.value='';i.className=''});document.querySelectorAll('#typ .fb').forEach(f=>f.hidden=true);$('#typscore').textContent=''};
+    document.querySelectorAll('[data-check]').forEach(b=>b.onclick=()=>{const s=OWN.find(x=>x.id===b.dataset.check);const o=$('#out-'+s.id);o.hidden=false;o.innerHTML=check($('textarea[data-id="'+s.id+'"]').value,s.ty);});
+  }
+}
+function check(text,ty){
+  const raw=text.replace(/[’‘]/g,"'").trim();
+  if(!raw)return '<b>Write something first.</b>';
+  const low=raw.toLowerCase(),g=[],w=[];
+  if(ty==='pp'){
+    if(/\b(had|'d)\s+(already\s+|just\s+|never\s+|not\s+)?\w+(ed|en|ne|t|ft|ld|id|un)\b|\bhad\b/.test(low)&&!/\b(has|have)\s+had\b/.test(low))g.push('Past perfect (had + V3). ✓');else w.push('Use had + past participle for the earlier event.');
+    if(/by the time|before|already|when|after|until/.test(low))g.push('Good flag word. ✓');else w.push('Add a flag word: by the time, before, already.');
+  }else if(ty==='ppc'){
+    if(/\b(have|has|'ve|'s)\s+(not\s+|just\s+)?been\s+\w+ing\b/.test(low))g.push('Present perfect continuous. ✓');else w.push('Use have/has been + V-ing.');
+    if(/\bfor\b|\bsince\b|lately|recently|all (day|week|morning|month)/.test(low))g.push('Good flag word. ✓');else w.push('Add for, since or lately to show the time.');
+    if(/\bbeen (knowing|owning|liking|needing|wanting)\b/.test(low))w.push('State verbs (know, own, like, need, want) are not continuous.');
+  }else{
+    if(/\bwill have\b|'ll have\b/.test(low))g.push('Future perfect (will have + V3). ✓');else w.push('Use will have + past participle.');
+    if(/\bby\b/.test(low))g.push('Good flag word “by”. ✓');else w.push('Add “by” + a future time.');
+  }
+  return `<ul>${g.map(x=>`<li class="g">${esc(x)}</li>`).join('')}${w.map(x=>`<li class="w">${esc(x)}</li>`).join('')}</ul>`;
+}
+function render(){
+  $('#tabs').innerHTML=PAGES.map(p=>`<button role="tab" aria-selected="${p[0]===cur}" data-tab="${p[0]}">${p[1]}</button>`).join('');
+  $('#main').innerHTML={p1,p2}[cur]();bind();window.scrollTo({top:0});
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b&&b.dataset.tab!==cur){cur=b.dataset.tab;render();}});
+render();
+</script></body></html>
