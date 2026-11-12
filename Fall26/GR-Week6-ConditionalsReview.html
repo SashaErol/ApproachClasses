@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Conditionals Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FA;--card:#FFFFFF;--ink:#0D1B2A;--ink2:#4B5B6E;--line:#D5DCE6;--navy:#0D1B2A;
+  --z:#17705F;--z-t:#D9F0EA;--f:#215F96;--f-t:#DCEBF8;--s:#9E2419;--s-t:#F8DEDA;--sig:#FFE27A;
+  --ok:#17724A;--ok-t:#DDF2E6;--bad:#B3261E;--bad-t:#FBE3E1;
+  --f-d:"Bricolage Grotesque","Arial Black",system-ui,sans-serif;
+  --f-b:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1420;--card:#13202F;--ink:#E8EEF6;--ink2:#A5B4C6;--line:#263A50;--navy:#050B12;
+  --z:#6FD6BF;--z-t:#123A33;--f:#7DB8E8;--f-t:#17324A;--s:#FF9C90;--s-t:#4A1E1A;--sig:#6B5710;
+  --ok:#7ADBA6;--ok-t:#12382A;--bad:#FF9C93;--bad-t:#4A1D1A;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1420;--card:#13202F;--ink:#E8EEF6;--ink2:#A5B4C6;--line:#263A50;--navy:#050B12;
+  --z:#6FD6BF;--z-t:#123A33;--f:#7DB8E8;--f-t:#17324A;--s:#FF9C90;--s-t:#4A1E1A;--sig:#6B5710;
+  --ok:#7ADBA6;--ok-t:#12382A;--bad:#FF9C93;--bad-t:#4A1D1A;color-scheme:dark}
+html{background:var(--bg)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.55 var(--f-b);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:env(safe-area-inset-top,0px) 110px}
+.wrap{max-width:1000px;margin:0 auto}
+header{padding:22px 0 8px}
+.kick{font:700 13px var(--f-b);letter-spacing:.14em;text-transform:uppercase;color:var(--s);margin:0 0 4px}
+h1{font:800 clamp(32px,6vw,52px)/1 var(--f-d);margin:0 0 8px;letter-spacing:-.02em;text-wrap:balance}
+.sub{margin:0;color:var(--ink2);max-width:64ch}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);margin-bottom:22px}
+.row{display:flex;gap:8px;overflow-x:auto}
+.row button{flex:none;font:700 16px var(--f-b);padding:10px 16px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.row button[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+button{font-family:var(--f-b)}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--s);outline-offset:2px}
+h2{font:800 clamp(24px,3.6vw,32px)/1.1 var(--f-d);margin:0 0 6px;text-wrap:balance}
+h3{font:800 20px var(--f-d);margin:0 0 6px}
+.step{display:inline-block;font:800 13px var(--f-d);letter-spacing:.08em;text-transform:uppercase;background:var(--navy);color:#fff;border-radius:6px;padding:2px 9px;margin-bottom:6px}
+.lead{color:var(--ink2);margin:0 0 14px;max-width:66ch}
+section.ex{margin:0 0 34px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.card.z{border-top:7px solid var(--z)}.card.f{border-top:7px solid var(--f)}.card.s{border-top:7px solid var(--s)}
+.t0{font:800 13px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--z)}
+.t1{font:800 13px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--f)}
+.t2{font:800 13px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--s)}
+.formline{font:800 19px/1.35 var(--f-d);margin:6px 0 8px}
+.ifc{background:var(--f-t);border-radius:5px;padding:0 5px}.res{background:var(--s-t);border-radius:5px;padding:0 5px}
+.card.z .ifc{background:var(--z-t)}.card.z .res{background:var(--f-t)}
+.ex-s{margin:0 0 6px;font-size:18px}
+mark.flag{background:var(--sig);color:var(--ink);font-weight:700;border-radius:4px;padding:0 4px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 0}
+.chip{border-radius:999px;padding:2px 11px;font-size:16px;background:var(--sig);color:var(--ink);font-weight:700}
+table.tb{width:100%;border-collapse:collapse;font-size:17px}
+table.tb th,table.tb td{text-align:left;padding:8px 10px;border-bottom:1.5px solid var(--line);vertical-align:top}
+table.tb th{font:800 14px var(--f-b);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.scroll{overflow-x:auto}
+ul.rules{margin:0;padding-left:22px;display:grid;gap:6px}
+.wordbar{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.wordbar span{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:4px 10px;font-size:16px}
+.wordbar b{display:block;font-size:17px}
+.item{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px;min-width:0}
+.item .q{margin:0 0 8px}
+.item .n{display:inline-block;min-width:26px;font:800 15px var(--f-d);color:var(--ink2)}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px}
+.pick{font:700 16px var(--f-b);padding:8px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-align:left}
+.pick:hover:not(:disabled){border-color:var(--ink2)}
+.pick.good{background:var(--ok-t);border-color:var(--ok);color:var(--ink)}
+.pick.wrong{background:var(--bad-t);border-color:var(--bad);color:var(--ink)}
+.pick:disabled{cursor:default}
+.col{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.fb{margin:8px 0 0;font-size:17px;color:var(--ink2)}
+.fb b.ok{color:var(--ok)}.fb b.no{color:var(--bad)}
+select,input[type=text],textarea{font:17px var(--f-b);color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:5px 8px;max-width:100%}
+input[type=text]{width:min(100%,180px)}
+textarea{width:100%;min-height:84px;resize:vertical;line-height:1.5}
+select.ok,input.ok{background:var(--ok-t);border-color:var(--ok)}
+select.bad,input.bad{background:var(--bad-t);border-color:var(--bad)}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.btn{font:700 16px var(--f-b);padding:10px 18px;border-radius:10px;border:1.5px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.score{font:700 16px var(--f-b);color:var(--ink2)}.score b{color:var(--ink)}
+.out{margin-top:10px;padding:10px 14px;border-radius:10px;background:var(--bg);border:1.5px solid var(--line);font-size:17px}
+.out ul{margin:6px 0 0;padding-left:20px;display:grid;gap:3px}
+.out li.g::marker{color:var(--ok)}.out li.w::marker{color:var(--bad)}
+.scn{display:grid;gap:14px}
+.nextbar{display:flex;justify-content:space-between;gap:10px;margin-top:22px}
+#cheatbtn{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;font:700 16px var(--f-b);padding:12px 18px;border-radius:999px;border:0;background:var(--s);color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#cheat{position:fixed;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:19;max-width:640px;margin-left:auto;background:var(--card);border:2px solid var(--navy);border-radius:14px;padding:14px 16px;box-shadow:0 8px 30px rgba(0,0,0,.3);max-height:70vh;overflow:auto;font-size:17px}
+#cheat p{margin:0 0 8px}
+</style></head><body>
+<div class="wrap">
+<header>
+  <p class="kick">Review · Zero, first and second conditionals</p>
+  <h1>If, unless, as soon as…</h1>
+  <p class="sub">Three types, many connectors. Use the yellow flag words to decide which conditional the speaker needs.</p>
+</header>
+<nav><div class="row" id="tabs" role="tablist"></div></nav>
+<main id="main"></main>
+</div>
+<button id="cheatbtn" aria-expanded="false">Cheat sheet</button>
+<div id="cheat" hidden></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const F=t=>`<mark class="flag">${t}</mark>`;
+const PAGES=[['p1','Page 1 · Remember'],['p2','Page 2 · Spot and choose'],['p3','Page 3 · Build and write']];
+let cur='p1';
+const EXPR=[['it all comes down to','the main point is'],['I wouldn’t be surprised if…','I think it could easily happen'],['it remains to be seen','we don’t know yet'],['clear the air','talk and solve a tension'],['I’m pretty sure we’ll…','I strongly believe we will']];
+const TYPES={0:'Zero',1:'First',2:'Second'};
+const LAB={0:['Zero conditional','t0'],1:['First conditional','t1'],2:['Second conditional','t2']};
+
+/* PAGE 2 data */
+const SPOT=[
+ {t:`${F('Whenever')} Dad cooks, the smoke alarm goes off.`,a:0,why:'“Whenever” + present simple + present simple: a repeated, real result. Zero.'},
+ {t:`${F('Supposing')} the council closed the library, ${F('would')} you sign a petition?`,a:2,why:'“Supposing” and “would” point to an imagined situation. Second.'},
+ {t:`${F('Unless')} the clinic opens on Saturdays, I’ll take a day off work.`,a:1,why:'“Unless” (= if not) with a real future plan and “will”. First.'},
+ {t:`Take a portable charger ${F('in case')} your battery dies during the trip.`,a:1,why:'“In case” covers a real possible problem in the future, and it takes the present simple. First.'},
+ {t:`${F('If I were you')}, I wouldn’t sign the lease without reading it twice.`,a:2,why:'“If I were you” is the signal for advice about an imagined situation. Second.'},
+ {t:`Water boils at a lower temperature ${F('if')} you ${F('are')} high in the mountains.`,a:0,why:'A scientific fact: if + present simple, present simple. Zero.'},
+ {t:`${F('I’m pretty sure we’ll')} get a refund ${F('as soon as')} the store receives the package.`,a:1,why:'A real future event: “as soon as” + present simple, then will. First.'},
+ {t:`Our neighbor ${F('would')} probably lend us his truck if we ${F('asked')} nicely.`,a:2,why:'“would” in the result and past simple “asked” in the if-clause: unlikely or imagined. Second.'}
+];
+const SEL=[
+ {pre:`${F('Every time')} my cousin`,o1:['visits','will visit','visited'],a1:0,mid:'us, he',o2:['brings','would bring','will bring'],a2:0,post:' a box of pastries.',why:'“Every time” = a repeated fact. Present simple in both parts (zero).'},
+ {pre:`${F('Unless')} it`,o1:['rains','doesn’t rain','won’t rain'],a1:0,mid:`${F('on Sunday')}, we`,o2:['will have','would have','had'],a2:0,post:' the picnic at the lake.',why:'“Unless” already means “if not”, so no negative after it. Real plan: will.'},
+ {pre:`${F('Supposing')} the bakery`,o1:['closed','closes','will close'],a1:0,mid:', where',o2:['would you buy','will you buy','do you buy'],a2:0,post:' bread?',why:'“Supposing” starts an imagined situation: past simple + would.'},
+ {pre:`${F('As long as')} you`,o1:['pay','will pay','paid'],a1:0,mid:`the deposit ${F('by Friday')}, they`,o2:['hold','will hold','would hold'],a2:1,post:' the apartment for you.',why:'“As long as” = only if. Real future: present simple + will.'},
+ {pre:`It’s ${F('unlikely')}, but if tickets`,o1:['were','are','would be'],a1:0,mid:'cheaper, more students',o2:['will come','would come','come'],a2:1,post:' to the concert.',why:'“unlikely” tells you the speaker is imagining. Past simple + would.'},
+ {pre:`${F('Whenever')} the heater`,o1:['breaks','broke','will break'],a1:0,mid:'down, I',o2:['wear','would wear','will wear'],a2:0,post:' two sweaters at home.',why:'Whenever + present simple, present simple: a habit (zero).'}
+];
+const QS=[
+ {t:`What ___ if the bank ${F('refuses')} your loan ${F('next week')}?`,o:['will you do','would you do','did you do'],a:0,why:'Real possibility, next week: First. What will you do if + present simple?'},
+ {t:`${F('Supposing')} a stranger left a wallet on your table, ___ you call the police?`,o:['will','would','do'],a:1,why:'“Supposing” + past simple: second conditional question with “would”.'},
+ {t:`___ you be late if you ${F('don’t')} leave now?`,o:['Won’t','Wouldn’t','Don’t'],a:0,why:'Negative question in the first conditional: Won’t you be late if you don’t leave now?'},
+ {t:`Why ___ the lights flicker ${F('every time')} the dryer is on?`,o:['do','will','would'],a:0,why:'“Every time” = a repeated fact: zero conditional logic, present simple.'}
+];
+/* PAGE 3 data */
+const TYPE=[
+ {pre:`${F('Unless')} the plumber (come) `,a:[{r:'if',ok:['comes']}],mid:` today, we (have) `,b:{r:'res',ok:['will have']},post:' no water over the weekend.'},
+ {pre:'If two coworkers (disagree) ',a:[{r:'if',ok:['disagree']}],mid:' , a short talk often (clear) ',b:{r:'res',ok:['clears']},post:` the air. ${F('(general fact)')}`},
+ {pre:`${F('Supposing')} your boss (offer) `,a:[{r:'if',ok:['offered']}],mid:' you a job in Seattle, what (you / say) ',b:{r:'res',ok:['would you say']},post:'?'},
+ {pre:`I (not / be) `,a:[{r:'res',ok:['would not be']}],mid:` surprised ${F('if')} the line (be) `,b:{r:'if',ok:['was','were']},post:' over an hour.'},
+ {pre:`${F('As soon as')} the tickets (go) `,a:[{r:'if',ok:['go']}],mid:' on sale, I (text) ',b:{r:'res',ok:['will text']},post:' you.'},
+ {pre:`(you / mind) `,a:[{r:'res',ok:['would you mind']}],mid:` ${F('if')} I (open) `,b:{r:'if',ok:['opened']},post:' the window? It’s hot in here.'},
+ {pre:`If you (heat) `,a:[{r:'if',ok:['heat']}],mid:` butter too fast, it (burn) `,b:{r:'res',ok:['burns']},post:` . ${F('(cooking tip)')}`},
+ {pre:`It remains to be seen whether the train will be on time, but ${F('tonight')}, if it (not / arrive) `,a:[{r:'if',ok:['does not arrive']}],mid:' by 6:15, we (miss) ',b:{r:'res',ok:['will miss']},post:' the last bus.'}
+];
+const CONN=['unless','as long as','in case','as soon as','whenever','suppose'];
+const CONNQ=[
+ {pre:'Bring a jacket ',post:' it gets cold after sunset.',a:'in case',why:'A real possible problem: be ready “in case” it happens.'},
+ {pre:'You can stay in our guest room ',post:' you don’t mind the cat.',a:'as long as',why:'“As long as” = only if this condition is true.'},
+ {pre:'',post:' the pipe leaks, my landlord comes the same day. That’s his rule.',a:'whenever',why:'A rule that repeats: “whenever” (zero).'},
+ {pre:'I’ll start dinner ',post:' the kids get home from practice.',a:'as soon as',why:'At the moment it happens: “as soon as” + present simple.'},
+ {pre:'',post:' you hurry, you’ll miss the opening act.',a:'unless',why:'“Unless you hurry” = “if you don’t hurry”.'},
+ {pre:'',post:' we had unlimited vacation days, how would we spend them?',a:'suppose',why:'“Suppose” starts an imagined situation, then past simple + would.'}
+];
+const ERR=[
+ {o:['Unless you don’t call the clinic by noon, they’ll give your appointment away.','Unless you call the clinic by noon, they’ll give your appointment away.','Unless you will call the clinic by noon, they give your appointment away.'],a:1,why:'After unless, use a positive present simple. Unless you don’t = double negative.'},
+ {o:['If I would know the answer, I would tell you.','If I know the answer, I would tell you.','If I knew the answer, I would tell you.'],a:2,why:'Second conditional: past simple in the if-clause, would in the result.'},
+ {o:['It all comes down to trust: whenever my brother will borrow money, he pays it back the same week.','It all comes down to trust: whenever my brother borrows money, he pays it back the same week.','It all comes down to trust: whenever my brother borrowed money, he would pays it back the same week.'],a:1,why:'A repeated habit: present simple in both parts. No will after whenever.'},
+ {o:['What would you do if you will see a mouse in your kitchen?','What will you do if you saw a mouse in your kitchen?','What would you do if you saw a mouse in your kitchen?'],a:2,why:'Imagined situation: would + past simple. Don’t mix will and past simple.'},
+ {o:['As long as you’ll keep the receipt, you can return it.','As long as you keep the receipt, you can return it.','As long as you kept the receipt, you can return it.'],a:1,why:'After as long as, use the present simple, never will.'}
+];
+const OWN=[
+ {id:'o0',t:0,tag:'Zero',ask:'Tell us a rule or a habit at home or at work. Start with “Whenever…” or “If…”.',fr:['Whenever…, I always…','If the weather is cold, the buses…']},
+ {id:'o1',t:1,tag:'First',ask:'Make a real plan for next weekend with a condition. Use “unless”, “as soon as” or “in case”.',fr:['Unless it rains, we will…','As soon as I finish…, I’ll…']},
+ {id:'o2',t:2,tag:'Second',ask:'Imagine something unlikely in your life. Start with “Suppose…” or “What would you do if…?”.',fr:['Suppose I won…, I would…','I wouldn’t be surprised if…']}
+];
+
+/* helpers */
+function cheat(){return `<p><span class="t0">Zero · always true</span><br><b>if / when / whenever + present simple, present simple</b><br><small>always, every time, usually, in general</small></p>
+<p><span class="t1">First · real future</span><br><b>if / unless / as soon as / as long as / in case + present simple, will + verb</b><br><small>tomorrow, next week, soon, tonight</small></p>
+<p><span class="t2">Second · unreal or unlikely</span><br><b>if / suppose + past simple, would + verb</b><br><small>suppose, supposing, imagine, if I were you, unlikely</small></p>
+<p style="margin:0"><small>No will after if, unless, as soon as, as long as or whenever. Unless = if not, so never “unless … not”.</small></p>`;}
+function p1(){return `
+<span class="step">Remember</span><h2>Three conditionals at a glance</h2>
+<p class="lead">Look for the yellow flag words. They tell you which type fits.</p>
+<div class="grid">
+ <div class="card z"><span class="t0">Zero · always true</span>
+  <p class="formline"><span class="ifc">if / when / whenever + present simple</span>, <span class="res">present simple</span></p>
+  <p class="ex-s">If you leave bread out overnight, it gets hard.</p>
+  <p class="ex-s">${F('Whenever')} my sister visits, we stay up until midnight.</p>
+  <p class="ex-s">If the alarm goes off, don’t use the elevator.</p>
+  <div class="chips">${['always','every time','whenever','usually','in general'].map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
+ <div class="card f"><span class="t1">First · real future</span>
+  <p class="formline"><span class="ifc">if / unless + present simple</span>, <span class="res">will + verb</span></p>
+  <p class="ex-s">If the weather is bad on Saturday, we’ll cancel the hike.</p>
+  <p class="ex-s">${F('Unless')} the landlord fixes the heater, I’m calling the city.</p>
+  <p class="ex-s">What will you do ${F('as soon as')} you hear from the bank?</p>
+  <div class="chips">${['tomorrow','next week','tonight','soon','unless','as soon as','in case'].map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
+ <div class="card s"><span class="t2">Second · unreal or unlikely</span>
+  <p class="formline"><span class="ifc">if + past simple</span>, <span class="res">would + verb</span></p>
+  <p class="ex-s">If I had a bigger garage, I would build a workshop.</p>
+  <p class="ex-s">What would you do if a neighbor asked you to babysit every weekend?</p>
+  <p class="ex-s">${F('Supposing')} winters were shorter, wouldn’t you move to Vermont?</p>
+  <div class="chips">${['suppose','supposing','imagine','what if','if I were you','unlikely'].map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>
+</div>
+<div class="card" style="margin-top:14px"><h3>Not only “if”</h3><div class="scroll"><table class="tb"><thead><tr><th>Word</th><th>Meaning</th><th>Example</th></tr></thead><tbody>
+<tr><td><b>unless</b></td><td>if … not</td><td>Unless you hurry, you’ll miss the bus.</td></tr>
+<tr><td><b>as long as</b></td><td>only if</td><td>You can borrow my car as long as you bring it back by six.</td></tr>
+<tr><td><b>in case</b></td><td>to be ready for a possible problem</td><td>Take an umbrella in case it rains.</td></tr>
+<tr><td><b>as soon as / once</b></td><td>at the moment it happens</td><td>Call me as soon as you land.</td></tr>
+<tr><td><b>whenever</b></td><td>every time</td><td>Whenever it snows, the buses run late.</td></tr>
+<tr><td><b>suppose / supposing</b></td><td>what if (imagined)</td><td>Suppose you won a free trip, where would you go?</td></tr></tbody></table></div></div>
+<div class="grid" style="margin-top:14px">
+ <div class="card"><h3>Careful with…</h3><ul class="rules">
+  <li>No <b>will</b> after if, unless, as soon as, as long as, whenever.</li>
+  <li><b>Unless</b> already means “if not”: ✗ unless you don’t hurry.</li>
+  <li>Negative: <i>If they don’t…</i> / <i>If they didn’t…</i></li>
+  <li>Questions: <i>What will you do if…?</i> / <i>What would you do if…?</i> / <i>Won’t you be late if…?</i></li>
+  <li><b>were</b> for every person in the second conditional: If she were here…</li></ul></div>
+ <div class="card"><h3>Expressions from earlier weeks</h3><p class="wordbar">${EXPR.map(w=>`<span><b>${w[0]}</b>${w[1]}</span>`).join('')}</p></div>
+</div>
+<div class="nextbar"><span></span><button class="btn" data-tab="p2">Next: Spot and choose</button></div>`;}
+
+function p2(){return `
+<span class="step">Spot and choose</span><h2>Flags first, then forms</h2>
+<p class="lead">The yellow words are your clues. Read the whole sentence before you decide.</p>
+<section class="ex"><span class="step">2.1</span><h2>Which conditional?</h2>
+<div id="spot">${SPOT.map((s,i)=>`<div class="item" data-i="${i}"><p class="q"><span class="n">${i+1}.</span>${s.t}</p><div class="btnrow"><button class="pick" data-a="0">Zero</button><button class="pick" data-a="1">First</button><button class="pick" data-a="2">Second</button></div><div class="fb" hidden></div></div>`).join('')}</div>
+<p class="score" id="spotscore">Score: <b>0</b> / ${SPOT.length}</p></section>
+<section class="ex"><span class="step">2.2</span><h2>Choose the forms</h2><p class="lead">Two gaps in every sentence.</p>
+<div id="sel">${SEL.map((s,i)=>`<div class="item" data-i="${i}"><p class="q"><span class="n">${i+1}.</span>${s.pre} <select>${['Choose…',...s.o1].map(x=>`<option>${esc(x)}</option>`).join('')}</select> ${s.mid} <select>${['Choose…',...s.o2].map(x=>`<option>${esc(x)}</option>`).join('')}</select>${s.post}</p><div class="fb" hidden></div></div>`).join('')}</div>
+<div class="ctl"><button class="btn" id="selcheck">Check answers</button><button class="btn ghost" id="selreset">Start over</button><span class="score" id="selscore"></span></div></section>
+<section class="ex"><span class="step">2.3</span><h2>Questions</h2><p class="lead">Positive, negative and “wh” questions. Pick the form that fits.</p>
+<div id="qs">${QS.map((s,i)=>`<div class="item" data-i="${i}"><p class="q"><span class="n">${i+1}.</span>${s.t}</p><div class="btnrow">${s.o.map((o,j)=>`<button class="pick" data-j="${j}">${esc(o)}</button>`).join('')}</div><div class="fb" hidden></div></div>`).join('')}</div>
+<p class="score" id="qsscore">Score: <b>0</b> / ${QS.length}</p></section>
+<div class="nextbar"><button class="btn ghost" data-tab="p1">Back</button><button class="btn" data-tab="p3">Next: Build and write</button></div>`;}
+
+function p3(){return `
+<span class="step">Build and write</span><h2>Your turn to build</h2>
+<p class="lead">Type the forms, pick the connector, fix the mistakes, then write your own.</p>
+<section class="ex"><span class="step">3.1</span><h2>Type the verbs</h2><p class="lead">Write the full form. Short forms like <i>’ll</i> and <i>wouldn’t</i> are fine.</p>
+<div id="typ">${TYPE.map((s,i)=>`<div class="item" data-i="${i}"><p class="q"><span class="n">${i+1}.</span>${s.pre}<input type="text" data-r="${s.a[0].r}" aria-label="gap 1, sentence ${i+1}" autocomplete="off" autocapitalize="off" spellcheck="false">${s.mid}<input type="text" data-r="${s.b.r}" aria-label="gap 2, sentence ${i+1}" autocomplete="off" autocapitalize="off" spellcheck="false">${s.post}</p><div class="fb" hidden></div></div>`).join('')}</div>
+<div class="ctl"><button class="btn" id="typcheck">Check answers</button><button class="btn ghost" id="typhint">Show first letters</button><button class="btn ghost" id="typreset">Start over</button><span class="score" id="typscore"></span></div></section>
+<section class="ex"><span class="step">3.2</span><h2>Pick the connector</h2><p class="lead">Each word from the list is used once.</p>
+<p class="wordbar" style="margin-bottom:10px">${CONN.map(c=>`<span><b>${c}</b></span>`).join('')}</p>
+<div id="conn">${CONNQ.map((s,i)=>`<div class="item" data-i="${i}"><p class="q"><span class="n">${i+1}.</span>${esc(s.pre)}<select>${['Choose…',...CONN].map(x=>`<option>${x}</option>`).join('')}</select>${esc(s.post)}</p><div class="fb" hidden></div></div>`).join('')}</div>
+<div class="ctl"><button class="btn" id="conncheck">Check answers</button><button class="btn ghost" id="connreset">Start over</button><span class="score" id="connscore"></span></div></section>
+<section class="ex"><span class="step">3.3</span><h2>Which sentence is correct?</h2>
+<div id="err">${ERR.map((s,i)=>`<div class="item" data-i="${i}"><div class="col">${s.o.map((o,j)=>`<button class="pick" data-j="${j}">${esc(o)}</button>`).join('')}</div><div class="fb" hidden></div></div>`).join('')}</div>
+<p class="score" id="errscore">Score: <b>0</b> / ${ERR.length}</p></section>
+<section class="ex"><span class="step">3.4</span><h2>Write your own</h2><p class="lead">One sentence for each type. Then press quick check. It is a helper, not a grade.</p>
+<div class="scn">${OWN.map(s=>`<div class="card ${['z','f','s'][s.t]}"><span class="${LAB[s.t][1]}">${s.tag}</span>
+<p style="margin:4px 0 6px;font-weight:700">${esc(s.ask)}</p>
+<div class="chips" style="margin:0 0 8px">${s.fr.map(f=>`<span class="chip" style="background:var(--bg);font-weight:400;border:1.5px solid var(--line)">${esc(f)}</span>`).join('')}</div>
+<textarea data-id="${s.id}" aria-label="${s.tag} sentence" placeholder="Write here…"></textarea>
+<div class="ctl" style="margin-top:8px"><button class="btn" data-check="${s.id}">Quick check</button></div><div class="out" id="out-${s.id}" hidden></div></div>`).join('')}</div></section>
+<div class="nextbar"><button class="btn ghost" data-tab="p2">Back</button><button class="btn ghost" data-tab="p1">Back to the start</button></div>`;}
+
+/* logic */
+function norm(s,role){
+  s=s.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+  s=s.replace(/\bwon't\b/g,'will not').replace(/n't\b/g,' not').replace(/'ll\b/g,' will');
+  s=s.replace(/'d\b/g,role==='res'?' would':' had');
+  return s.replace(/\s+/g,' ').trim();
+}
+function upd(id,n,t){const e=$('#'+id);if(e)e.innerHTML=`Score: <b>${n}</b> / ${t}`}
+function mcq(id,arr,sid,key){
+  let sc=0;
+  document.querySelectorAll('#'+id+' .item').forEach(it=>{
+    it.addEventListener('click',e=>{
+      const b=e.target.closest('.pick');if(!b||b.disabled)return;
+      const d=arr[+it.dataset.i];const j=b.dataset.j!==undefined?+b.dataset.j:+b.dataset.a;
+      const ans=d.a,ok=j===ans;
+      it.querySelectorAll('.pick').forEach((x,k)=>{x.disabled=true;if(k===ans)x.classList.add('good')});
+      if(!ok)b.classList.add('wrong');else sc++;
+      const f=it.querySelector('.fb');f.hidden=false;f.innerHTML=`<b class="${ok?'ok':'no'}">${ok?'Correct.':'Not quite.'}</b> ${d.why}`;
+      upd(sid,sc,arr.length);
+    });
+  });
+}
+function selCheck(listId,data,scoreId,resetId,btnId){
+  $('#'+btnId).onclick=()=>{
+    let ok=0;
+    document.querySelectorAll('#'+listId+' .item').forEach((it,i)=>{
+      const d=data[i],ss=it.querySelectorAll('select');let g=0;
+      if(d.o1){
+        [[ss[0],d.a1,d.o1],[ss[1],d.a2,d.o2]].forEach(([s,a,o])=>{const good=s.value===o[a];s.classList.toggle('ok',good);s.classList.toggle('bad',!good);if(good)g++;});
+        const f=it.querySelector('.fb');f.hidden=false;f.innerHTML=g===2?`<b class="ok">Both correct.</b> ${d.why}`:`<b class="no">${g} of 2.</b> Look at the flag word again.`;
+        if(g===2)ok++;
+      }else{
+        const good=ss[0].value===d.a;ss[0].classList.toggle('ok',good);ss[0].classList.toggle('bad',!good);
+        const f=it.querySelector('.fb');f.hidden=false;f.innerHTML=good?`<b class="ok">Correct.</b> ${d.why}`:`<b class="no">Not yet.</b> Think about the meaning of the sentence.`;
+        if(good)ok++;
+      }
+    });
+    $('#'+scoreId).innerHTML=`<b>${ok}</b> / ${data.length} correct`;
+  };
+  $('#'+resetId).onclick=()=>{document.querySelectorAll('#'+listId+' select').forEach(s=>{s.selectedIndex=0;s.className=''});document.querySelectorAll('#'+listId+' .fb').forEach(f=>f.hidden=true);$('#'+scoreId).textContent=''};
+}
+function bind(){
+  if(cur==='p2'){
+    mcq('spot',SPOT,'spotscore');mcq('qs',QS,'qsscore');
+    selCheck('sel',SEL,'selscore','selreset','selcheck');
+  }
+  if(cur==='p3'){
+    mcq('err',ERR,'errscore');
+    selCheck('conn',CONNQ,'connscore','connreset','conncheck');
+    $('#typcheck').onclick=()=>{
+      let ok=0;
+      document.querySelectorAll('#typ .item').forEach((it,i)=>{
+        const d=TYPE[i],ins=it.querySelectorAll('input'),pairs=[[ins[0],d.a[0]],[ins[1],d.b]];let g=0,msgs=[];
+        pairs.forEach(([inp,spec])=>{
+          const v=norm(inp.value,spec.r),good=spec.ok.includes(v);
+          inp.classList.toggle('ok',good);inp.classList.toggle('bad',!good);if(good)g++;
+          else if(v){
+            if(spec.r==='if'&&/\bwill\b/.test(v))msgs.push('No “will” after if, unless or as soon as.');
+            else if(spec.r==='if'&&/\bwould\b/.test(v))msgs.push('No “would” in the if-clause.');
+            else if(spec.r==='res'&&spec.ok[0].startsWith('would')&&!/\bwould\b/.test(v))msgs.push('An imagined situation needs “would” in the result.');
+          }
+        });
+        const f=it.querySelector('.fb');f.hidden=false;
+        const usedWas=ins.length&&norm(ins[1].value,'if')==='was'&&d.b.ok.includes('was');
+        f.innerHTML=g===2?`<b class="ok">Correct.</b>${usedWas?' (“were” is the standard form, “was” is informal.)':''}`:`<b class="no">${g} of 2.</b> ${[...new Set(msgs)].join(' ')||'Check the flag word: always true, real future, or imagined?'}`;
+        if(g===2)ok++;
+      });
+      $('#typscore').innerHTML=`<b>${ok}</b> / ${TYPE.length} sentences fully correct`;
+    };
+    $('#typhint').onclick=()=>{document.querySelectorAll('#typ .item').forEach((it,i)=>{const d=TYPE[i],ins=it.querySelectorAll('input');ins[0].placeholder=d.a[0].ok[0][0]+'…';ins[1].placeholder=d.b.ok[0][0]+'…';});};
+    $('#typreset').onclick=()=>{document.querySelectorAll('#typ input').forEach(i=>{i.value='';i.className='';i.placeholder=''});document.querySelectorAll('#typ .fb').forEach(f=>f.hidden=true);$('#typscore').textContent=''};
+    document.querySelectorAll('[data-check]').forEach(b=>b.onclick=()=>{
+      const s=OWN.find(x=>x.id===b.dataset.check);const o=$('#out-'+s.id);o.hidden=false;o.innerHTML=check($('textarea[data-id="'+s.id+'"]').value,s.t);
+    });
+  }
+}
+const CONDW=/\b(if|unless|as soon as|as long as|once|in case|whenever|when|every time|suppose|supposing)\b/;
+function check(text,type){
+  const raw=text.replace(/[’‘]/g,"'").trim();
+  if(!raw)return '<b>Write something first.</b>';
+  const sents=raw.split(/(?<=[.!?])\s+/).filter(Boolean);let html='';
+  sents.forEach(s=>{
+    const low=s.toLowerCase(),g=[],w=[];
+    html+=`<p style="margin:8px 0 2px">${esc(s)}</p>`;
+    const m=low.match(CONDW);
+    if(!m){w.push('Add a condition word: if, unless, whenever, as soon as, suppose…');}
+    const cl=m?low.slice(low.indexOf(m[0])).split(/,|\bthen\b/)[0]:'';
+    if(/\b(if|unless|as soon as|as long as|once|in case|whenever|when|every time)\b/.test(cl)&&/\bwill\b|\bwon't\b|'ll/.test(cl))w.push('No “will” in the condition part (after if, unless, as soon as, whenever).');
+    if(/\bunless\b[^,]*\b(don't|doesn't|didn't|not|never)\b/.test(low))w.push('“Unless” already means “if not”. Remove the negative.');
+    if(type===0){
+      if(/\bwould\b|'d\b|\bwill\b|'ll/.test(low))w.push('A zero conditional is a fact or habit: use the present simple in both parts.');
+      else if(m)g.push('Present simple in both parts. ✓');
+    }else if(type===1){
+      if(/\bwould\b|'d\b/.test(low)&&!/\bwould you mind\b/.test(low))w.push('A real plan needs “will” (or can, may, going to), not “would”.');
+      else if(/\bwill\b|'ll|\bwon't\b|\bcan\b|\bmay\b|going to|\bshould\b|^[a-z]+ /.test(low)&&m)g.push('Real future result. ✓');
+      if(!/\bwill\b|'ll|\bwon't\b|\bcan\b|\bmay\b|going to|\bshould\b|\bplease\b/.test(low)&&!/in case/.test(low))w.push('Add “will” (or “’ll”) to show the future result.');
+    }else{
+      if(/\b(if|suppose|supposing)\b[^,]*\bwould\b/.test(low))w.push('No “would” in the if-clause. Use the past simple.');
+      if(/\bwill\b|'ll/.test(low))w.push('An imagined situation uses “would”, not “will”.');
+      if(/\bwould\b|'d\b|\bcould\b|\bmight\b/.test(low))g.push('Result with would. ✓');else w.push('Add “would” (or could / might) for the imagined result.');
+    }
+    html+=`<ul>${g.map(x=>`<li class="g">${esc(x)}</li>`).join('')}${[...new Set(w)].map(x=>`<li class="w">${esc(x)}</li>`).join('')}</ul>`;
+  });
+  return html;
+}
+function render(){
+  $('#tabs').innerHTML=PAGES.map(p=>`<button role="tab" aria-selected="${p[0]===cur}" data-tab="${p[0]}">${p[1]}</button>`).join('');
+  $('#main').innerHTML={p1,p2,p3}[cur]();bind();window.scrollTo({top:0});
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b&&b.dataset.tab!==cur){cur=b.dataset.tab;render();}});
+const cb=$('#cheatbtn'),cp=$('#cheat');cp.innerHTML=cheat();
+cb.onclick=()=>{cp.hidden=!cp.hidden;cb.setAttribute('aria-expanded',String(!cp.hidden));cb.textContent=cp.hidden?'Cheat sheet':'Close';};
+render();
+</script></body></html>
