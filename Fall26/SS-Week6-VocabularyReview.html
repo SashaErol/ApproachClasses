@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vocabulary Review: Right or Wrong?</title>
+<style>
+:root{--navy:#0e2a47;--red:#9d251a;--gold:#9a7c46;--blue:#418abd;--cream:#f9f6f0;--light:#f4f5f7;--ink:#0b1827;--card:#fff;--line:#dfe3e8;--ok:#1d7a46;--okbg:#e4f4ea;--no:#9d251a;--nobg:#fbe9e6}
+@media (prefers-color-scheme:dark){:root{--cream:#1b2735;--light:#0b1827;--ink:#eef1f5;--card:#142235;--line:#2a3b50;--gold:#d2b277;--blue:#7fb8e2;--ok:#6fd49a;--okbg:#14382a;--no:#ff9a8c;--nobg:#3d1b18}}
+*{box-sizing:border-box}body{margin:0;background:var(--light);color:var(--ink);font:17px/1.5 "Segoe UI",Helvetica,Arial,sans-serif}
+header{background:var(--navy);color:#fff;padding:14px 20px;border-bottom:3px solid var(--gold);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header b{letter-spacing:.08em;font-size:15px}header span{font-size:13px;opacity:.85}
+main{max-width:1050px;margin:0 auto;padding:16px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;border:2px solid var(--navy);background:var(--card);color:var(--ink);border-radius:10px;padding:10px 12px;font:inherit;font-weight:600;cursor:pointer;text-align:left}
+.tab small{display:block;font-weight:400;color:var(--gold);font-size:12px}.tab.on{background:var(--navy);color:#fff}.tab.on small{color:#e8d3a6}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 12px}
+.bar p{margin:0;color:var(--gold);font-style:italic}.score{font-weight:700;color:var(--navy)}@media (prefers-color-scheme:dark){.score{color:#fff}}
+.btn{border:0;border-radius:999px;padding:7px 14px;font:inherit;font-size:15px;font-weight:600;cursor:pointer;background:var(--navy);color:#fff}
+.btn.alt{background:transparent;color:var(--navy);border:2px solid var(--navy)}
+@media (prefers-color-scheme:dark){.btn{background:var(--blue);color:#0b1827}.btn.alt{color:#fff;border-color:#fff;background:transparent}}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}#g0{grid-template-columns:1fr;max-width:640px;margin:0 auto}.one{padding:20px 22px}.one .s{font-size:22px;line-height:1.45}.one .tf button{padding:12px;font-size:18px}.nx{text-align:right}
+.c{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;border-top:5px solid var(--gold);display:flex;flex-direction:column;gap:8px}
+.c.ok{border-top-color:var(--ok)}.c.no{border-top-color:var(--no)}
+.n{color:var(--red);font-weight:700;font-size:12px;letter-spacing:.1em;display:flex;justify-content:space-between;align-items:center}
+.s{font-size:18px;margin:0}.s mark{background:rgba(154,124,70,.25);color:inherit;border-radius:4px;padding:0 3px;font-weight:700}
+.tf{display:flex;gap:8px}.tf button{flex:1;border:2px solid var(--navy);background:transparent;color:var(--ink);border-radius:10px;padding:8px;font:inherit;font-weight:700;cursor:pointer}
+.tf button:hover:not(:disabled){background:var(--cream)}.tf button:disabled{cursor:default}
+.tf button.pick.ok,.opt.pick.ok{background:var(--okbg);border-color:var(--ok)}.tf button.pick.no,.opt.pick.no{background:var(--nobg);border-color:var(--no)}
+.fb{display:none;background:var(--cream);border-radius:10px;padding:9px 12px;font-size:15px;line-height:1.4}.fb.show{display:block}
+.fb .v{font-weight:700}.fb.ok .v{color:var(--ok)}.fb.no .v{color:var(--no)}.fb .tr{color:var(--gold);font-size:14px;margin-top:3px}
+.sp{border:0;background:var(--gold);color:#fff;border-radius:999px;padding:2px 10px;font-size:14px;cursor:pointer}
+.q{display:flex;flex-direction:column;gap:8px}.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{flex:1;min-width:110px;border:2px solid var(--navy);background:transparent;color:var(--ink);border-radius:10px;padding:8px 10px;font:inherit;font-weight:600;cursor:pointer}
+.opt:hover:not(:disabled){background:var(--cream)}.opt:disabled{cursor:default}.opt.rt{background:var(--okbg);border-color:var(--ok)}
+.blank{display:inline-block;min-width:70px;border-bottom:3px solid var(--gold);text-align:center;font-weight:700;color:var(--ok)}
+.final{display:none;text-align:center;padding:18px;margin-top:14px;background:var(--navy);color:#fff;border-radius:14px;font-size:20px}.final.show{display:block}
+.gl-r{display:grid;grid-template-columns:1.1fr 2.4fr 1.4fr 1.4fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:start}.gl-h{font-weight:700;color:#fff;background:var(--navy);font-size:14px}.gl-r b{color:var(--navy);font-size:18px}@media (prefers-color-scheme:dark){.gl-r b{color:#fff}}#gl{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}.gl-r:nth-child(even):not(.gl-h){background:var(--cream)}@media (max-width:760px){.gl-r{grid-template-columns:1fr;gap:2px}.gl-h{display:none}}
+.view{display:none}.view.on{display:block}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<header><b>APPROACH · INTERNATIONAL STUDENT CENTER</b><span>Reading &amp; Critical Thinking · Vocabulary Review · Week 6</span></header>
+<main>
+<div class="tabs"><button class="tab on" data-v="0">Page 1 · Right or wrong?<small>10 true/false cards</small></button><button class="tab" data-v="1">Page 2 · Pick the word<small>10 multiple-choice questions</small></button><button class="tab" data-v="2">Page 3 · Word list<small>all 20 words with meanings</small></button></div>
+<section class="view on" id="v0"><div class="bar"><p>Is the highlighted word used correctly? Tap True or False.</p><div><span class="score" id="s0">0 / 10</span> <button class="btn alt" data-r="0">Restart</button></div></div><div class="grid" id="g0"></div><div class="final" id="f0"></div></section>
+<section class="view" id="v1"><div class="bar"><p>Choose the word that fits best. Think about the whole situation.</p><div><span class="score" id="s1">0 / 10</span> <button class="btn alt" data-r="1">Restart</button></div></div><div class="grid" id="g1"></div><div class="final" id="f1"></div></section>
+<section class="view" id="v2"><div class="bar"><p>All the words from Pages 1 and 2, with their meanings in English, Portuguese and Spanish.</p></div><div id="gl"></div></section>
+</main>
+<script>
+const G={
+moan:["to make a long, low sound because of pain, tiredness or sadness","gemer, resmungar","gemir, quejarse"],
+"fit in":["to feel like a normal part of a group","se encaixar, se integrar","encajar, integrarse"],
+pursuit:["the act of trying to get or reach something important","busca","búsqueda"],
+awe:["a strong feeling of wonder and respect for something big, beautiful or great","admiração, assombro","asombro, admiración"],
+temper:["how fast you get angry; a bad temper = you get angry easily","temperamento, pavio curto","carácter, mal genio"],
+thrust:["to push something quickly and strongly","empurrar com força","empujar con fuerza"],
+shudder:["to shake for a moment because of fear, disgust or cold","estremecer","estremecerse"],
+weep:["to cry, usually because you are very sad","chorar","llorar"],
+scapegoat:["a person who gets the blame for something bad that is not really their fault","bode expiatório","chivo expiatorio"],
+listless:["with no energy and no interest in anything","sem energia, apático","sin energía, apático"],
+bear:["to accept something bad without getting angry; to stand something","suportar, aguentar","soportar, aguantar"],
+nibble:["to eat with small bites","mordiscar, beliscar","picotear, mordisquear"],
+gasp:["to breathe in fast and loudly because of surprise or shock","ofegar de surpresa","ahogar un grito, jadear"],
+suddenly:["very fast, when you do not expect it","de repente","de repente"],
+stitch:["to sew; to join cloth with a needle and thread","costurar","coser"],
+stereotype:["a fixed idea about a group of people that is often unfair or not true","estereótipo","estereotipo"],
+witty:["clever and funny at the same time","espirituoso, inteligente e engraçado","ingenioso, agudo"],
+dangle:["to hang and move a little in the air","balançar pendurado","colgar, balancear"],
+gaze:["to look at something or someone for a long time","olhar fixamente","mirar fijamente"],
+soothing:["making you feel calm and less worried","calmante, reconfortante","calmante, relajante"]};
+const TF=[
+["moan","When the alarm rings at 5 a.m., my teenage son <mark>moans</mark> and hides under the blanket.",true,"He is tired and unhappy, so a low, long sound is natural."],
+["temper","My brother has a bad <mark>temper</mark>, so he stays calm and smiles when people are rude to him.",false,"A bad temper means you get angry fast. Calm people have a good temper."],
+["weep","At the airport, my mother <mark>wept</mark> when she said goodbye to her daughter.",true,"Weep = cry because of strong sadness."],
+["pursuit","Thousands of people move to big cities in <mark>pursuit</mark> of better jobs.",true,"In pursuit of = trying to get something important."],
+["scapegoat","The boss made Paul the <mark>scapegoat</mark> because he did excellent work and deserved a reward.",false,"A scapegoat gets blamed for something bad, not rewarded."],
+["listless","After a long, hard week, Maria felt <mark>listless</mark>, so she ran ten kilometers full of energy.",false,"Listless = no energy. It does not match “full of energy”."],
+["fit in","Since she moved to Toronto, Lucía is learning local slang to <mark>fit in</mark> at her new job.",true,"She wants to feel like a normal part of the team."],
+["awe","I felt <mark>awe</mark> when I found a cockroach in my kitchen, and I screamed.",false,"Awe is wonder and respect for something great. A cockroach causes disgust."],
+["thrust","He <mark>thrust</mark> the umbrella into my hands and ran to catch the bus.",true,"Thrust = push something quickly and strongly toward someone."],
+["shudder","I <mark>shuddered</mark> with joy when my team won the cup.",false,"We shudder from fear, disgust or cold, not from joy."]];
+const MC=[
+["I can’t ____ the noise from my neighbor’s party anymore. It’s 2 a.m., so I’m going to knock on his door.",["gaze","dangle","bear"],2,"bear"],
+["I’m so nervous before my job interview that I can only ____ on a cracker. A full breakfast is too much.",["nibble","gasp","stitch"],0,"nibble"],
+["When I opened the door and my friends shouted “Surprise!”, I ____ and covered my mouth.",["nibbled","gasped","stitched"],1,"gasp"],
+["I was fine at the supermarket, but ____ my heart started to race and my hands got cold. It was a panic attack.",["witty","stereotype","suddenly"],2,"suddenly"],
+["My daughter’s jeans had a hole, so Grandma ____ it with blue thread in ten minutes.",["stitched","gasped","dangled"],0,"stitch"],
+["Some people say that all men hate shopping and all women love it. It’s just a ____ and it isn’t true for everybody.",["soothing","stereotype","suddenly"],1,"stereotype"],
+["My best friend is so ____! When we feel sad, she says something clever and funny, and we all laugh.",["stitched","dangle","witty"],2,"witty"],
+["My baby laughs every time I ____ my keys in front of her face.",["dangle","nibble","stitch"],0,"dangle"],
+["On our first date, we finished our coffee and just ____ into each other’s eyes for a long time.",["gasped","gazed","stitched"],1,"gaze"],
+["When I feel stressed, I put on some ____ music and take a warm bath. It calms me down.",["stereotype","soothing","nibbled"],1,"soothing"]];
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.lang='en-US';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+function info(k){const g=G[k];return `<div><b>${k}</b> = ${g[0]}.</div><div class="tr">🇧🇷 ${g[1]} · 🇪🇸 ${g[2]}</div>`}
+let sc=[0,0],dn=[0,0];
+let cur0=0;
+function build0(){sc[0]=dn[0]=cur0=0;$('s0').textContent='0 / 10';$('f0').className='final';show0()}
+function show0(){const i=cur0,t=TF[i];
+ $('g0').innerHTML=`<div class="c one" id="a${i}"><div class="n"><span>CARD ${i+1} OF 10</span><button class="sp" data-sw="${t[0]}">🔊 Listen to the word</button></div><p class="s">${t[1]}</p><div class="tf"><button data-i="${i}" data-a="1">✔ True</button><button data-i="${i}" data-a="0">✘ False</button></div><div class="fb" id="b${i}"></div><div class="nx"><button class="btn" id="nx" data-next="1" style="display:none">${i<9?'Next card →':'See my score →'}</button></div></div>`}
+function build1(){sc[1]=dn[1]=0;$('s1').textContent='0 / 10';$('f1').className='final';
+ $('g1').innerHTML=MC.map((m,i)=>`<div class="c" id="m${i}"><div class="n"><span>QUESTION ${i+1}</span></div><p class="s">${m[0].replace('____','<span class="blank" id="bl'+i+'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')}</p><div class="opts">${m[1].map((o,j)=>`<button class="opt" data-q="${i}" data-j="${j}">${o}</button>`).join('')}</div><div class="fb" id="mb${i}"></div></div>`).join('')}
+const $=id=>document.getElementById(id);
+function fin(p,n){if(dn[p]<10)return;const f=$('f'+p);const s=sc[p];f.textContent=s+' out of 10 — '+(s>=9?'Excellent! 🎉':s>=7?'Great job!':s>=5?'Good start. Try again!':'Keep practicing. You can do it!');f.className='final show'}
+document.addEventListener('click',e=>{const t=e.target;
+ if(t.dataset.v){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b===t));document.querySelectorAll('.view').forEach((v,i)=>v.classList.toggle('on',i==t.dataset.v))}
+ else if(t.dataset.r){t.dataset.r=='0'?build0():build1()}
+ else if(t.dataset.next){cur0++;if(cur0<10)show0();else{$('g0').innerHTML='';fin(0,1)}}
+ else if(t.dataset.sw)speak(t.dataset.sw);
+ else if(t.dataset.a!==undefined){const i=+t.dataset.i,d=TF[i],ans=t.dataset.a=='1',ok=ans===d[2],c=$('a'+i);
+  c.querySelectorAll('.tf button').forEach(b=>b.disabled=true);t.classList.add('pick',ok?'ok':'no');c.classList.add(ok?'ok':'no');
+  const b=$('b'+i);b.className='fb show '+(ok?'ok':'no');b.innerHTML=`<div><span class="v">${ok?'Correct! ':'Not quite. '}</span>This is <b>${d[2]?'correct':'wrong'}</b> usage. ${d[3]}</div>`+info(d[0]);
+  if(ok)sc[0]++;dn[0]++;$('s0').textContent=sc[0]+' / 10';$('nx').style.display='inline-block'}
+ else if(t.dataset.q!==undefined){const i=+t.dataset.q,j=+t.dataset.j,m=MC[i],ok=j===m[2],c=$('m'+i);
+  c.querySelectorAll('.opt').forEach((b,k)=>{b.disabled=true;if(k===m[2])b.classList.add('rt')});t.classList.add('pick',ok?'ok':'no');
+  $('bl'+i).textContent=m[1][m[2]];
+  const b=$('mb'+i);b.className='fb show '+(ok?'ok':'no');b.innerHTML=`<div><span class="v">${ok?'Correct! ':'The best answer is “'+m[1][m[2]]+'”. '}</span></div>`+info(m[3]);
+  if(ok)sc[1]++;dn[1]++;$('s1').textContent=sc[1]+' / 10';fin(1)}});
+$('gl').innerHTML='<div class="gl-r gl-h"><span>Word</span><span>Dictionary meaning</span><span>🇧🇷 Português</span><span>🇪🇸 Español</span></div>'+Object.keys(G).sort().map(k=>`<div class="gl-r"><b>${k}</b><span>${G[k][0]}</span><span>${G[k][1]}</span><span>${G[k][2]}</span></div>`).join('');
+build0();build1();
+</script></body></html>
