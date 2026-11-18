@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7 Warm-Up: Thanksgiving Dinner</title>
+<style>
+  :root{--navy:#1b2a4a;--navy-dark:#10192e;--green:#2f7a4f;--gold:#c9a227;--red:#a8342a;--paper:#faf7f0;--ink:#1c1c1c}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:linear-gradient(160deg,var(--navy),var(--navy-dark));font-family:'Helvetica Neue','Segoe UI',Arial,sans-serif;display:flex;justify-content:center;padding:22px 14px 30px}
+  .wrap{width:100%;max-width:680px}
+  .kicker{color:var(--gold);letter-spacing:2px;font-size:12px;font-weight:700;text-transform:uppercase;text-align:center;margin-bottom:5px}
+  .title{color:var(--paper);text-align:center;font-family:Georgia,Cambria,serif;font-size:26px;font-weight:700;margin:0 0 4px}
+  .subtitle{color:#b9c2d6;text-align:center;font-size:13px;margin-bottom:18px}
+  .card{background:var(--paper);border-radius:18px;padding:36px 28px 24px;box-shadow:0 20px 45px rgba(0,0,0,.35);position:relative;min-height:320px}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;border-radius:18px 18px 0 0;background:linear-gradient(90deg,var(--navy),var(--green),var(--gold),var(--red))}
+  .num{font-size:12px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:8px}
+  .qwrap{min-height:260px;display:flex;flex-direction:column;justify-content:center}
+  .question{font-family:Georgia,Cambria,serif;font-size:23px;line-height:1.5;color:var(--navy);text-align:center;font-weight:700}
+  .hint{text-align:center;color:#6e6e6e;font-size:14.5px;font-style:italic;margin-top:16px;line-height:1.6}
+  .talk{margin:20px auto 0;max-width:480px;border-left:4px solid var(--gold);background:#fff8e1;padding:9px 14px;border-radius:0 8px 8px 0;font-size:14px;line-height:1.5}
+  /* words */
+  .g{border-bottom:2px dotted var(--green);cursor:pointer;color:var(--navy);font-weight:700;position:relative}
+  .t{background:#fff3c4;border-bottom:2px solid var(--gold);cursor:pointer;color:var(--navy);font-weight:700;position:relative;padding:0 2px;border-radius:3px}
+  .hint .g{font-style:normal}
+  .tip{display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:5px 11px;border-radius:8px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:600;font-style:normal;white-space:nowrap;box-shadow:0 6px 16px rgba(0,0,0,.3);z-index:20}
+  .tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--navy)}
+  .open>.tip{display:block}
+  /* reading */
+  .rtitle{font-family:Georgia,serif;font-size:24px;font-weight:700;color:var(--navy);margin:2px 0 4px}
+  .rsub{font-size:13.5px;color:#666;margin-bottom:12px;line-height:1.5}
+  .rtext{font-size:16.5px;line-height:1.75;color:var(--ink)}
+  .rtext p{margin:0 0 10px}
+  .rtext h3{font-family:Georgia,serif;font-size:17px;color:var(--green);margin:16px 0 6px}
+  .rtext ul{margin:4px 0 10px;padding-left:20px}
+  .rtext li{margin:4px 0}
+  .rtext .t,.rtext .g{white-space:nowrap}
+  .box{border-radius:10px;padding:9px 13px;font-size:14px;line-height:1.5;margin:10px 0}
+  .box.red{background:#fbeceb;border-left:5px solid var(--red)}
+  .box.red b{color:var(--red)}
+  .note{font-size:12px;color:#777;margin-top:8px}
+  .legend{font-size:12px;color:#666;margin-bottom:10px}
+  .legend span{padding:1px 6px;border-radius:3px}
+  .controls{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+  button.nav{background:var(--navy);color:var(--paper);border:1px solid rgba(250,247,240,.35);padding:11px 22px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer}
+  button.nav:hover{background:var(--green)}
+  button.nav:disabled{opacity:.35;cursor:default}
+  .dots{display:flex;gap:8px}.dot{width:9px;height:9px;border-radius:50%;background:#55627f}.dot.active{background:var(--gold);transform:scale(1.25)}
+  .footer{text-align:center;color:#8793ad;font-size:12px;margin-top:14px}
+  @media(max-width:520px){.card{padding:30px 16px 20px}.question{font-size:21px}.rtext{font-size:15.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Approach ISC &middot; American Culture &amp; Civic Life</div>
+  <div class="title">Week 7 Warm-Up: Dinner at Someone’s House</div>
+  <div class="subtitle">Talk in small groups. Tap dotted and gold words for Portuguese.</div>
+  <div class="card" id="card"></div>
+  <div class="controls"><button class="nav" id="back">&larr; Back</button><div class="dots" id="dots"></div><button class="nav" id="next">Next &rarr;</button></div>
+  <div class="footer" id="foot">Tap a dotted or gold word to see Portuguese and hear it.</div>
+</div>
+<script>
+/* ordinary glossed words (green dotted) */
+const GW={"dinner":"jantar","family":"família","flowers":"flores","dessert":"sobremesa","wine":"vinho","shoes":"sapatos","nothing":"nada","food":"comida","cooks":"cozinha","polite":"educado(a)","gift":"presente","at home":"em casa","sit":"sentar","drink":"bebida"};
+/* target words (gold) */
+const GT={"host":"anfitrião(ã), quem recebe","guest":"convidado(a)","guests":"convidados","does the dishes":"lava a louça","dishes":"louça","brings":"leva / traz","set the table":"pôr a mesa","bring":"levar / trazer","slippers":"chinelos / pantufas","take off":"tirar","do the dishes":"lavar a louça","Thanksgiving":"Dia de Ação de Graças"};
+const all=Object.assign({},GW,GT);
+const keys=Object.keys(all).sort((a,b)=>b.length-a.length);
+const re=new RegExp("(?<![\\w-])("+keys.map(k=>k.replace(/[-]/g,'\\-')).join("|")+")(?![\\w-])","gi");
+function mark(t){return t.replace(re,m=>{const k=Object.keys(all).find(x=>x.toLowerCase()===m.toLowerCase());const isT=GT[k]!==undefined;return `<span class="${isT?'t':'g'}" data-say="${k}">${m}<span class="tip">${all[k]}</span></span>`;});}
+
+const Q=[
+ {q:"Thanksgiving is a big family dinner in the U.S. Do you have a big dinner like this in your country? Who is the host? Who cooks?",
+  h:"In my family, ___ is the host. / My mother cooks. I set the table."},
+ {q:"You are a guest at a dinner. Do you bring a gift? What do you bring: flowers, dessert, wine, or nothing? What do people bring in Brazil?",
+  h:"In Brazil, a guest brings ___. / I bring ___."},
+ {q:"At your home, do guests take off their shoes? Does the host give slippers? Is it the same in your friend’s home?",
+  h:"At my home, guests take off their shoes. / The host gives slippers."},
+ {q:"After dinner, who does the dishes? Is it polite when a guest helps? What do you say?",
+  h:"I say, “Can I help you?” / The host says, “Please sit. I am OK.”"}
+];
+const total=Q.length;let cur=0;
+const card=document.getElementById('card'),dots=document.getElementById('dots'),back=document.getElementById('back'),next=document.getElementById('next');
+for(let i=0;i<total;i++){const d=document.createElement('div');d.className='dot';dots.appendChild(d)}
+function render(){
+  if(cur<Q.length){const c=Q[cur];
+    card.innerHTML=`<div class="num">WARM-UP ${cur+1} / ${Q.length}</div><div class="qwrap"><div class="question">${mark(c.q)}</div><div class="hint">${mark(c.h)}</div></div>`;
+  }
+  [...dots.children].forEach((x,i)=>x.classList.toggle('active',i===cur));
+  back.disabled=cur===0;next.textContent=cur===total-1?'Restart ↻':'Next →';
+}
+back.onclick=()=>{if(cur>0){cur--;render();window.scrollTo(0,0)}};
+next.onclick=()=>{cur=cur===total-1?0:cur+1;render();window.scrollTo(0,0)};
+const hasTTS=('speechSynthesis' in window)&&('SpeechSynthesisUtterance' in window);
+function pick(){const v=speechSynthesis.getVoices().filter(x=>/^en[-_]US/i.test(x.lang));return v.find(x=>/natural|premium|enhanced|neural/i.test(x.name))||v.find(x=>/samantha|aria|jenny|google us/i.test(x.name))||v[0];}
+function say(t){if(!hasTTS)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.8;const v=pick();if(v)u.voice=v;speechSynthesis.speak(u);}
+card.addEventListener('click',e=>{const w=e.target.closest('.g,.t');if(!w)return;const o=w.classList.contains('open');document.querySelectorAll('.open').forEach(x=>x.classList.remove('open'));if(!o)w.classList.add('open');say(w.dataset.say);e.stopPropagation();});
+document.addEventListener('click',()=>document.querySelectorAll('.open').forEach(x=>x.classList.remove('open')));
+if(hasTTS)speechSynthesis.getVoices(); else document.getElementById('foot').textContent='Tap a dotted or gold word to see Portuguese.';
+render();
+</script>
+</body>
+</html>
