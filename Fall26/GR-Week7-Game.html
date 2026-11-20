@@ -1,0 +1,314 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Gravy Boat Showdown</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: one game stage under a team scoreboard. Dark plum table-cloth by default, pumpkin for action, mustard for the clock, maple for danger. */
+:root{
+  --bg:#1B1220;--card:#2A1C30;--card2:#37243F;--ink:#F7EDE3;--ink2:#CDBCC8;--line:#51385A;
+  --pump:#FF8F3A;--on-pump:#1B1220;--maple:#FF7B80;--mus:#F6C945;--sage:#9BCB86;
+  --ok:#9BCB86;--ok-t:#25402A;--bad:#FF8A80;--bad-t:#4A2327;--dbl:#F6C945;--on-dbl:#1B1220;
+  --f-d:"Fredoka","Arial Rounded MT Bold",system-ui,sans-serif;
+  --f-b:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#F7F1F5;--card:#FFFFFF;--card2:#F2E8EF;--ink:#2B1A2E;--ink2:#6B5568;--line:#DCCBD6;
+  --pump:#B84A00;--on-pump:#FFFFFF;--maple:#B3262E;--mus:#8A5F00;--sage:#2F6B2A;
+  --ok:#1E6B2E;--ok-t:#DDF2E0;--bad:#B3261E;--bad-t:#FBE3E1;--dbl:#7A2BD6;--on-dbl:#FFFFFF;color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#F7F1F5;--card:#FFFFFF;--card2:#F2E8EF;--ink:#2B1A2E;--ink2:#6B5568;--line:#DCCBD6;
+  --pump:#B84A00;--on-pump:#FFFFFF;--maple:#B3262E;--mus:#8A5F00;--sage:#2F6B2A;
+  --ok:#1E6B2E;--ok-t:#DDF2E0;--bad:#B3261E;--bad-t:#FBE3E1;--dbl:#7A2BD6;--on-dbl:#FFFFFF;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.55 var(--f-b);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px;overflow-x:hidden}
+.wrap{max-width:900px;margin:0 auto;position:relative}
+header{padding:22px 0 10px;position:relative}
+.kick{font:700 13px var(--f-b);letter-spacing:.14em;text-transform:uppercase;color:var(--pump);margin:0 0 4px}
+h1{font:700 clamp(34px,7vw,58px)/1 var(--f-d);margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
+h2{font:700 clamp(24px,4vw,34px)/1.1 var(--f-d);margin:0 0 8px;text-wrap:balance}
+.sub{margin:0;color:var(--ink2);max-width:60ch}
+.leaf{position:absolute;width:26px;height:26px;border-radius:0 100% 0 100%;opacity:.85;pointer-events:none;animation:sway 7s ease-in-out infinite}
+.leaf.a{right:6%;top:18px;background:var(--pump)}.leaf.b{right:15%;top:52px;background:var(--mus);width:18px;height:18px;animation-delay:-2s}
+.leaf.c{right:2%;top:70px;background:var(--maple);width:22px;height:22px;animation-delay:-4s}
+@keyframes sway{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-14px,18px) rotate(40deg)}}
+@media (prefers-reduced-motion:reduce){.leaf,.pop{animation:none!important}.ring circle.fg{transition:none!important}}
+button{font-family:var(--f-b)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--mus);outline-offset:2px}
+.board{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
+.team{display:flex;align-items:baseline;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:6px 14px;min-width:0}
+.team b{font:600 17px var(--f-d)}
+.team span{font:700 22px var(--f-d);color:var(--mus);font-variant-numeric:tabular-nums}
+.team.on{border-color:var(--pump);background:var(--card2)}
+.panel{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:20px 22px;min-width:0}
+.btn{font:600 18px var(--f-d);padding:12px 24px;border-radius:12px;border:0;background:var(--pump);color:var(--on-pump);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.tag{display:inline-block;font:600 13px var(--f-d);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 12px;background:var(--card2);color:var(--ink);border:1.5px solid var(--line)}
+.tag.c2{border-color:var(--sage);color:var(--sage)}.tag.c3{border-color:var(--maple);color:var(--maple)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.rules{margin:0;padding-left:20px;display:grid;gap:4px}
+.setup label{display:block;font:700 15px var(--f-b);color:var(--ink2);margin:0 0 4px}
+.setup input[type=text]{font:18px var(--f-b);width:100%;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 12px}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{font:600 17px var(--f-d);padding:8px 16px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--pump);border-color:var(--pump);color:var(--on-pump)}
+.cardtop{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.cardtop .l{min-width:0;display:flex;flex-direction:column;gap:8px}
+.ring{width:84px;height:84px;flex:none;position:relative}
+.ring svg{width:84px;height:84px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:8}
+.ring circle.bg{stroke:var(--line)}
+.ring circle.fg{stroke:var(--mus);stroke-linecap:round;transition:stroke-dashoffset .25s linear}
+.ring.low circle.fg{stroke:var(--maple)}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font:700 26px var(--f-d);font-variant-numeric:tabular-nums}
+.ring.low .num{color:var(--maple)}
+.stem{font:600 clamp(21px,3.4vw,27px)/1.35 var(--f-d);margin:14px 0 14px}
+.stem input{font:600 19px var(--f-b);width:min(100%,210px);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:8px;padding:2px 8px;margin:2px 0}
+.stem input.ok,.stem select.ok{border-color:var(--ok);background:var(--ok-t)}.stem input.bad,.stem select.bad{border-color:var(--bad);background:var(--bad-t)}
+.stem select{font:600 19px var(--f-b);max-width:100%;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:8px;padding:3px 8px;margin:2px 0}
+.opts{display:grid;gap:10px}
+.opt{font:700 18px var(--f-b);text-align:left;padding:12px 16px;border-radius:12px;border:2px solid var(--line);background:var(--card2);color:var(--ink);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--pump)}
+.opt.good{background:var(--ok-t);border-color:var(--ok)}.opt.wrong{background:var(--bad-t);border-color:var(--bad)}
+.tray{min-height:58px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;background:var(--bg)}
+.chipset{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.ch{font:700 17px var(--f-b);padding:8px 14px;border-radius:10px;border:2px solid var(--line);background:var(--card2);color:var(--ink);cursor:pointer}
+.ch.used{opacity:.3}
+.tray .ch{background:var(--pump);border-color:var(--pump);color:var(--on-pump)}
+.frame{font-style:italic;color:var(--ink2);margin:0 0 12px}
+.res{margin-top:16px;border-top:2px dashed var(--line);padding-top:14px}
+.res .pts{font:700 30px var(--f-d);color:var(--mus);font-variant-numeric:tabular-nums}
+.res .ans{background:var(--bg);border-radius:10px;padding:8px 12px;margin:8px 0}
+.quip{font-style:italic;color:var(--ink2);margin:6px 0 12px}
+.dbl{display:inline-block;font:700 16px var(--f-d);background:var(--dbl);color:var(--on-dbl);border-radius:10px;padding:4px 14px;margin:0 0 8px}
+.pop{animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.3) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
+.ready{text-align:center;padding:34px 22px}
+.ready .who{font:700 clamp(30px,6vw,48px)/1.05 var(--f-d);color:var(--pump);margin:8px 0}
+.prog{font:600 15px var(--f-d);color:var(--ink2);letter-spacing:.05em;text-transform:uppercase}
+.podium{display:grid;gap:10px;margin:14px 0}
+.pl{display:flex;justify-content:space-between;gap:12px;align-items:center;background:var(--card2);border:2px solid var(--line);border-radius:14px;padding:10px 16px}
+.pl.first{border-color:var(--mus)}
+.pl b{font:600 20px var(--f-d)}.pl span{font:700 24px var(--f-d);color:var(--mus);font-variant-numeric:tabular-nums}
+.small{font-size:16px;color:var(--ink2)}
+</style>
+<div class="wrap">
+<header>
+  <span class="leaf a"></span><span class="leaf b"></span><span class="leaf c"></span>
+  <p class="kick">Second and third conditionals · Thanksgiving edition</p>
+  <h1>Gravy Boat Showdown</h1>
+  <p class="sub">Sixty seconds per card. Imagined now, or imagined then? Pick the right conditional before the gravy gets cold.</p>
+</header>
+<div class="board" id="board" hidden></div>
+<main id="stage"></main>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const TIME=60,BASE={pick:10,type:20,duo:15,say:25};
+const CARDS=[
+ {topic:'Decorations',c:2,type:'pick',stem:'If our cat stopped attacking the cornucopia centerpiece, we ___ a new one every November.',o:['wouldn’t buy','won’t buy','wouldn’t have bought'],a:0,why:'Imagined present habit: past simple + would.',quip:'Cat: 1. Centerpiece: 0.'},
+ {topic:'Decorations',c:3,type:'type',s:['If I (read) ',{r:'if',ok:['had read']},' the instructions, the inflatable turkey (not / end up) ',{r:'res',ok:['would not have ended up']},' on the neighbor’s roof.'],why:'Imagined past: had + past participle, would have + past participle.',quip:'It looks happier up there anyway.'},
+ {topic:'Table setting',c:2,type:'duo',s:['If we ',{o:['had','have','would have'],a:0},' a bigger table, nobody ',{o:['would have','will have','had'],a:0},' to sit at the kids’ table.'],why:'If + past simple, would + verb.',quip:'Fifteen adults at the kids’ table is a tradition now.'},
+ {topic:'Table setting',c:3,type:'pick',stem:'If I had put the forks on the left, Aunt Joan ___ a speech about etiquette.',o:['wouldn’t have given','wouldn’t give','hadn’t given'],a:0,why:'Past situation: would have + past participle in the result.',quip:'She gave it anyway. About the napkins.'},
+ {topic:'Traditional food',c:2,type:'type',s:['If you (serve) ',{r:'if',ok:['served']},' stuffing from a box, your grandmother (never / forgive) ',{r:'res',ok:['would never forgive']},' you.'],why:'Imagined now: past simple + would. “never” sits between would and the verb.',quip:'She will know. She always knows.'},
+ {topic:'Traditional food',c:3,type:'say',prompt:'Think of a dish that went wrong. Tell your listeners what would have happened if you had followed the recipe.',frame:'If I had followed the recipe, the … would have …',model:'If I had followed the recipe, the pie would have set instead of running across the table.',quip:'Failed pies make the best stories.'},
+ {topic:'Family gathering',c:2,type:'say',prompt:'Imagine you could seat any two relatives at opposite ends of the table. Who would you separate, and why?',frame:'If I could seat …, I would put … because …',model:'If I could choose, I would put my uncle and my cousin at opposite ends, because they would argue about parking for an hour.',quip:'Seating charts are diplomacy with name cards.'},
+ {topic:'Family gathering',c:3,type:'type',s:['If Uncle Ray (not / bring) ',{r:'if',ok:['had not brought']},' his trivia game, we (finish) ',{r:'res',ok:['would have finished']},' the dishes before midnight.'],why:'Third conditional: had not brought, would have finished.',quip:'Nobody has ever finished that game.'},
+ {topic:'Macy’s parade',c:3,type:'pick',stem:'If we had gotten up at 5 a.m., we ___ a spot near the barricades.',o:['would have found','would find','had found'],a:0,why:'Regret about the past: would have + past participle.',quip:'We got up at 7 and saw a balloon’s left foot.'},
+ {topic:'Macy’s parade',c:2,type:'type',s:['If you (design) ',{r:'if',ok:['designed']},' a balloon for the parade, what (it / look) ',{r:'res',ok:['would it look']},' like?'],why:'Imagined now question: past simple, then would + subject + verb.',quip:'Mine is a giant leftover sandwich.'},
+ {topic:'American football',c:3,type:'duo',s:['If the quarterback ',{o:['threw','had thrown','would throw'],a:1},' the ball earlier, my brother ',{o:['would win','would have won','had won'],a:1},' the bet.'],why:'Third conditional: had + past participle, would have + past participle.',quip:'He still blames the referee.'},
+ {topic:'American football',c:2,type:'say',prompt:'Suppose you coached a team made only of your relatives. Who would play which position, and why?',frame:'If I coached …, I would put … at … because …',model:'If I coached my family, I would put my mother at quarterback because she would control everything anyway.',quip:'Grandpa as referee is a conflict of interest.'},
+ {topic:'Christmas shopping',c:2,type:'pick',stem:'If stores didn’t open on Thanksgiving night, I ___ at the table longer.',o:['would stay','will stay','would have stayed'],a:0,why:'Imagined present situation: past simple + would.',quip:'The pie would also last longer.'},
+ {topic:'Christmas shopping',c:3,type:'type',s:['If I (wait) ',{r:'if',ok:['had waited']},' until Monday, I (save) ',{r:'res',ok:['would have saved']},' forty dollars on that coffee machine.'],why:'Third conditional: had waited, would have saved.',quip:'The coffee machine is now a lifestyle.'},
+ {topic:'Leftover sandwiches',c:2,type:'duo',s:['If I ',{o:['had added','added','would add'],a:1},' stuffing and cranberry to my sandwich, my brother ',{o:['would have called','will call','would call'],a:2},' it a crime.'],why:'If + past simple, would + verb.',quip:'Then he eats two.'},
+ {topic:'Leftover sandwiches',c:3,type:'pick',stem:'If I had hidden the last slice of pie, my roommate ___ it for breakfast.',o:['wouldn’t have eaten','wouldn’t eat','hadn’t eaten'],a:0,why:'Past situation: would not have + past participle.',quip:'Hiding places are not his problem. Smell is.'}
+];
+let G=null,timer=null;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function norm(s,role){
+  s=s.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+  s=s.replace(/\bwon't\b/g,'will not').replace(/n't\b/g,' not').replace(/'ve\b/g,' have');
+  s=s.replace(/'d\b/g,role==='res'?' would':' had');
+  return s.replace(/\s+/g,' ').trim();
+}
+function board(){
+  const b=$('#board');if(!G){b.hidden=true;return}
+  b.hidden=false;const t=G.teams[0];b.innerHTML=`<div class="team on"><b>${esc(t.name)}</b><span>${t.score}</span></div><div class="team"><b>Streak</b><span>${t.streak}</span></div>`;
+}
+let setupState={n:1,len:8,name:''};
+function setup(){
+  G=null;clearInterval(timer);board();
+  $('#stage').innerHTML=`<div class="panel setup">
+   <h2>Set the table</h2>
+   <div class="grid2" style="margin-bottom:18px">
+    <div><label for="pn">Your name</label><input type="text" id="pn" value="${esc(setupState.name)}" placeholder="Player" maxlength="18" autocomplete="off"></div>
+    <div><label>Cards in the game</label><div class="seg" id="segl">${[8,12,16].map(n=>`<button data-l="${n}" aria-pressed="${n===setupState.len}">${n}</button>`).join('')}</div></div>
+   </div>
+   <h2 style="font-size:22px">How it works</h2>
+   <ul class="rules">
+    <li>Flip a card and the <b>60-second clock</b> starts.</li>
+    <li>Pick, choose, type or say the correct conditional. Faster correct answers earn a <b>speed bonus</b>.</li>
+    <li>Two correct cards in a row earn a <b>streak bonus</b> of 5 points.</li>
+    <li>Some cards hide a <b>double points</b> surprise. You will only find out when you flip.</li>
+    <li>On speaking cards, a partner or your teacher decides how well you did.</li>
+   </ul>
+   <div class="row" style="margin-top:18px"><button class="btn" id="go">Start the showdown</button></div>
+  </div>`;
+  $('#segl').onclick=e=>{const b=e.target.closest('button');if(!b)return;setupState.len=+b.dataset.l;[...$('#segl').children].forEach(x=>x.setAttribute('aria-pressed',x===b))};
+  $('#go').onclick=start;
+}
+function start(){
+  setupState.name=$('#pn').value.trim();const teams=[{name:setupState.name||'Player',score:0,streak:0,right:0}];
+  const n=setupState.len;
+  // keep a balance of second and third conditionals
+  const two=shuffle(CARDS.filter(c=>c.c===2)),three=shuffle(CARDS.filter(c=>c.c===3));
+  const cards=shuffle([...two.slice(0,n/2),...three.slice(0,n/2)]);
+  const k=Math.max(2,Math.round(n/4)),dbl=new Set(shuffle(cards.map((_,i)=>i)).slice(0,k));
+  G={teams,cards,dbl,i:0,t:0,phase:'ready',mult:1,tray:[],doubles:0};
+  ready();
+}
+function ready(){
+  G.phase='ready';board();
+  const c=G.cards[G.i];
+  $('#stage').innerHTML=`<div class="panel ready">
+    <div class="prog">Card ${G.i+1} of ${G.cards.length}</div>
+    <div class="who">${esc(G.teams[0].name)}, ready?</div>
+    <p style="margin:0 0 16px">Topic: <b>${c.topic}</b>. The clock starts when you flip.</p>
+    <button class="btn" id="flip">Flip the card</button></div>`;
+  $('#flip').onclick=play;
+}
+function play(){
+  G.phase='play';G.done=false;G.tray=[];G.mult=G.dbl.has(G.i)?2:1;G.end=Date.now()+TIME*1000;
+  const c=G.cards[G.i];board();
+  let body='';
+  if(c.type==='pick')body=`<p class="stem">${esc(c.stem)}</p><div class="opts" id="opts">${c.o.map((o,j)=>`<button class="opt" data-j="${j}">${esc(o)}</button>`).join('')}</div>`;
+  if(c.type==='type'){let k=0;body=`<p class="stem">${c.s.map(p=>typeof p==='string'?esc(p):`<input type="text" id="g${k++}" aria-label="gap ${k}" autocomplete="off" autocapitalize="off" spellcheck="false">`).join('')}</p><button class="btn" id="sub">Lock it in</button>`}
+  if(c.type==='duo'){let k=0;body=`<p class="stem">${c.s.map(p=>typeof p==='string'?esc(p):`<select id="d${k++}" aria-label="gap ${k}">${['Choose…',...p.o].map(x=>`<option>${esc(x)}</option>`).join('')}</select>`).join('')}</p><button class="btn" id="sub">Lock it in</button>`}
+  if(c.type==='build'){G.order=derange(c.chips);body=`<p class="frame">Tap the chunks in the right order to build one sentence.</p><div class="tray" id="tray" aria-label="your sentence"></div><div class="chipset" id="chips"></div><div class="row"><button class="btn" id="sub">Lock it in</button><button class="btn ghost" id="clr">Clear</button></div>`}
+  if(c.type==='say')body=`<p class="stem">${esc(c.prompt)}</p><p class="frame">Try: ${esc(c.frame)}</p><button class="btn" id="sub">Done speaking</button>`;
+  $('#stage').innerHTML=`<div class="panel">
+    ${G.mult===2?`<div class="dbl pop">Surprise! Double points on this card</div>`:''}
+    <div class="cardtop"><div class="l"><span class="prog">Card ${G.i+1} of ${G.cards.length}</span><div class="row"><span class="tag">${c.topic}</span><span class="tag c${c.c}">${c.c===2?'Second conditional':'Third conditional'}</span></div></div>
+    <div class="ring" id="ring"><svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" id="fg" cx="42" cy="42" r="36" stroke-dasharray="226.2" stroke-dashoffset="0"/></svg><div class="num" id="num">${TIME}</div></div></div>
+    ${body}<div id="res"></div></div>`;
+  if(c.type==='pick')$('#opts').onclick=e=>{const b=e.target.closest('.opt');if(b&&!G.done)finish(+b.dataset.j)};
+  if(c.type==='type'){$('#sub').onclick=()=>finish();document.querySelectorAll('.stem input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')finish()}))}
+  if(c.type==='duo')$('#sub').onclick=()=>finish();
+  if(c.type==='build'){drawBuild();$('#sub').onclick=()=>finish();$('#clr').onclick=()=>{G.tray=[];drawBuild()}}
+  if(c.type==='say')$('#sub').onclick=()=>speakDone();
+  tick();clearInterval(timer);timer=setInterval(tick,200);
+  const f=document.querySelector('.stem input,.stem select');if(f)f.focus();
+}
+function derange(a){let x;do{x=shuffle(a.map((t,i)=>i))}while(x.some((v,i)=>v===i)||x[0]===0);return x}
+function drawBuild(){
+  const c=G.cards[G.i];
+  $('#tray').innerHTML=G.tray.map((ci,k)=>`<button class="ch" data-k="${k}">${esc(c.chips[ci])}</button>`).join('');
+  $('#chips').innerHTML=G.order.map(ci=>`<button class="ch ${G.tray.includes(ci)?'used':''}" data-i="${ci}" ${G.tray.includes(ci)?'disabled':''}>${esc(c.chips[ci])}</button>`).join('');
+  $('#chips').onclick=e=>{const b=e.target.closest('.ch');if(!b||b.disabled||G.done)return;G.tray.push(+b.dataset.i);drawBuild()};
+  $('#tray').onclick=e=>{const b=e.target.closest('.ch');if(!b||G.done)return;G.tray.splice(+b.dataset.k,1);drawBuild()};
+}
+function left(){return Math.max(0,Math.ceil((G.end-Date.now())/1000))}
+function tick(){
+  if(G.done)return;
+  const l=left(),ms=Math.max(0,G.end-Date.now());
+  const n=$('#num');if(!n)return;n.textContent=l;
+  $('#fg').setAttribute('stroke-dashoffset',String(226.2*(1-ms/(TIME*1000))));
+  $('#ring').classList.toggle('low',l<=10);
+  if(ms<=0){timeUp()}
+}
+function timeUp(){
+  if(G.done)return;clearInterval(timer);
+  const c=G.cards[G.i];
+  if(c.type==='say'){speakDone(true);return}
+  finish(null,true);
+}
+function award(full,base,rem,timedOut){
+  const t=G.teams[G.t];let speed=0,streak=0;
+  if(full){t.streak++;t.right++;speed=base>=10&&!timedOut?Math.floor(rem/6):0;if(t.streak>=2)streak=5}else t.streak=0;
+  const sub=full?base+speed+streak:0;
+  return {sub,speed,streak};
+}
+function finish(pick,timedOut){
+  if(G.done)return;G.done=true;clearInterval(timer);
+  const c=G.cards[G.i],rem=timedOut?0:left();
+  let full=false,partial=0,html='',got='';
+  if(c.type==='pick'){
+    full=pick===c.a;
+    document.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(j===c.a)b.classList.add('good');else if(j===pick)b.classList.add('wrong')});
+    got=`<div class="ans">Answer: <b>${esc(c.o[c.a])}</b><br>${c.why}</div>`;
+  }
+  if(c.type==='type'){
+    const gaps=c.s.filter(p=>typeof p!=='string'),ins=[...document.querySelectorAll('.stem input')];let g=0;
+    gaps.forEach((gp,k)=>{const good=gp.ok.includes(norm(ins[k].value,gp.r));ins[k].disabled=true;ins[k].classList.add(good?'ok':'bad');if(good)g++});
+    full=g===gaps.length;partial=full?0:Math.floor(BASE.type/gaps.length)*g;
+    got=`<div class="ans">Answer: <b>${gaps.map(x=>esc(x.ok[0])).join(' · ')}</b><br>${c.why}</div>`;
+    $('#sub').disabled=true;
+  }
+  if(c.type==='duo'){
+    const gaps=c.s.filter(p=>typeof p!=='string'),ss=[...document.querySelectorAll('.stem select')];let g=0;
+    gaps.forEach((gp,k)=>{const good=ss[k].value===gp.o[gp.a];ss[k].disabled=true;ss[k].classList.add(good?'ok':'bad');if(good)g++});
+    full=g===gaps.length;partial=full?0:Math.floor(BASE.duo/gaps.length)*g;
+    got=`<div class="ans">Answer: <b>${gaps.map(x=>esc(x.o[x.a])).join(' · ')}</b><br>${c.why}</div>`;
+    $('#sub').disabled=true;
+  }
+  if(c.type==='build'){
+    const ans=G.tray.map(ci=>c.chips[ci]).join(' '),good=c.chips.join(' ');
+    full=ans===good;
+    got=`<div class="ans">Answer: <b>${esc(good)}</b><br>${c.why}</div>`;
+    document.querySelectorAll('.ch').forEach(b=>b.disabled=true);$('#sub').disabled=true;$('#clr').disabled=true;
+  }
+  const a=award(full,BASE[c.type],rem,timedOut);
+  const total=(full?a.sub:partial)*G.mult;
+  G.teams[G.t].score+=total;
+  if(G.mult===2)G.doubles++;
+  show(full,total,a,got,timedOut,c);
+}
+function speakDone(timedOut){
+  if(G.done)return;G.done=true;clearInterval(timer);
+  const c=G.cards[G.i];
+  $('#res').innerHTML=`<div class="res"><p style="margin:0 0 6px"><b>${timedOut?'Time’s up. ':''}Partner or teacher, how did it go?</b> Did the speaker use the ${c.c===2?'second (past simple + would)':'third (had + past participle, would have + past participle)'} conditional correctly?</p>
+   <div class="ans">Model answer: <i>${esc(c.model)}</i></div>
+   <div class="row"><button class="btn" data-j="25">Nailed it</button><button class="btn ghost" data-j="10">Almost</button><button class="btn ghost" data-j="0">Not this time</button></div></div>`;
+  $('#sub').disabled=true;
+  $('#res').onclick=e=>{const b=e.target.closest('[data-j]');if(!b)return;
+    const v=+b.dataset.j,t=G.teams[G.t];let streak=0,sub=v;
+    if(v===25){t.streak++;t.right++;if(t.streak>=2){streak=5;sub+=5}}else t.streak=0;
+    const total=sub*G.mult;t.score+=total;if(G.mult===2)G.doubles++;
+    show(v===25,total,{speed:0,streak},'',false,c,true,v);
+  };
+}
+function show(full,total,a,got,timedOut,c,isSay,v){
+  board();
+  const parts=[];
+  if(a.streak)parts.push(`streak bonus +${a.streak}`);
+  if(a.speed)parts.push(`speed bonus +${a.speed}`);
+  if(G.mult===2)parts.push('double points');
+  const head=isSay?(v===25?'Nailed it.':v===10?'So close.':'Not this time.'):(timedOut?'Time’s up.':(full?'Correct.':'Not quite.'));
+  const last=G.i>=G.cards.length-1;
+  const html=`<div class="res"><div class="pts">${total>0?'+':''}${total} points</div>
+    <p style="margin:2px 0 0"><b>${head}</b> ${parts.length?'<span class="small">('+parts.join(', ')+')</span>':''}</p>
+    ${got}<p class="quip">${esc(c.quip)}</p>
+    <button class="btn" id="next">${last?'See the results':'Next card'}</button></div>`;
+  if(isSay)$('#res').innerHTML=html;else $('#res').innerHTML=html;
+  $('#next').onclick=()=>{G.i++;if(G.i>=G.cards.length)end();else{ready()}};
+}
+function end(){
+  G.phase='end';board();
+  const t=G.teams[0],avg=t.score/G.cards.length;
+  const title=avg>=22?'Thanksgiving legend':avg>=14?'Seasoned host':'Still marinating';
+  $('#stage').innerHTML=`<div class="panel"><div class="prog">Game over</div><h2>${esc(title)}</h2>
+   <div class="podium"><div class="pl first"><b>${esc(t.name)} <span class="small" style="font:400 15px var(--f-b);color:var(--ink2)">${t.right} of ${G.cards.length} correct</span></b><span>${t.score}</span></div></div>
+   <p class="small">${G.doubles} double-points ${G.doubles===1?'card was':'cards were'} played.</p>
+   <div class="row"><button class="btn" id="again">Play again</button></div></div>`;
+  $('#again').onclick=setup;
+}
+setup();
+</script>
+
+</body></html>
