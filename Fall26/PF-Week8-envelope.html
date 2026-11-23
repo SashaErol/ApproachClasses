@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Envelope System Planner</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#F4F5F7; --card:#FFFFFF; --ink:#10294A; --muted:#51647A; --line:#D5DAE0; --soft:#EAEFF5;
+  --accent:#9C2519; --sky:#2F6FA3; --ok:#1C7A4B; --warn:#A66A00; --bad:#B3261E; --btn-ink:#FFFFFF;
+  --b-fixed:#2F6FA3; --b-inv:#1C7A4B; --b-sav:#C8921B; --b-free:#9C2519; --b-left:#9AA7B6;
+  --paper:#F6EBD3; --fold:rgba(80,60,20,.13); --f-d:'Montserrat',Arial,sans-serif; --f-b:'Source Sans 3',Arial,sans-serif; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1B31; --card:#12263F; --ink:#F4F5F7; --muted:#A9B9CB; --line:#2A486B; --soft:#1A3354;
+  --accent:#F08A7E; --sky:#6FA8D8; --ok:#5BC48A; --warn:#E8B84A; --bad:#FF8F85; --btn-ink:#0B1B31;
+  --b-fixed:#6FA8D8; --b-inv:#5BC48A; --b-sav:#E8B84A; --b-free:#F08A7E; --b-left:#6C7F95; --paper:#1F3A5F; --fold:rgba(255,255,255,.1); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1B31; --card:#12263F; --ink:#F4F5F7; --muted:#A9B9CB; --line:#2A486B; --soft:#1A3354;
+  --accent:#F08A7E; --sky:#6FA8D8; --ok:#5BC48A; --warn:#E8B84A; --bad:#FF8F85; --btn-ink:#0B1B31;
+  --b-fixed:#6FA8D8; --b-inv:#5BC48A; --b-sav:#E8B84A; --b-free:#F08A7E; --b-left:#6C7F95; --paper:#1F3A5F; --fold:rgba(255,255,255,.1); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-b);font-size:17px;line-height:1.45;padding:0 16px 56px}
+.wrap{max-width:1100px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-d);margin:0}
+h2{font-size:22px} h3{font-size:17px}
+.top{padding:16px 0 8px}
+.eyebrow{font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.top h1{font-size:clamp(24px,4.4vw,34px);font-weight:800}
+.top p{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:10px 0}
+.tab{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 16px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn{font-family:var(--f-d);font-weight:800;font-size:14px;border-radius:10px;border:2px solid var(--accent);background:var(--accent);color:var(--btn-ink);padding:9px 16px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.small{font-size:13px;padding:6px 12px}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:14px}
+.hint{color:var(--muted);font-size:15px;margin:4px 0 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:700px){.grid3{grid-template-columns:1fr}}
+label.f{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:14px}
+input[type=number],input[type=text],select{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 10px;width:100%}
+.money{position:relative}.money span{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700}
+.money input{padding-left:24px}
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px;margin-top:10px}
+.vocab div{background:var(--soft);border-radius:10px;padding:8px 12px;font-size:15px}.vocab b{font-family:var(--f-d)}
+/* status cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0}
+@media (max-width:700px){.cards{grid-template-columns:1fr;position:static}}
+.sc{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 14px}
+.sc.ok{border-color:var(--ok)}.sc.bad{border-color:var(--bad)}.sc.warn{border-color:var(--warn)}
+.sc .m{font-family:var(--f-d);font-weight:800;font-size:15px}
+.sc .l{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}.sc .l b{color:var(--ink)}
+.sc .st{font-weight:700;font-size:15px;margin-top:4px}
+.sc.ok .st{color:var(--ok)}.sc.bad .st{color:var(--bad)}.sc.warn .st{color:var(--warn)}
+/* table */
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px}
+th.n,td.n{text-align:right}
+td{padding:4px 8px;border-bottom:1px solid var(--line)}
+td input{width:104px;text-align:right}
+tr.bh td{background:var(--soft);font-family:var(--f-d);font-weight:800;padding:8px;border-bottom:none;border-left:6px solid var(--bc)}
+tr.bh small{font-family:var(--f-b);font-weight:600;color:var(--muted);margin-left:8px}
+tr.sub td{font-weight:700;font-size:14px;color:var(--muted);border-bottom:2px solid var(--line)}
+td.nm{min-width:200px}
+.rm{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;text-decoration:underline}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips label{display:flex;gap:6px;align-items:center;background:var(--soft);border-radius:999px;padding:6px 12px;font-weight:600;font-size:15px;cursor:pointer}
+.chips input{width:auto}
+.msg{border-radius:10px;padding:8px 12px;font-weight:600;background:var(--soft);margin-top:10px}
+.msg.bad{color:var(--bad)}.msg.ok{color:var(--ok)}
+/* analysis */
+.bar{display:flex;height:26px;border-radius:8px;overflow:hidden;background:var(--soft)}
+.bar i{display:block;height:100%}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;margin-top:8px}.leg span:before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--c);margin-right:6px;vertical-align:-1px}
+.bt{margin:12px 0}
+.bt .nm{font-family:var(--f-d);font-weight:800;font-size:14px;margin-bottom:4px}
+.chip{display:inline-block;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700;border:2px solid currentColor}
+.chip.good{color:var(--ok)}.chip.low,.chip.high{color:var(--warn)}.chip.na{color:var(--muted)}
+.ins{display:grid;gap:10px;margin-top:10px}
+.ins div{border-left:6px solid var(--line);background:var(--soft);border-radius:10px;padding:10px 14px}
+.ins .good{border-color:var(--ok)}.ins .warn{border-color:var(--warn)}.ins .bad{border-color:var(--bad)}.ins .info{border-color:var(--sky)}
+.ins b{font-family:var(--f-d);display:block;font-size:15px}
+.ins p{margin:2px 0 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:800px){.two{grid-template-columns:1fr}}
+.big{font-family:var(--f-d);font-weight:800;font-size:28px}
+input[type=range]{width:100%}
+ol.q,ul.t{padding-left:22px;margin:8px 0}ol.q li,ul.t li{margin:7px 0;max-width:75ch}
+.src{font-size:13px;color:var(--muted)}
+
+/* envelopes */
+.tray{margin-top:22px}
+.tray .th{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;border-bottom:4px solid var(--bc);padding-bottom:6px}
+.tray .th h3{font-size:19px}.tray .th .hint{margin:0}
+.chipsrow{display:flex;gap:6px;flex-wrap:wrap}
+.sch{background:var(--soft);border-radius:999px;padding:3px 10px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}.sch b{color:var(--ink)}
+.envs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px 18px;margin-top:16px}
+.env{position:relative;background:var(--paper);border:2px solid var(--bc);border-radius:10px;overflow:hidden;box-shadow:0 3px 0 rgba(0,0,0,.12);padding-bottom:12px}
+.env::after{content:"";position:absolute;left:0;right:0;bottom:0;height:62%;pointer-events:none;
+ background:linear-gradient(to top right,transparent calc(50% - 1px),var(--fold) 50%,transparent calc(50% + 1px)) 0 100%/50% 100% no-repeat,linear-gradient(to top left,transparent calc(50% - 1px),var(--fold) 50%,transparent calc(50% + 1px)) 100% 100%/50% 100% no-repeat}
+.env>*{position:relative;z-index:1}
+.env .flap{height:48px;background:var(--bc);clip-path:polygon(0 0,100% 0,50% 100%)}
+.env .seal{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--f-d);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 rgba(0,0,0,.25);z-index:2}
+.env .lab{min-height:2.9em;display:flex;align-items:center;justify-content:center;margin:22px 12px 8px;background:var(--card);border:1px dashed var(--line);border-radius:6px;padding:5px 8px;text-align:center;font-family:var(--f-d);font-weight:800;font-size:14px;line-height:1.2;transform:rotate(-1deg)}
+.env .rm{display:block;margin:-2px auto 4px;font-size:12px}
+.env .slip{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 12px}
+.env .slip span{font-weight:700;font-size:14px;width:44px}
+.env .slip input{width:auto;flex:1;min-width:0;text-align:right;background:var(--card)}
+.env .tot{display:flex;justify-content:space-between;align-items:baseline;margin:10px 12px 0;padding-top:8px;border-top:2px dashed var(--bc);font-weight:700;font-size:14px}
+.env .tot b{font-family:var(--f-d);font-size:20px}
+.envs.mini{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px}
+.envs.mini .env .flap{height:34px}.envs.mini .env .seal{top:21px;width:24px;height:24px;font-size:13px}
+.envs.mini .env .lab{margin:18px 8px 6px;font-size:13px}
+.envs.mini .amt{font-family:var(--f-d);font-weight:800;font-size:26px;text-align:center}
+.emp{color:var(--muted);margin:14px 0 0}
+/* status cards as small envelopes */
+.sc{position:relative;overflow:hidden;padding-top:34px;border-radius:10px;background:var(--paper)}
+.sc::before{content:"";position:absolute;top:0;left:0;right:0;height:26px;background:var(--sc,var(--line));clip-path:polygon(0 0,100% 0,50% 100%)}
+.sc.ok{--sc:var(--ok)}.sc.bad{--sc:var(--bad)}.sc.warn{--sc:var(--warn)}
+@media print{.env{box-shadow:none}.env .flap,.env .seal,.sc::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+@media print{
+  body{background:#fff;color:#000}.tabs,.noprint,.top p{display:none!important}
+  .cards{position:static}.panel{break-inside:avoid;border-color:#999}
+  .bar i,.sc{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><div class="eyebrow">Personal Finances · Chapter 4</div><h1>Envelope System Planner</h1>
+<p>Plan your money for December, January and February. Use real numbers or imaginary ones. Nobody has to share their income.</p></div>
+<nav class="tabs" id="tabs" role="tablist"></nav>
+<main id="main"></main>
+</div>
+<script>
+var MONTHS=['December','January','February'];
+var BK={fixed:{n:'Fixed costs',t:'50–60%',lo:50,hi:60,tg:.55},inv:{n:'Investments',t:'10%',lo:10,hi:100,tg:.10},sav:{n:'Savings goals',t:'5–10%',lo:5,hi:100,tg:.08},free:{n:'Guilt-free spending',t:'20–35%',lo:20,hi:35,tg:.27}};
+var BORDER=['fixed','inv','sav','free'];
+/* standard envelopes first (12), then additional (add:true) */
+var DEFS=[
+ {id:'rent',n:'Rent or housing',b:'fixed',w:40},
+ {id:'util',n:'Utilities (electricity, heat, water)',b:'fixed',w:7},
+ {id:'phone',n:'Phone and internet',b:'fixed',w:5},
+ {id:'groc',n:'Groceries',b:'fixed',w:25},
+ {id:'trans',n:'Transportation (bus, gas)',b:'fixed',w:12},
+ {id:'health',n:'Health insurance and medicine',b:'fixed',w:6},
+ {id:'debt',n:'Debt payments (loan, credit card)',b:'fixed',w:5},
+ {id:'retire',n:'Retirement investing (401(k), Roth IRA)',b:'inv',w:10},
+ {id:'emerg',n:'Emergency fund',b:'sav',w:5},
+ {id:'eat',n:'Eating out and coffee',b:'free',w:10},
+ {id:'fun',n:'Entertainment and going out',b:'free',w:6},
+ {id:'shop',n:'Shopping (things I want)',b:'free',w:6},
+ {id:'gifts',n:'Holiday gifts and cards',b:'sav',w:4,sw:[3,.3,.3],add:true},
+ {id:'family',n:'Money for family back home',b:'fixed',w:10,add:true},
+ {id:'travel',n:'Travel and flights',b:'sav',w:3,add:true},
+ {id:'winter',n:'Winter coat and boots',b:'fixed',w:4,sw:[2,1,.3],add:true},
+ {id:'car',n:'Car insurance and repairs',b:'fixed',w:8,add:true},
+ {id:'edu',n:'Books, course or exam fees',b:'inv',w:3,add:true},
+ {id:'subs',n:'Subscriptions (streaming, apps)',b:'free',w:2,add:true},
+ {id:'gym',n:'Gym and sports',b:'free',w:2,add:true},
+ {id:'care',n:'Haircut and personal care',b:'free',w:2,add:true}
+];
+var S;
+function fresh(){S={tab:'inc',same:true,inc:[2000,2000,2000],extra:[0,0,0],big:{id:'',pct:10},log:[],msg:'',env:DEFS.map(function(d){return {id:d.id,n:d.n,b:d.b,add:!!d.add,on:!d.add,v:[0,0,0],custom:false};})};}
+fresh();
+function num(x){x=+x;return isFinite(x)&&x>0?x:0;}
+function $(s){return document.querySelector(s);}
+function usd(n){n=Math.round(n);return (n<0?'-$':'$')+Math.abs(n).toLocaleString('en-US');}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function inc(m){return num(S.inc[m])+num(S.extra[m]);}
+function on(){return S.env.filter(function(e){return e.on;});}
+function tot(m){var t=0;on().forEach(function(e){t+=num(e.v[m]);});return t;}
+function bsum(b,m){var t=0;on().forEach(function(e){if(e.b===b)t+=num(e.v[m]);});return t;}
+function byId(id){return S.env.filter(function(e){return e.id===id;})[0];}
+function save(){try{localStorage.setItem('env_v1',JSON.stringify(S));}catch(e){}}
+function load(){try{var j=JSON.parse(localStorage.getItem('env_v1')||'null');if(j&&j.env&&j.env.length)S=j;}catch(e){}}
+
+var TABS=[['inc','1. Income'],['env','2. Envelopes'],['ana','3. Analysis'],['tips','4. Tips']];
+function tabs(){$('#tabs').innerHTML=TABS.map(function(t){return '<button class="tab" role="tab" data-t="'+t[0]+'" aria-selected="'+(S.tab===t[0])+'">'+t[1]+'</button>';}).join('');}
+
+/* ---------- Tab 1 ---------- */
+function tabInc(){
+  var h='<div class="panel"><h2>Step 1. How much money comes in each month?</h2><p class="hint">Write your <b>take-home pay</b>: the money you receive after taxes. If you prefer, write an imaginary number. Use whole dollars.</p><div class="row" style="margin:12px 0"><label class="row" style="font-weight:700"><input type="checkbox" id="same" '+(S.same?'checked':'')+' style="width:auto"> Same income every month</label></div><div class="grid3">';
+  MONTHS.forEach(function(m,i){h+='<label class="f">'+m+'<div class="money"><span>$</span><input type="number" min="0" step="1" inputmode="numeric" data-inc="'+i+'" value="'+S.inc[i]+'"'+(S.same&&i>0?' disabled':'')+'></div></label>';});
+  h+='</div><h3 style="margin-top:18px">Extra money (optional)</h3><p class="hint">Gifts, a bonus, a side job, money from family. Leave 0 if you do not know.</p><div class="grid3" style="margin-top:8px">';
+  MONTHS.forEach(function(m,i){h+='<label class="f">Extra in '+m+'<div class="money"><span>$</span><input type="number" min="0" step="1" inputmode="numeric" data-extra="'+i+'" value="'+S.extra[i]+'"></div></label>';});
+  h+='</div><div class="row" style="margin-top:16px"><button class="btn" data-t="env">Next: make your envelopes</button><button class="btn ghost" id="example">Load an example (Maria, $2,400)</button></div></div>';
+  h+='<div class="panel"><h2>Words for today</h2><div class="vocab">'+[['envelope','A category for money. When it is empty, you stop spending in that category.'],['allocate','To decide how much money goes to each place.'],['fixed costs','Bills you must pay every month, like rent and phone.'],['guilt-free spending','Money for fun that you spend with no guilt, after your other needs are paid.'],['surplus','Money left over after you pay for everything.'],['shortfall','Not enough money. Your plan is bigger than your income.'],['overspend','To spend more than your plan says.'],['take-home pay','The money you get after taxes.']].map(function(w){return '<div><b>'+w[0]+'</b>: '+w[1]+'</div>';}).join('')+'</div></div>';
+  $('#main').innerHTML=h;
+}
+
+/* ---------- Tab 2 ---------- */
+function cardsHtml(){return MONTHS.map(function(m,i){var I=inc(i),T=tot(i),L=I-T;var cl,st;
+  if(I===0){cl='warn';st='Add your income first.';}else if(Math.abs(L)<1){cl='ok';st='Every dollar has a job.';}else if(L>0){cl='warn';st=usd(L)+' has no job yet.';}else{cl='bad';st='Over by '+usd(-L)+'. Move or cut.';}
+  return '<div class="sc '+cl+'"><div class="m">'+m+'</div><div class="l"><span>Income</span><b>'+usd(I)+'</b></div><div class="l"><span>In envelopes</span><b>'+usd(T)+'</b></div><div class="st">'+st+'</div></div>';}).join('');}
+var MON3=['Dec','Jan','Feb'];
+function groupRows(b){
+  var list=S.env.filter(function(e){return e.on&&e.b===b;});
+  var h='<section class="tray" style="--bc:var(--b-'+b+')"><div class="th"><div><h3>'+BK[b].n+'</h3><span class="hint">book guide: '+BK[b].t+' of take-home pay</span></div><div class="chipsrow">'+[0,1,2].map(function(m){return '<span class="sch">'+MON3[m]+' <b id="sub'+b+m+'"></b></span>';}).join('')+'<span class="sch">3 months <b id="sub'+b+'T"></b></span></div></div>';
+  if(!list.length)return h+'<p class="emp">No envelopes here. Turn one on in "More envelopes" below.</p></section>';
+  h+='<div class="envs">';
+  list.forEach(function(e){var i=S.env.indexOf(e);
+    h+='<div class="env"><div class="flap"></div><span class="seal" aria-hidden="true">$</span><div class="lab">'+esc(e.n)+'</div>'+(e.custom?'<button class="rm" data-rm="'+i+'">remove</button>':'')+[0,1,2].map(function(m){return '<label class="slip"><span>'+MON3[m]+'</span><input type="number" min="0" step="1" inputmode="numeric" aria-label="'+esc(e.n)+' in '+MONTHS[m]+'" data-v="'+i+'" data-m="'+m+'" value="'+(e.v[m]||'')+'" placeholder="$0"></label>';}).join('')+'<div class="tot"><span>3 months</span><span id="rt'+i+'"><b>'+usd(num(e.v[0])+num(e.v[1])+num(e.v[2]))+'</b></span></div></div>';});
+  return h+'</div></section>';}
+function subs(){BORDER.forEach(function(b){var tt=0,ti=0;[0,1,2].forEach(function(m){var s=bsum(b,m),I=inc(m);tt+=s;ti+=I;var el=$('#sub'+b+m);if(el)el.textContent=usd(s)+' · '+(I?Math.round(s/I*100):0)+'%';});var el=$('#sub'+b+'T');if(el)el.textContent=usd(tt)+' · '+(ti?Math.round(tt/ti*100):0)+'%';});
+  S.env.forEach(function(e,i){var el=$('#rt'+i);if(el)el.innerHTML='<b>'+usd(num(e.v[0])+num(e.v[1])+num(e.v[2]))+'</b>';});}
+function tabEnv(){
+  var h='<div id="cards" class="cards">'+cardsHtml()+'</div>';
+  h+='<div class="panel"><h2>Step 2. Put money in each envelope</h2><p class="hint">Type how much you want in each envelope for each month. Goal: <b>every dollar has a job</b>, so "has no job yet" becomes zero. Not sure where to start? Press Auto-fill, then change the numbers to match your life.</p><div class="row noprint" style="margin-top:10px"><button class="btn" id="auto">Auto-fill with the book\'s percentages</button><button class="btn ghost" id="copy">Copy December to all months</button><button class="btn ghost" id="clear">Clear all amounts</button></div>'+BORDER.map(groupRows).join('')+'</div>';
+  h+='<div class="panel noprint"><h2>More envelopes</h2><p class="hint">Turn on envelopes that fit your life. December has gifts. January and February are cold, so heating can cost more.</p><div class="chips">'+S.env.map(function(e,i){return e.add&&!e.custom?'<label><input type="checkbox" data-tog="'+i+'"'+(e.on?' checked':'')+'> '+esc(e.n)+'</label>':'';}).join('')+'</div>';
+  h+='<h3 style="margin-top:16px">Make your own envelope</h3><div class="row" style="margin-top:8px"><label class="f" style="min-width:200px">Name<input type="text" id="cn" maxlength="40" placeholder="Example: Pet food"></label><label class="f">Bucket<select id="cb">'+BORDER.map(function(b){return '<option value="'+b+'">'+BK[b].n+'</option>';}).join('')+'</select></label><button class="btn" id="cadd" style="align-self:flex-end">Add envelope</button></div></div>';
+  var opts=on().map(function(e){var i=S.env.indexOf(e);return '<option value="'+i+'">'+esc(e.n)+'</option>';}).join('');
+  var k=0;var opts2=on().map(function(e){var i=S.env.indexOf(e);return '<option value="'+i+'"'+(k++===1?' selected':'')+'>'+esc(e.n)+'</option>';}).join('');
+  h+='<div class="panel noprint"><h2>Surprise! Move money between envelopes</h2><p class="hint">Rule from the book: you can take money from one envelope and put it in another, but your <b>total spending does not grow</b>. Example: an unexpected $120 dental bill in January.</p><div class="row" style="margin-top:10px"><label class="f">Month<select id="tm">'+MONTHS.map(function(m,i){return '<option value="'+i+'">'+m+'</option>';}).join('')+'</select></label><label class="f" style="min-width:200px">Take from<select id="tf">'+opts+'</select></label><label class="f" style="min-width:200px">Put into<select id="tt">'+opts2+'</select></label><label class="f">Amount<div class="money"><span>$</span><input type="number" min="0" id="ta" value="50" style="width:110px"></div></label><button class="btn" id="tgo" style="align-self:flex-end">Move money</button></div><div id="tmsg">'+(S.msg?'<div class="msg">'+esc(S.msg)+'</div>':'')+'</div>'+(S.log.length?'<ul class="t">'+S.log.map(function(l){return '<li>'+esc(l)+'</li>';}).join('')+'</ul>':'')+'</div>';
+  h+='<div class="row noprint" style="margin-top:14px"><button class="btn" data-t="ana">Next: analyze my plan</button></div>';
+  $('#main').innerHTML=h;subs();
+}
+
+/* ---------- Analysis ---------- */
+function stat(b,p){var k=BK[b];if(p<k.lo)return ['low','Too low'];if(p>k.hi)return ['high','Too high'];return ['good','On target'];}
+function analysis(){
+  var ti=0,ta=0;[0,1,2].forEach(function(m){ti+=inc(m);ta+=tot(m);});var out=[];var tl=ti-ta;
+  var bt={};BORDER.forEach(function(b){bt[b]=0;[0,1,2].forEach(function(m){bt[b]+=bsum(b,m);});});
+  var pc={};BORDER.forEach(function(b){pc[b]=ti?bt[b]/ti*100:0;});
+  var offs=[];[0,1,2].forEach(function(m){var l=inc(m)-tot(m);if(l>1)offs.push(MONTHS[m]+' ('+usd(l)+' without a job)');else if(l<-1)offs.push(MONTHS[m]+' (over by '+usd(-l)+')');});
+  if(!ta)return {out:[],pc:pc,bt:bt,ti:ti,ta:ta,tl:tl};
+  if(offs.length===0)out.push({k:'good',h:'Every dollar has a job in all 3 months',p:'This is the heart of the envelope system. You know where each dollar goes before the month starts.'});
+  else out.push({k:'warn',h:'Your plan does not match your income yet',p:'Check: '+offs.join(', ')+'. If you have extra money, use the book\'s "Next $100" idea: send it to investing or savings first. If you are over, cut guilt-free envelopes before you cut savings.'});
+  var f=pc.fixed;
+  if(f>60)out.push({k:'warn',h:'Fixed costs are high: '+Math.round(f)+'% (book guide: 50–60%)',p:'Look for one Big Win: rent, phone plan, insurance or a car payment. Call the company and negotiate. If you really cannot cut more, the book says to work on earning more, because there is a limit to cutting but no limit to earning.'});
+  else if(f<50)out.push({k:'info',h:'Fixed costs are low: '+Math.round(f)+'%',p:'Great, if it is true. Check that you did not forget a bill (insurance, phone, transport). A forgotten bill breaks the plan in the middle of the month.'});
+  else out.push({k:'good',h:'Fixed costs are on target: '+Math.round(f)+'%',p:'Your bills are inside the book\'s 50–60% range. This leaves room for the future and for fun.'});
+  if(pc.inv<10){var gap=Math.round(ti/3*0.10-bt.inv/3);out.push({k:'warn',h:'Investing is '+Math.round(pc.inv)+'% (book guide: 10%)',p:'You are about '+usd(gap)+' a month under. The book says to start even with $50, because time is your biggest advantage. Start small and grow it.'});}
+  else out.push({k:'good',h:'Investing is '+Math.round(pc.inv)+'%',p:'You reached the 10% guide. Automate it so it happens on payday, without a decision.'});
+  if(pc.sav<5)out.push({k:'warn',h:'Savings goals are only '+Math.round(pc.sav)+'% (book guide: 5–10%)',p:'Savings protect you from surprises. Without them, one bad month goes on a credit card with high interest.'});
+  else out.push({k:'good',h:'Savings goals are '+Math.round(pc.sav)+'%',p:'Good. Savings goals are for vacations, gifts, emergencies and big plans.'});
+  if(pc.free>35)out.push({k:'warn',h:'Guilt-free spending is '+Math.round(pc.free)+'% (book guide: 20–35%)',p:'Fun money is healthy, but this is above the guide. Is it really guilt-free if your savings are small? Try moving 5% to investing.'});
+  else if(pc.free<20)out.push({k:'info',h:'Guilt-free spending is only '+Math.round(pc.free)+'%',p:'The book warns: a plan that is too strict will not last. Make sure you keep enough fun money to follow the plan for a long time.'});
+  else out.push({k:'good',h:'Guilt-free spending is '+Math.round(pc.free)+'%',p:'You protect your fun money. That is why the system is easy to follow.'});
+  var em=byId('emerg'),avgF=bt.fixed/3;
+  if(em&&em.on&&avgF>0){var es=num(em.v[0])+num(em.v[1])+num(em.v[2]);if(es===0)out.push({k:'warn',h:'Your emergency envelope is empty',p:'Many financial educators suggest 3 to 6 months of essential costs. Your fixed costs are about '+usd(avgF)+' a month, so the goal starts around '+usd(avgF*3)+'. Start with any amount.'});else{var mo=Math.ceil(avgF*3/(es/3));out.push({k:'info',h:'Emergency fund: '+usd(es)+' in 3 months',p:'That is about '+(es/avgF).toFixed(2)+' of one month of your fixed costs ('+usd(avgF)+'). A common goal is 3 to 6 months. At this speed, 3 months of costs takes about '+mo+' months, so look for a Big Win to grow it faster.'});}}
+  var g=byId('gifts');var d1=(g&&g.on?num(g.v[0]):0)+bsum('free',0),d2=((g&&g.on?num(g.v[1])+num(g.v[2]):0)+bsum('free',1)+bsum('free',2))/2;
+  if(d1>d2*1.2&&d2>0)out.push({k:'info',h:'December is more expensive than January and February',p:'You plan '+usd(d1)+' for gifts and fun in December, and about '+usd(d2)+' per month later. Next year, save a little every month for December. This is called a sinking fund.'});
+  var mn=Math.min(inc(0),inc(1),inc(2)),mx=Math.max(inc(0),inc(1),inc(2));if(mn>0&&mx>mn*1.1)out.push({k:'info',h:'Your income changes from month to month',p:'When income is not steady, build your plan on the lowest month ('+usd(mn)+'). Put extra money in savings in the good months.'});
+  var db=byId('debt');if(db&&db.on&&(num(db.v[0])+num(db.v[1])+num(db.v[2]))>0)out.push({k:'info',h:'You have debt payments: pay more than the minimum if you can',p:'In the book, Dumb Dan pays the minimum on $5,000 at 14% APR: more than 25 years and $6,322 in interest. Smart Sally pays a fixed $100: 6 years 4 months and $2,548 in interest. Super Smart Sally pays $200: 2 years 6 months and $946.'});
+  return {out:out,pc:pc,bt:bt,ti:ti,ta:ta,tl:tl};
+}
+function bar(m){var I=inc(m),T=tot(m),den=Math.max(I,T)||1;var segs=BORDER.map(function(b){return '<i title="'+BK[b].n+'" style="width:'+bsum(b,m)/den*100+'%;background:var(--b-'+b+')"></i>';}).join('');var left=I-T;if(left>0)segs+='<i title="No job yet" style="width:'+left/den*100+'%;background:var(--b-left)"></i>';return segs;}
+function tabAna(){
+  var A=analysis();
+  if(!A.ta){$('#main').innerHTML='<div class="panel"><h2>Analysis</h2><p>Your envelopes are empty. Go to <b>2. Envelopes</b>, fill them in (or press Auto-fill), and come back.</p><button class="btn" data-t="env">Go to envelopes</button></div>';return;}
+  var h='<div class="panel"><h2>Where does your money go?</h2><p class="hint">Percentages are measured against your income. Colors always come with words, so you can read the chart in black and white.</p>';
+  [0,1,2].forEach(function(m){h+='<div class="bt"><div class="nm">'+MONTHS[m]+' · income '+usd(inc(m))+'</div><div class="bar">'+bar(m)+'</div></div>';});
+  h+='<div class="leg">'+BORDER.map(function(b){return '<span style="--c:var(--b-'+b+')">'+BK[b].n+'</span>';}).join('')+'<span style="--c:var(--b-left)">No job yet</span></div>';
+  h+='<div class="scroll" style="margin-top:14px"><table><tr><th>Bucket</th><th class="n">3 months</th><th class="n">Your %</th><th class="n">Book guide</th><th>Result</th></tr>'+BORDER.map(function(b){var s=stat(b,A.pc[b]);return '<tr><td><b>'+BK[b].n+'</b></td><td class="n">'+usd(A.bt[b])+'</td><td class="n">'+Math.round(A.pc[b])+'%</td><td class="n">'+BK[b].t+'</td><td><span class="chip '+s[0]+'">'+s[1]+'</span></td></tr>';}).join('')+'<tr><td><b>No job yet</b></td><td class="n">'+usd(A.tl)+'</td><td class="n">'+Math.round(A.tl/A.ti*100)+'%</td><td class="n">0%</td><td>'+(Math.abs(A.tl)<1?'<span class="chip good">Perfect</span>':'<span class="chip high">Fix this</span>')+'</td></tr></table></div></div>';
+  h+='<div class="panel"><h2>What I see in your plan</h2><div class="ins">'+A.out.map(function(x){return '<div class="'+x.k+'"><b>'+esc(x.h)+'</b><p>'+esc(x.p)+'</p></div>';}).join('')+'</div></div>';
+  /* big wins + next 100 */
+  var cands=on().filter(function(e){return num(e.v[0])+num(e.v[1])+num(e.v[2])>0;}).sort(function(a,b){return (num(b.v[0])+num(b.v[1])+num(b.v[2]))-(num(a.v[0])+num(a.v[1])+num(a.v[2]));});
+  if(!S.big.id||!byId(S.big.id)||!byId(S.big.id).on)S.big.id=cands.length?cands[0].id:'';
+  h+='<div class="two">';
+  h+='<div class="panel"><h2>Find your Big Win</h2><p class="hint">Pick an envelope and imagine a small cut. The book prefers a small cut you keep for years over a huge cut for one month.</p><label class="f" style="margin-top:10px">Envelope<select id="bw">'+cands.map(function(e){return '<option value="'+e.id+'"'+(e.id===S.big.id?' selected':'')+'>'+esc(e.n)+'</option>';}).join('')+'</select></label><label class="f" style="margin-top:10px">Cut: <span id="bwp">'+S.big.pct+'%</span><input type="range" id="bwr" min="5" max="50" step="5" value="'+S.big.pct+'"></label><div id="bwout"></div></div>';
+  var pt=A.ta||1;h+='<div class="panel"><h2>Your "Next $100"</h2><p class="hint">If you earn one more $100, where does it go in your plan?</p><div class="envs mini" style="margin-top:10px">'+BORDER.map(function(b){return '<div class="env" style="--bc:var(--b-'+b+')"><div class="flap"></div><span class="seal" aria-hidden="true">$</span><div class="lab">'+BK[b].n+'</div><div class="amt">'+usd(A.bt[b]/pt*100)+'</div></div>';}).join('')+'</div><p class="hint">In the book, the Next $100 idea is to decide the split first, then automate it so the money moves by itself.</p></div></div>';
+  h+='<div class="panel"><h2>Talk with a partner (3 minutes each)</h2><ol class="q"><li>Which envelope was the hardest to fill? Why?</li><li>Which envelope did you make smaller than you expected? Which one bigger?</li><li>Look at December. What is different about December in your life or your country?</li><li>If you lose $100 in one envelope, which other envelope do you take it from? Why that one?</li><li>What one small change can you keep for a whole year?</li></ol><div class="row noprint"><button class="btn ghost" onclick="window.print()">Print my plan</button><button class="btn" data-t="tips">Next: tips</button></div></div>';
+  $('#main').innerHTML=h;bw();
+}
+function bw(){var el=$('#bwout');if(!el)return;var e=byId(S.big.id);if(!e){el.innerHTML='';return;}var avg=(num(e.v[0])+num(e.v[1])+num(e.v[2]))/3,sv=avg*S.big.pct/100;var need=200-sv;
+  el.innerHTML='<div class="big" style="margin-top:10px">'+usd(sv)+' / month</div><p style="margin:2px 0">'+usd(sv*3)+' in 3 months · '+usd(sv*12)+' in a year</p><p class="hint">Book goal: cut about $200 a month with one or two Big Wins. '+(need<=0?'This one reaches the goal.':'You still need '+usd(need)+' a month from other places.')+'</p>';}
+
+/* ---------- Tips ---------- */
+function tabTips(){
+  var book=[
+   ['Use the four buckets','Fixed costs 50–60%, investments 10%, savings goals 5–10%, guilt-free spending 20–35% of take-home pay. These are guides. Change them to fit your life (Chapter 4).'],
+   ['Spend extravagantly on what you love','Cut costs without mercy on things you do not care about, and spend freely on what you love. That is the difference between a cheap person and a conscious spender.'],
+   ['Focus on Big Wins','Do not fight about small things like one coffee. Look at the big costs: housing, transport, food, phone and insurance.'],
+   ['Small changes you can keep','The book prefers a 10% cut you keep for years over a 50% cut that lasts one month. Start with a change you will hardly notice.'],
+   ['Empty envelope = stop','When an envelope is empty, that is it for the month. You may move money from another envelope, but then that other envelope is smaller. Total spending does not grow.'],
+   ['Use training wheels','Put your fun money in a separate account with its own debit card. When it is gone, it is gone. Ask your bank not to let you spend more than you have, to avoid overdraft fees.'],
+   ['Automate it','Decide where the Next $100 goes, then set automatic transfers on payday. A system works better than willpower (Chapter 5).'],
+   ['If your income is too low','You can cut only so much. Then focus on earning more: negotiate a raise, find a better job or start a side income (Chapter 4).']
+  ];
+  var gen=[
+   ['Pay yourself first','Move money to savings and investing on payday. Spend what is left, not the other way around.'],
+   ['Start your emergency fund small','Begin with any amount, then grow toward 3 to 6 months of essential costs. This protects you from borrowing at a high interest rate.'],
+   ['Save for known costs (sinking funds)','Gifts, flights, car insurance and annual fees are not surprises. Divide them by 12 and put a little in an envelope every month.'],
+   ['Track before you plan','Look at your last 2 months in your bank app. Real numbers beat guesses.'],
+   ['Review once a month','Plans change. Spend 15 minutes each month to move money between envelopes and fix what did not work.'],
+   ['Pay more than the minimum on debt','Minimum payments keep you in debt for years. Extra payments reduce interest fast, especially on credit cards.'],
+   ['Watch subscriptions','Small monthly payments are easy to forget. Cancel what you do not use.'],
+   ['Plan family support first','If you send money home, treat it as a fixed cost, not a leftover. Then you can plan the rest without stress.']
+  ];
+  function li(a){return a.map(function(x){return '<li><b>'+x[0]+'.</b> '+x[1]+'</li>';}).join('');}
+  var h='<div class="two"><div class="panel"><h2>Tips from the book</h2><p class="hint">I Will Teach You to Be Rich, Ramit Sethi, Chapters 4 and 5.</p><ul class="t">'+li(book)+'</ul></div><div class="panel"><h2>General financial literacy</h2><p class="hint">Common advice from personal-finance classes.</p><ul class="t">'+li(gen)+'</ul></div></div>';
+  h+='<div class="panel"><h2>Your action plan</h2><p>Write one sentence for each. Share with your partner.</p><ol class="q"><li>My biggest Big Win is ______.</li><li>This month I will move $______ to savings or investing on payday.</li><li>One envelope I will protect is ______, because it matters to me.</li></ol><p class="src">Educational tool. It is not personal financial advice.</p></div>';
+  $('#main').innerHTML=h;
+}
+function render(){tabs();({inc:tabInc,env:tabEnv,ana:tabAna,tips:tabTips})[S.tab]();window.scrollTo(0,0);}
+
+/* ---------- actions ---------- */
+function autofill(){[0,1,2].forEach(function(m){var I=inc(m);BORDER.forEach(function(b){var list=S.env.filter(function(e){return e.on&&e.b===b;});if(!list.length)return;var wts=list.map(function(e){var d=DEFS.filter(function(x){return x.id===e.id;})[0];var w=d?d.w:5;if(d&&d.sw)w*=d.sw[m];return w;});var sw=wts.reduce(function(a,c){return a+c;},0);var target=Math.round(I*BK[b].tg);var used=0,big=0;list.forEach(function(e,k){e.v[m]=Math.round(target*wts[k]/sw);used+=e.v[m];if(wts[k]>wts[big])big=k;});list[big].v[m]+=target-used;});});}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-t]');if(t){S.tab=t.getAttribute('data-t');save();render();return;}
+  var id=e.target.id;
+  if(id==='auto'){autofill();save();render();}
+  else if(id==='copy'){S.env.forEach(function(x){x.v[1]=x.v[0];x.v[2]=x.v[0];});save();render();}
+  else if(id==='clear'){S.env.forEach(function(x){x.v=[0,0,0];});S.log=[];S.msg='';save();render();}
+  else if(id==='example'){var keep=S.tab;fresh();S.inc=[2400,2400,2400];byId('gifts').on=true;byId('family').on=true;autofill();S.tab='env';save();render();}
+  else if(id==='cadd'){var n=$('#cn').value.trim();if(!n)return;S.env.push({id:'c'+Date.now(),n:n,b:$('#cb').value,add:true,on:true,v:[0,0,0],custom:true});save();render();}
+  else if(id==='tgo'){var m=+$('#tm').value,f=S.env[+$('#tf').value],to=S.env[+$('#tt').value],a=Math.round(num($('#ta').value));
+    if(!f||!to||f===to||!a){S.msg='Choose two different envelopes and an amount.';}else if(a>num(f.v[m])){S.msg='"'+f.n+'" has only '+usd(num(f.v[m]))+' in '+MONTHS[m]+'.';}else{f.v[m]=num(f.v[m])-a;to.v[m]=num(to.v[m])+a;S.log.push(MONTHS[m]+': moved '+usd(a)+' from '+f.n+' to '+to.n+'. Total spending did not change.');S.msg='Done. Look at the cards: the total is the same.';}
+    save();render();}
+  else if(e.target.getAttribute&&e.target.getAttribute('data-rm')!=null){S.env.splice(+e.target.getAttribute('data-rm'),1);save();render();}
+});
+document.addEventListener('input',function(e){var el=e.target;
+  if(el.hasAttribute('data-v')){S.env[+el.getAttribute('data-v')].v[+el.getAttribute('data-m')]=num(el.value);var c=$('#cards');if(c)c.innerHTML=cardsHtml();subs();save();}
+  else if(el.hasAttribute('data-inc')){var i=+el.getAttribute('data-inc');S.inc[i]=num(el.value);if(S.same&&i===0){S.inc[1]=S.inc[2]=S.inc[0];document.querySelectorAll('[data-inc]').forEach(function(x,k){if(k>0)x.value=S.inc[0];});}save();}
+  else if(el.hasAttribute('data-extra')){S.extra[+el.getAttribute('data-extra')]=num(el.value);save();}
+  else if(el.id==='bwr'){S.big.pct=+el.value;$('#bwp').textContent=S.big.pct+'%';bw();save();}
+});
+document.addEventListener('change',function(e){var el=e.target;
+  if(el.id==='same'){S.same=el.checked;if(S.same){S.inc[1]=S.inc[2]=S.inc[0];}save();render();}
+  else if(el.hasAttribute('data-tog')){S.env[+el.getAttribute('data-tog')].on=el.checked;save();render();}
+  else if(el.id==='bw'){S.big.id=el.value;bw();save();}
+});
+load();S.tab='inc';render();
+</script>
+</body>
+</html>
